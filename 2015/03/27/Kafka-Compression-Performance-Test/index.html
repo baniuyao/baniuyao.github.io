@@ -279,31 +279,121 @@
 <ul>
 <li>gzip</li>
 <li>snappy</li>
-<li><p>lz4</p>
-<p>Because of the box I use to test, when I use <code>lz4</code> in testing, I got OOM exception. I think the casuse of this exception is the Java code will get all lines of the <code>test.access.log</code> and send to <code>Kafka</code> in a very short time. So I used <code>batch.size</code> of 2000, 2500, 3000, 3500, 4000, 4500 and 5000. Using big <code>batch.size</code> will increass the latency and this will give JVM some time to do the GC jobs.</p>
-<p>Below is the result</p>
-<h3 id="Compression_Rate">Compression Rate</h3>
-<p>The value is better when it is smaller<br>|-|none|gzip|snappy|lz4|<br>|—:|—-:|—:|——-:|—:|<br>|Average Compression Rate|100%|19.21%|78.19%|31.37%|</p>
-<p><img src="/images/kafka_tests/compression_rate.png" alt="compression_rate"></p>
-<h3 id="Throughput">Throughput</h3>
-<p>When I enabled the compression, the througput decreased. Let’s see the result.</p>
-<p>|-|none|gzip|snappy|lz4|<br>|——:|—-:|—:|——-:|—:|<br>|Average Throughput|151901.1038|39346.00017|119707.5266|191469.8994|</p>
-<p><img src="/images/kafka_tests/compression_throughput.png" alt="compression_throughput"></p>
-<h3 id="Latency">Latency</h3>
-<p>Result:</p>
-<p>|-|none|gzip|snappy|lz4|<br>|——:|—-:|——-:|—:|—:|<br>|Average Latency ms|0.25|4.97|0.41|0.66|<br>|Ration|100.00%|1937.61%|159.99%|258.62%|</p>
-<p><img src="/images/kafka_tests/compression_latency.png" alt="compression_latency"></p>
-<h1 id="Consumer_Performance_with_Compression">Consumer Performance with Compression</h1>
-<p>Because <code>Kafka</code> 0.8.2.1 has not enabled the new <code>Consumer</code>, so I cannot get the detailed metrics like I have got in <code>Producer</code>. So in this test, I use the total time <code>Consumer</code> used to consumes a fixed number of messages to do the benchmark.</p>
-<p>The messages are <code>test.access.log</code> in twice size. Below is the result</p>
-<p>|-| none      |     gzip |   snappy   |lz4<br>|—:| :———— | ————:| :———: |—:|<br>|Time Cost ms| 3218    |   5374 |  5216  | 4507 |<br>|Time Cost Increase Rate|100%|167%|162.09%|140.06%|</p>
-<p><img src="/images/kafka_tests/cosumer_time_cost.png" alt="consumer_time_cose"></p>
-<p>We can see <code>lz4</code> is the fastest.</p>
-<h1 id="Conclusion-1">Conclusion</h1>
-<p><code>lz4</code> is the best choice in compression rate and both performance of <code>Producer</code> and <code>Consumer</code>. Below is the comparison of <code>lz4</code> performance and base line performance. For simplified the chart, this only shows the result with <code>batch.size</code> of 5000.</p>
-<p><img src="/images/kafka_tests/overview.png" alt="overview"></p>
-</li>
+<li>lz4</li>
 </ul>
+<p>  Because of the box I use to test, when I use <code>lz4</code> in testing, I got OOM exception. I think the casuse of this exception is the Java code will get all lines of the <code>test.access.log</code> and send to <code>Kafka</code> in a very short time. So I used <code>batch.size</code> of 2000, 2500, 3000, 3500, 4000, 4500 and 5000. Using big <code>batch.size</code> will increass the latency and this will give JVM some time to do the GC jobs.</p>
+<p>  Below is the result</p>
+<h3 id="Compression_Rate">Compression Rate</h3>
+<p>  The value is better when it is smaller.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">-</th>
+<th style="text-align:center">none</th>
+<th style="text-align:center">gzip</th>
+<th style="text-align:center">snappy</th>
+<th style="text-align:center">lz4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">AverageCompressionRate</td>
+<td style="text-align:center">100%</td>
+<td style="text-align:center">19.21%</td>
+<td style="text-align:center">78.19%</td>
+<td style="text-align:center">31.37%</td>
+</tr>
+</tbody>
+</table>
+<p>  <img src="/images/kafka_tests/compression_rate.png" alt="compression_rate"></p>
+<h3 id="Throughput">Throughput</h3>
+<p>  When I enabled the compression, the througput decreased. Let’s see the result.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">-</th>
+<th style="text-align:right">none</th>
+<th style="text-align:right">gzip</th>
+<th style="text-align:right">snappy</th>
+<th style="text-align:right">lz4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">Average Throughput</td>
+<td style="text-align:right">151901.1038</td>
+<td style="text-align:right">39346.00017</td>
+<td style="text-align:right">119707.5266</td>
+<td style="text-align:right">191469.8994</td>
+</tr>
+</tbody>
+</table>
+<p>  <img src="/images/kafka_tests/compression_throughput.png" alt="compression_throughput"></p>
+<h3 id="Latency">Latency</h3>
+<p>  Result:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">-</th>
+<th style="text-align:right">none</th>
+<th style="text-align:right">gzip</th>
+<th style="text-align:right">snappy</th>
+<th style="text-align:right">lz4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">Average Latency ms</td>
+<td style="text-align:right">0.25</td>
+<td style="text-align:right">4.97</td>
+<td style="text-align:right">0.41</td>
+<td style="text-align:right">0.66</td>
+</tr>
+<tr>
+<td style="text-align:right">Ration</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">1937.61%</td>
+<td style="text-align:right">159.99%</td>
+<td style="text-align:right">258.62%</td>
+</tr>
+</tbody>
+</table>
+<p>  <img src="/images/kafka_tests/compression_latency.png" alt="compression_latency"></p>
+<h1 id="Consumer_Performance_with_Compression">Consumer Performance with Compression</h1>
+<p>  Because <code>Kafka</code> 0.8.2.1 has not enabled the new <code>Consumer</code>, so I cannot get the detailed metrics like I have got in <code>Producer</code>. So in this test, I use the total time <code>Consumer</code> used to consumes a fixed number of messages to do the benchmark.</p>
+<p>  The messages are <code>test.access.log</code> in twice size. Below is the result</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">-</th>
+<th style="text-align:left">none</th>
+<th style="text-align:right">gzip</th>
+<th style="text-align:center">snappy</th>
+<th style="text-align:right">lz4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Time Cost ms</td>
+<td style="text-align:left">3218</td>
+<td style="text-align:right">5374</td>
+<td style="text-align:center">5216</td>
+<td style="text-align:right">4507</td>
+</tr>
+<tr>
+<td style="text-align:center">Time Cost Increase Rate</td>
+<td style="text-align:left">100%</td>
+<td style="text-align:right">167%</td>
+<td style="text-align:center">162.09%</td>
+<td style="text-align:right">140.06%</td>
+</tr>
+</tbody>
+</table>
+<p>  <img src="/images/kafka_tests/cosumer_time_cost.png" alt="consumer_time_cose"></p>
+<p>  We can see <code>lz4</code> is the fastest.</p>
+<h1 id="Conclusion-1">Conclusion</h1>
+<p>  <code>lz4</code> is the best choice in compression rate and both performance of <code>Producer</code> and <code>Consumer</code>. Below is the comparison of <code>lz4</code> performance and base line performance. For simplified the chart, this only shows the result with <code>batch.size</code> of 5000.</p>
+<p>  <img src="/images/kafka_tests/overview.png" alt="overview"></p>
 
         
 
@@ -312,6 +402,14 @@
 
     
       <div class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/Kafka/">
+                #Kafka
+              </a>
+            
+          </div>
         
 
         
@@ -373,7 +471,7 @@
           <span class="site-state-item-name">posts</span>
         </div>
         <div class="site-state-item site-state-tags">
-            <span class="site-state-item-count">8</span>
+            <span class="site-state-item-count">9</span>
             <span class="site-state-item-name">tags</span>
         </div>
         <div class="site-state-item site-state-pages">
