@@ -291,11 +291,12 @@
 <p>The value is better when it is smaller<br>|-|none|gzip|snappy|lz4|<br>|—:|—-:|—:|——-:|—:|<br>|Average Compression Rate|100%|19.21%|78.19%|31.37%|</p>
 <p><img src="/images/kafka_tests/compression_rate.png" alt="compression_rate"></p>
 <h3 id="Throughput">Throughput</h3>
-<p>启用压缩以后，吞吐量有显著的下降，其中<code>gzip</code>下降最为严重，只有不压缩情况下的7.90%，<code>snappy</code>吞吐是不压缩的34.26%，<code>lz4</code>吞吐是不压缩的58.36%。下表平均值的单位是每秒发送的消息，值越大越好。<br>|项目|none|gzip|snappy|lz4|<br>|——:|—-:|—:|——-:|—:|<br>|平均值|151901.1038|39346.00017|119707.5266|191469.8994|</p>
+<p>When I enabled the compression, the througput decreased. Let’s see the result.</p>
+<p>|-|none|gzip|snappy|lz4|<br>|——:|—-:|—:|——-:|—:|<br>|Average Throughput|151901.1038|39346.00017|119707.5266|191469.8994|</p>
 <p><img src="/images/kafka_tests/compression_throughput.png" alt="compression_throughput"></p>
-<h3 id="延迟">延迟</h3>
-<p>下表平均值的单位是毫秒ms，值越小越好</p>
-<p>|项目|none|gzip|snappy|lz4|<br>|——:|—-:|——-:|—:|—:|<br>|平均值|0.25|4.97|0.41|0.66|<br>|相比不压缩|100.00%|1937.61%|159.99%|258.62%|</p>
+<h3 id="Latency">Latency</h3>
+<p>Result:</p>
+<p>|-|none|gzip|snappy|lz4|<br>|——:|—-:|——-:|—:|—:|<br>|Average Latency ms|0.25|4.97|0.41|0.66|<br>|Ration|100.00%|1937.61%|159.99%|258.62%|</p>
 <p><img src="/images/kafka_tests/compression_latency.png" alt="compression_latency"></p>
 <h1 id="Consumer_Performance_with_Compression">Consumer Performance with Compression</h1>
 <p>Because <code>Kafka</code> 0.8.2.1 has not enabled the new <code>Consumer</code>, so I cannot get the detailed metrics like I have got in <code>Producer</code>. So in this test, I use the total time <code>Consumer</code> used to consumes a fixed number of messages to do the benchmark.</p>
