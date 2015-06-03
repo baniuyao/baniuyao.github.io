@@ -35,7 +35,7 @@
   </script>
 
 
-  <title> Zabbix install issue with aclocal-1.14 is missing // Baniu Blog </title>
+  <title> Enable CORS in bottle.py // Baniu Blog </title>
 </head>
 
 <body>
@@ -114,7 +114,7 @@
           
           
             
-              Zabbix install issue with aclocal-1.14 is missing
+              Enable CORS in bottle.py
             
           
         </h1>
@@ -123,15 +123,15 @@
       <div class="post-meta">
           <span class="post-time">
             
-              Posted on 2015-02-27
+              Posted on 2015-06-03
             
           </span>
         
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/#comments" >
-              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/"></span>
+            <a href="/2015/06/03/Enable-CORS-in-bottle-py/#comments" >
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/06/03/Enable-CORS-in-bottle-py/"></span>
             </a>
           </span>
           
@@ -146,22 +146,8 @@
         
 
         
-          <h2 id="Backgroud">Backgroud</h2>
-<p><code>configure</code> is okay, the next step is <code>make install</code>. But <code>make install</code> exist with error which said it cannot find <code>aclocal-1.14</code> like below:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[baniuyao@YaoRenjies-CentOS zabbix-<span class="number">2.4</span>.<span class="number">4</span>]$ <span class="built_in">sudo</span> make install</div><div class="line">CDPATH=<span class="string">"<span class="variable">${ZSH_VERSION+.}</span>:"</span> && <span class="built_in">cd</span> . && /bin/sh /home/baniuyao/apps/zabbix-<span class="number">2.4</span>.<span class="number">4</span>/missing aclocal-<span class="number">1.14</span> -I m4</div><div class="line">/home/baniuyao/apps/zabbix-<span class="number">2.4</span>.<span class="number">4</span>/missing: line <span class="number">81</span>: aclocal-<span class="number">1.14</span>: command not found</div><div class="line">WARNING: <span class="string">'aclocal-1.14'</span> is missing on your system.</div><div class="line">         You should only need it <span class="keyword">if</span> you modified <span class="string">'acinclude.m4'</span> or</div><div class="line">         <span class="string">'configure.ac'</span> or m4 files included by <span class="string">'configure.ac'</span>.</div><div class="line">         The <span class="string">'aclocal'</span> program is part of the GNU Automake package:</div><div class="line">         &lt;http://www.gnu.org/software/automake&gt;</div><div class="line">         It also requires GNU Autoconf, GNU m4 and Perl <span class="keyword">in</span> order to run:</div><div class="line">         &lt;http://www.gnu.org/software/autoconf&gt;</div><div class="line">         &lt;http://www.gnu.org/software/m4/&gt;</div><div class="line">         &lt;http://www.perl.org/&gt;</div><div class="line">make: *** [aclocal.m4] Error <span class="number">127</span></div></pre></td></tr></table></figure>
-
-<p>But the system has <code>aclocal-1.14</code> already:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[baniuyao@YaoRenjies-CentOS ~]$ which aclocal-<span class="number">1.14</span></div><div class="line">/usr/local/bin/aclocal-<span class="number">1.14</span></div></pre></td></tr></table></figure>
-
-<h2 id="Solution">Solution</h2>
-<p>This is because we don’t have some autoconf(*.ac) and automake(*.am) files. We can <code>touch</code> these.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">touch configure.ac aclocal.m4 configure Makefile.am Makefile.in</div></pre></td></tr></table></figure>
-
-<p>Or we can use <code>autoreconf</code> to generate.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> autoreconf -ivf</div></pre></td></tr></table></figure>
-
-<p>Let’s figure out what <code>ivf</code> means.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">-v, --verbose            verbosely report processing</div><div class="line"><span class="operator">-f</span>, --force              consider all files obsolete</div><div class="line">-i, --install            copy missing auxiliary files</div></pre></td></tr></table></figure>
+          <h1 id="Solution">Solution</h1>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> Bottle, request, response, run</div><div class="line">app = Bottle()</div><div class="line"> </div><div class="line"><span class="decorator">@app.hook('after_request')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">enable_cors</span><span class="params">()</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    You need to add some headers to each request.</div><div class="line">    Don't use the wildcard '*' for Access-Control-Allow-Origin in production.</div><div class="line">    """</div><div class="line">    response.headers[<span class="string">'Access-Control-Allow-Origin'</span>] = <span class="string">'*'</span></div><div class="line">    response.headers[<span class="string">'Access-Control-Allow-Methods'</span>] = <span class="string">'PUT, GET, POST, DELETE, OPTIONS'</span></div><div class="line">    response.headers[<span class="string">'Access-Control-Allow-Headers'</span>] = <span class="string">'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'</span></div></pre></td></tr></table></figure>
 
 
         
@@ -174,12 +160,12 @@
         
           <div class="post-tags">
             
-              <a href="/tags/zabbix/">
-                #zabbix
+              <a href="/tags/python/">
+                #python
               </a>
             
-              <a href="/tags/linux/">
-                #linux
+              <a href="/tags/bottle-py/">
+                #bottle.py
               </a>
             
           </div>
@@ -273,7 +259,7 @@
 
     
       <div class="post-toc sidebar-panel-active">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Backgroud"><span class="nav-number">1.</span> <span class="nav-text">Backgroud</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Solution"><span class="nav-number">2.</span> <span class="nav-text">Solution</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Solution"><span class="nav-number">1.</span> <span class="nav-text">Solution</span></a></li></ol>
       </div>
     
   </div>
@@ -732,8 +718,8 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'baniuyao';
-      var disqus_identifier = '2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/';
-      var disqus_url = 'http://yoursite.com/2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/';
+      var disqus_identifier = '2015/06/03/Enable-CORS-in-bottle-py/';
+      var disqus_url = 'http://yoursite.com/2015/06/03/Enable-CORS-in-bottle-py/';
 
       (function(){
         var dsq = document.createElement('script');

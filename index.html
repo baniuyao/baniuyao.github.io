@@ -117,6 +117,87 @@
           
           
             
+              <a class="post-title-link" href="/2015/06/03/Enable-CORS-in-bottle-py/">
+                Enable CORS in bottle.py
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+          <span class="post-time">
+            
+              Posted on 2015-06-03
+            
+          </span>
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/06/03/Enable-CORS-in-bottle-py/#comments" >
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/06/03/Enable-CORS-in-bottle-py/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    
+      <div class="post-body">
+
+        
+        
+
+        
+          <h1 id="Solution">Solution</h1>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> Bottle, request, response, run</div><div class="line">app = Bottle()</div><div class="line"> </div><div class="line"><span class="decorator">@app.hook('after_request')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">enable_cors</span><span class="params">()</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    You need to add some headers to each request.</div><div class="line">    Don't use the wildcard '*' for Access-Control-Allow-Origin in production.</div><div class="line">    """</div><div class="line">    response.headers[<span class="string">'Access-Control-Allow-Origin'</span>] = <span class="string">'*'</span></div><div class="line">    response.headers[<span class="string">'Access-Control-Allow-Methods'</span>] = <span class="string">'PUT, GET, POST, DELETE, OPTIONS'</span></div><div class="line">    response.headers[<span class="string">'Access-Control-Allow-Headers'</span>] = <span class="string">'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'</span></div></pre></td></tr></table></figure>
+
+
+        
+
+      </div>
+    
+
+    
+      <div class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">
+                #python
+              </a>
+            
+              <a href="/tags/bottle-py/">
+                #bottle.py
+              </a>
+            
+          </div>
+        
+
+        
+
+        
+          <div class="post-eof the-shape"></div>
+        
+      </div>
+    
+  </div>
+
+
+  
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/03/27/Kafka-Compression-Performance-Test/">
                 Kafka Compression Performance Test
               </a>
@@ -769,11 +850,11 @@
       <p class="site-description motion-element"></p>
       <div class="site-state motion-element">
         <div class="site-state-item site-state-posts">
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">posts</span>
         </div>
         <div class="site-state-item site-state-tags">
-            <span class="site-state-item-count">9</span>
+            <span class="site-state-item-count">13</span>
             <span class="site-state-item-name">tags</span>
         </div>
         <div class="site-state-item site-state-pages">
