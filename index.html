@@ -177,12 +177,12 @@
 <h1 id="bisect">bisect</h1>
 <p><code>bisect</code> is used to insert element into an sorted list and keep the list sorted. <code>bisect</code> module have six methods:</p>
 <ol>
-<li>bisect</li>
-<li>bisect_left</li>
-<li>bisect_right</li>
-<li>insort</li>
-<li>insort_left</li>
-<li>insort_right</li>
+<li><code>bisect</code></li>
+<li><code>bisect_left</code></li>
+<li><code>bisect_right</code></li>
+<li><code>insort</code></li>
+<li><code>insort_left</code></li>
+<li><code>insort_right</code></li>
 </ol>
 <p>Methods start with <code>bisect</code> will return the index of the element you need to insert. Those start with <code>insort</code> will make change into list directly and return nothing. The difference between <code>left</code> and <code>right</code> will affect the result of operation only when the element you want to insert does exist in the list and <code>left</code> will return the index left of this existed-element and <code>right</code> return the right position. Please remark that <code>bisect</code> is the same as <code>bisect_right</code> and <code>insort</code> is the same as <code>insort_right</code>. Let’s see some examples.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sorted_list = [<span class="number">1</span>, <span class="number">10</span>, <span class="number">100</span>, <span class="number">1000</span>]</div><div class="line">bisect(sorted_list, <span class="number">20</span>) <span class="comment"># return 2</span></div><div class="line">bisect(sorted_list, <span class="number">10</span>) <span class="comment"># return 2</span></div><div class="line">bisect_left(sorted_list, <span class="number">10</span>) <span class="comment"># return 1</span></div><div class="line">bisect_right(sorted_list, <span class="number">10</span>) <span class="comment"># return 1</span></div></pre></td></tr></table></figure>
