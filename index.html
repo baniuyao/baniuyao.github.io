@@ -117,6 +117,116 @@
           
           
             
+              <a class="post-title-link" href="/2015/08/27/advanced-python-data-structure/">
+                Advanced Python Data Structure
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+          <span class="post-time">
+            
+              Posted on 2015-08-27
+            
+          </span>
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/08/27/advanced-python-data-structure/#comments" >
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/08/27/advanced-python-data-structure/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    
+      <div class="post-body">
+
+        
+        
+
+        
+          <h1 id="Colletions">Colletions</h1>
+<p><code>Collections</code> is a very useful data structure colletion in Python. In this post, I will introduct</p>
+<h2 id="collections-Couter()">collections.Couter()</h2>
+<p><code>Counter</code> is used to count something of iterable data structure such as list and tuple. Let’s see example below:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</div><div class="line">name_list = [<span class="string">'frank'</span>, <span class="string">'frank'</span>, <span class="string">'tony'</span>, <span class="string">'jack'</span>, <span class="string">'judy'</span>, <span class="string">'jack'</span>, <span class="string">'jack'</span>]</div><div class="line">name_counter = Counter(name_list) </div><div class="line"><span class="keyword">print</span> counter <span class="comment"># print couter of name_list</span></div><div class="line"><span class="comment"># Counter({'jack': 3, 'frank': 2, 'tony': 1, 'judy': 1})</span></div><div class="line"><span class="keyword">print</span> counter.most_common(<span class="number">1</span>) <span class="comment"># print top 1 count</span></div><div class="line"><span class="comment"># [('jack', 3)]</span></div><div class="line"><span class="keyword">print</span> counter.most_common(<span class="number">2</span>) <span class="comment"># print top 2 count</span></div><div class="line"><span class="comment"># [('jack', 3), ('frank', 2)]</span></div></pre></td></tr></table></figure>
+
+<p>Now I am going to update a Counter:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</div><div class="line">name_list_one = [<span class="string">'frank'</span>, <span class="string">'frank'</span>, <span class="string">'tony'</span>]</div><div class="line">name_counter = Counter(name_list_one)</div><div class="line"><span class="comment"># name_counter: Counter({'frank': 2, 'tony': 1})</span></div><div class="line">name_list_two = [<span class="string">'tony'</span>, <span class="string">'jack'</span>]</div><div class="line">name_counter.update(name_list_two)</div><div class="line"><span class="comment"># name_counter: Counter({'tony': 2, 'frank': 2, 'jack': 1})</span></div><div class="line">name_counter.subtract([<span class="string">'frank'</span>]) <span class="comment"># subtract is the reverse operation of update</span></div><div class="line"><span class="comment"># name_counter: Counter({'tony': 2, 'frank': 1, 'jack': 1})</span></div><div class="line">name_counter.subtract([<span class="string">'jack'</span>, <span class="string">'jack'</span>]) <span class="comment"># value can be zero and negative counts</span></div><div class="line"><span class="comment"># name_counter: Counter({'tony': 2, 'frank': 1, 'jack': -1})</span></div></pre></td></tr></table></figure>
+
+<h2 id="collections-defaultdict()">collections.defaultdict()</h2>
+<p><code>defaultdict</code> is almost the same as <code>dict</code> which can be assigned by this statement:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">d = {<span class="string">'name'</span>: <span class="string">'frank'</span>}</div></pre></td></tr></table></figure>
+
+<p><code>defaultdict</code> provides a function which will be invoked when we use a non-exists key to access the value in the <code>defaultdict</code>. When we want to get the value by a key which does not exist in the dict, <code>dict</code> will raise a <code>KeyError</code> Exception. We can use <code>d.get(KEY, DEFAULT_VALUE)</code> to define the value we will get if the key does not exist. It is okay but not an easy work-around. For example, I have a dict named <code>writer_book_dict</code> and its key is writers’ name and value is books’ name. When I get the value by a non-exist writer, it should return ‘NO BOOKS’. Let’s see how we can deal it with <code>dict</code> and <code>defaultdict</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">writer_book_dict = {<span class="string">'frank'</span>: <span class="string">'book_1'</span>, <span class="string">'tony'</span>: <span class="string">'book_2'</span>}</div><div class="line">book_by_jack = writer_book_dict.get(<span class="string">'jack'</span>, <span class="string">'NO BOOKS'</span>)</div><div class="line">book_by_jack = writer_book_dict.get(<span class="string">'judy'</span>, <span class="string">'NO BOOKS'</span>)</div><div class="line"></div><div class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</div><div class="line">writer_book_defaultdict = default(lamda: <span class="string">'NO BOOKS'</span>)</div><div class="line">writer_book_defaultdict.get(<span class="string">'jack'</span>) <span class="comment"># return 'NO BOOKS'</span></div></pre></td></tr></table></figure>
+
+<p>We can use a complex function in initialize the defaultdict. Furthermore, we can also define the data structure of the value in the <code>defaultdict</code>. Let’s see an example, we need to make a classification of a short paragraph by the first letter of each world. It is to say, ‘I am a student and I like sports’ -&gt; <code>{&#39;a&#39;: [&#39;am&#39;, &#39;a&#39;, &#39;and&#39;], &#39;i&#39;: [&#39;it&#39;, &#39;is&#39;, &#39;i&#39;], &#39;l&#39;: [&#39;like&#39;], &#39;s&#39;: [&#39;student&#39;, &#39;sports&#39;]}</code>. If we use <code>default</code> we must judge if the key exists and if it does not exist, we need to initialize with an empty list like below:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">paragraph = <span class="string">'I am a student and I like sports'</span></div><div class="line">word_dict = {}</div><div class="line"><span class="keyword">for</span> word <span class="keyword">in</span> paragraph:</div><div class="line">    first_letter = word[<span class="number">0</span>]</div><div class="line">    <span class="keyword">if</span> word <span class="keyword">not</span> <span class="keyword">in</span> word_dict:</div><div class="line">        word_dict[first_letter] = [word]</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        word_dict[first_letter].append(word)</div></pre></td></tr></table></figure>
+
+<p>Let’s see how <code>defaultdict</code> works:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</div><div class="line">paragraph = <span class="string">'I am a student and I like sports'</span></div><div class="line">word_defaultdict = defaultdict(list)</div><div class="line"><span class="keyword">for</span> word <span class="keyword">in</span> paragraph:</div><div class="line">    word_defaultdict[word[<span class="number">0</span>]].append(word)</div></pre></td></tr></table></figure>
+
+<p>If we want to <code>uniq</code> the element of <code>word_defaultdict</code>, we can simply initialize <code>word_defaultdict</code> by <code>defaultdict(set)</code>.</p>
+<h2 id="bisect">bisect</h2>
+<p><code>bisect</code> is used to insert element into an sorted list and keep the list sorted. <code>bisect</code> module have six methods:</p>
+<ol>
+<li>bisect</li>
+<li>bisect_left</li>
+<li>bisect_right</li>
+<li>insort</li>
+<li>insort_left</li>
+<li>insort_right</li>
+</ol>
+<p>Methods start with <code>bisect</code> will return the index of the element you need to insert. Those start with <code>insort</code> will make change into list directly and return nothing. The difference between <code>left</code> and <code>right</code> will affect the result of operation only when the element you want to insert does exist in the list and <code>left</code> will return the index left of this existed-element and <code>right</code> return the right position. Please remark that <code>bisect</code> is the same as <code>bisect_right</code> and <code>insort</code> is the same as <code>insort_right</code>. Let’s see some examples.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sorted_list = [<span class="number">1</span>, <span class="number">10</span>, <span class="number">100</span>, <span class="number">1000</span>]</div><div class="line">bisect(sorted_list, <span class="number">20</span>) <span class="comment"># return 2</span></div><div class="line">bisect(sorted_list, <span class="number">10</span>) <span class="comment"># return 2</span></div><div class="line">bisect_left(sorted_list, <span class="number">10</span>) <span class="comment"># return 1</span></div><div class="line">bisect_right(sorted_list, <span class="number">10</span>) <span class="comment"># return 1</span></div></pre></td></tr></table></figure>
+
+
+        
+
+      </div>
+    
+
+    
+      <div class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">
+                #python
+              </a>
+            
+          </div>
+        
+
+        
+
+        
+          <div class="post-eof the-shape"></div>
+        
+      </div>
+    
+  </div>
+
+
+  
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/06/03/Enable-CORS-in-bottle-py/">
                 Enable CORS in bottle.py
               </a>
@@ -850,7 +960,7 @@
       <p class="site-description motion-element"></p>
       <div class="site-state motion-element">
         <div class="site-state-item site-state-posts">
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">posts</span>
         </div>
         <div class="site-state-item site-state-tags">
