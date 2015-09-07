@@ -1,197 +1,26 @@
-<!doctype html>
-<html class="theme-next use-motion ">
-<head>
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[Renjie Yao's Blog]]></title>
   
-
-<meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
-
-
-
-  <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-
-
-<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1"/>
-
-
-
-
-  <meta name="keywords" content="Hexo,next" />
-
-
-
-  <link rel="alternate" href="/atom.xml" title="Renjie Yao's Blog" type="application/atom+xml" />
-
-
-
-  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
-
-
-<meta name="description">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Renjie Yao's Blog">
-<meta property="og:url" content="http://blog.yaorenjie.com/index.html">
-<meta property="og:site_name" content="Renjie Yao's Blog">
-<meta property="og:description">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Renjie Yao's Blog">
-<meta name="twitter:description">
-
-
-<script type="text/javascript" id="hexo.configuration">
-  var CONFIG = {
-    scheme: '',
-    sidebar: 'post'
-  };
-</script>
-
-  <title> Renjie Yao's Blog </title>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="en">
-
-  <!--[if lte IE 8]>
-  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
-    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
-      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
-           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
-           style='margin-left:auto;margin-right:auto;display: block;'/>
-    </a>
-  </div>
-<![endif]-->
+  <link href="/atom.xml" rel="self"/>
+  <link href="http://blog.yaorenjie.com/"/>
+  <updated>2015-09-07T09:12:04.000Z</updated>
+  <id>http://blog.yaorenjie.com/</id>
   
-
-
-
-  <div class="container one-column 
-   page-home 
-">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><h1 class="site-meta">
-  <span class="logo-line-before"><i></i></span>
-  <a href="/" class="brand" rel="start">
-      <span class="logo">
-        <i class="icon-next-logo"></i>
-      </span>
-      <span class="site-title">Renjie Yao's Blog</span>
-  </a>
-  <span class="logo-line-after"><i></i></span>
-</h1>
-
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu ">
-      
-        
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            <i class="menu-item-icon icon-next-home"></i> <br />
-            Home
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives" rel="section">
-            <i class="menu-item-icon icon-next-archives"></i> <br />
-            Archives
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags" rel="section">
-            <i class="menu-item-icon icon-next-tags"></i> <br />
-            Tags
-          </a>
-        </li>
-      
-
-      
-      
-    </ul>
-  
-
-  
-</nav>
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div id="content" class="content"> 
-  <section id="posts" class="posts-expand">
+  <author>
+    <name><![CDATA[Renjie Yao]]></name>
     
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/08/27/Advanced-Python-Data-Structure/" itemprop="url">
-                Advanced Python Data Structure
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          Posted on
-          <time itemprop="dateCreated" datetime="2015-08-27T15:13:37+08:00" content="2015-08-27">
-            2015-08-27
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h1 id="Colletions">Colletions</h1><p><code>Collections</code> is a very useful data structure colletion in Python. In this post, I will introduct</p>
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Advanced Python Data Structure]]></title>
+    <link href="http://blog.yaorenjie.com/2015/08/27/Advanced-Python-Data-Structure/"/>
+    <id>http://blog.yaorenjie.com/2015/08/27/Advanced-Python-Data-Structure/</id>
+    <published>2015-08-27T07:13:37.000Z</published>
+    <updated>2015-09-07T09:12:04.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Colletions">Colletions</h1><p><code>Collections</code> is a very useful data structure colletion in Python. In this post, I will introduct</p>
 <h2 id="collections-Couter()">collections.Couter()</h2><p><code>Counter</code> is used to count something of iterable data structure such as list and tuple. Let’s see example below:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line">name_list = [<span class="string">'frank'</span>, <span class="string">'frank'</span>, <span class="string">'tony'</span>, <span class="string">'jack'</span>, <span class="string">'judy'</span>, <span class="string">'jack'</span>, <span class="string">'jack'</span>]</span><br><span class="line">name_counter = Counter(name_list) </span><br><span class="line"><span class="keyword">print</span> counter <span class="comment"># print couter of name_list</span></span><br><span class="line"><span class="comment"># Counter(&#123;'jack': 3, 'frank': 2, 'tony': 1, 'judy': 1&#125;)</span></span><br><span class="line"><span class="keyword">print</span> counter.most_common(<span class="number">1</span>) <span class="comment"># print top 1 count</span></span><br><span class="line"><span class="comment"># [('jack', 3)]</span></span><br><span class="line"><span class="keyword">print</span> counter.most_common(<span class="number">2</span>) <span class="comment"># print top 2 count</span></span><br><span class="line"><span class="comment"># [('jack', 3), ('frank', 2)]</span></span><br></pre></td></tr></table></figure></p>
 <p>Now I am going to update a Counter:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line">name_list_one = [<span class="string">'frank'</span>, <span class="string">'frank'</span>, <span class="string">'tony'</span>]</span><br><span class="line">name_counter = Counter(name_list_one)</span><br><span class="line"><span class="comment"># name_counter: Counter(&#123;'frank': 2, 'tony': 1&#125;)</span></span><br><span class="line">name_list_two = [<span class="string">'tony'</span>, <span class="string">'jack'</span>]</span><br><span class="line">name_counter.update(name_list_two)</span><br><span class="line"><span class="comment"># name_counter: Counter(&#123;'tony': 2, 'frank': 2, 'jack': 1&#125;)</span></span><br><span class="line">name_counter.subtract([<span class="string">'frank'</span>]) <span class="comment"># subtract is the reverse operation of update</span></span><br><span class="line"><span class="comment"># name_counter: Counter(&#123;'tony': 2, 'frank': 1, 'jack': 1&#125;)</span></span><br><span class="line">name_counter.subtract([<span class="string">'jack'</span>, <span class="string">'jack'</span>]) <span class="comment"># value can be zero and negative counts</span></span><br><span class="line"><span class="comment"># name_counter: Counter(&#123;'tony': 2, 'frank': 1, 'jack': -1&#125;)</span></span><br></pre></td></tr></table></figure></p>
 <h2 id="collections-defaultdict()">collections.defaultdict()</h2><p><code>defaultdict</code> is almost the same as <code>dict</code> which can be assigned by this statement:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d = &#123;<span class="string">'name'</span>: <span class="string">'frank'</span>&#125;</span><br></pre></td></tr></table></figure></p>
@@ -210,130 +39,40 @@
 <li>insort_right</li>
 </ol>
 <p>Methods start with <code>bisect</code> will return the index of the element you need to insert. Those start with <code>insort</code> will make change into list directly and return nothing. The difference between <code>left</code> and <code>right</code> will affect the result of operation only when the element you want to insert does exist in the list and <code>left</code> will return the index left of this existed-element and <code>right</code> return the right position. Please remark that <code>bisect</code> is the same as <code>bisect_right</code> and <code>insort</code> is the same as <code>insort_right</code>. Let’s see some examples.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sorted_list = [<span class="number">1</span>, <span class="number">10</span>, <span class="number">100</span>, <span class="number">1000</span>]</span><br><span class="line">bisect(sorted_list, <span class="number">20</span>) <span class="comment"># return 2</span></span><br><span class="line">bisect(sorted_list, <span class="number">10</span>) <span class="comment"># return 2</span></span><br><span class="line">bisect_left(sorted_list, <span class="number">10</span>) <span class="comment"># return 1</span></span><br><span class="line">bisect_right(sorted_list, <span class="number">10</span>) <span class="comment"># return 1</span></span><br></pre></td></tr></table></figure></p>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Colletions">Colletions</h1><p><code>Collections</code> is a very useful data structure colletion in Python. In this post, I will int]]>
+    </summary>
     
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/06/03/Enable-CORS-in-bottle-py/" itemprop="url">
-                Enable CORS in bottle.py
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          Posted on
-          <time itemprop="dateCreated" datetime="2015-06-03T10:22:27+08:00" content="2015-06-03">
-            2015-06-03
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h1 id="Solution">Solution</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> Bottle, request, response, run</span><br><span class="line">app = Bottle()</span><br><span class="line"> </span><br><span class="line"><span class="decorator">@app.hook('after_request')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">enable_cors</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span><br><span class="line">    You need to add some headers to each request.</span><br><span class="line">    Don't use the wildcard '*' for Access-Control-Allow-Origin in production.</span><br><span class="line">    """</span></span><br><span class="line">    response.headers[<span class="string">'Access-Control-Allow-Origin'</span>] = <span class="string">'*'</span></span><br><span class="line">    response.headers[<span class="string">'Access-Control-Allow-Methods'</span>] = <span class="string">'PUT, GET, POST, DELETE, OPTIONS'</span></span><br><span class="line">    response.headers[<span class="string">'Access-Control-Allow-Headers'</span>] = <span class="string">'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'</span></span><br></pre></td></tr></table></figure>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
+      <category term="python" scheme="http://blog.yaorenjie.com/tags/python/"/>
     
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/03/27/Kafka-Compression-Performance-Tests/" itemprop="url">
-                Kafka Compression Performance Tests
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          Posted on
-          <time itemprop="dateCreated" datetime="2015-03-27T14:01:05+08:00" content="2015-03-27">
-            2015-03-27
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h1 id="Kafka_Compression_Performance_Tests">Kafka Compression Performance Tests</h1><h2 id="Backgroud">Backgroud</h2><p><code>Kafka</code> use <code>End-to-End</code> compression model which means that <code>Producer</code> and <code>Consumer</code> are doing the compression and de-compression jobs. This feature enables the reduction of on-the-fly network costs and the <code>Broker</code> will increase its cpu load.</p>
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Enable CORS in bottle.py]]></title>
+    <link href="http://blog.yaorenjie.com/2015/06/03/Enable-CORS-in-bottle-py/"/>
+    <id>http://blog.yaorenjie.com/2015/06/03/Enable-CORS-in-bottle-py/</id>
+    <published>2015-06-03T02:22:27.000Z</published>
+    <updated>2015-09-07T09:10:36.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Solution">Solution</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> Bottle, request, response, run</span><br><span class="line">app = Bottle()</span><br><span class="line"> </span><br><span class="line"><span class="decorator">@app.hook('after_request')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">enable_cors</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span><br><span class="line">    You need to add some headers to each request.</span><br><span class="line">    Don't use the wildcard '*' for Access-Control-Allow-Origin in production.</span><br><span class="line">    """</span></span><br><span class="line">    response.headers[<span class="string">'Access-Control-Allow-Origin'</span>] = <span class="string">'*'</span></span><br><span class="line">    response.headers[<span class="string">'Access-Control-Allow-Methods'</span>] = <span class="string">'PUT, GET, POST, DELETE, OPTIONS'</span></span><br><span class="line">    response.headers[<span class="string">'Access-Control-Allow-Headers'</span>] = <span class="string">'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'</span></span><br></pre></td></tr></table></figure>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Solution">Solution</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span clas]]>
+    </summary>
+    
+      <category term="bottle" scheme="http://blog.yaorenjie.com/tags/bottle/"/>
+    
+      <category term="python" scheme="http://blog.yaorenjie.com/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Kafka Compression Performance Tests]]></title>
+    <link href="http://blog.yaorenjie.com/2015/03/27/Kafka-Compression-Performance-Tests/"/>
+    <id>http://blog.yaorenjie.com/2015/03/27/Kafka-Compression-Performance-Tests/</id>
+    <published>2015-03-27T06:01:05.000Z</published>
+    <updated>2015-09-07T09:18:03.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Kafka_Compression_Performance_Tests">Kafka Compression Performance Tests</h1><h2 id="Backgroud">Backgroud</h2><p><code>Kafka</code> use <code>End-to-End</code> compression model which means that <code>Producer</code> and <code>Consumer</code> are doing the compression and de-compression jobs. This feature enables the reduction of on-the-fly network costs and the <code>Broker</code> will increase its cpu load.</p>
 <h2 id="Environment">Environment</h2><h3 id="Hardware_Box">Hardware Box</h3><table>
 <thead>
 <tr>
@@ -540,68 +279,22 @@
 <p>We can see <code>lz4</code> is the fastest.</p>
 <h1 id="Conclusion-1">Conclusion</h1><p><code>lz4</code> is the best choice in compression rate and both performance of <code>Producer</code> and <code>Consumer</code>. Below is the comparison of <code>lz4</code> performance and base line performance. For simplified the chart, this only shows the result with <code>batch.size</code> of 5000.</p>
 <p><img src="/images/overview.png" alt="Alt text"></p>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Kafka_Compression_Performance_Tests">Kafka Compression Performance Tests</h1><h2 id="Backgroud">Backgroud</h2><p><code>Kafka</code> ]]>
+    </summary>
     
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/03/04/The-Analysis-of-Zabbix-history-and-trends-Storing/" itemprop="url">
-                The Analysis of Zabbix history and trends Storing
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          Posted on
-          <time itemprop="dateCreated" datetime="2015-03-04T09:41:25+08:00" content="2015-03-04">
-            2015-03-04
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h1 id="Intro">Intro</h1><p><code>history</code> and <code>trends</code> are two main tables in Zabbix database for storing data. There are also tables inherits <code>history</code> which are used to store different types of data. For example, table <code>history_uint</code> is to store uint data. Others are <code>history_str</code>, <code>history_log</code> and <code>history_text</code>. Please pay attention that there is only one table inherits table <code>trends</code> and its name is <code>table_uint</code>.</p>
+      <category term="kafka" scheme="http://blog.yaorenjie.com/tags/kafka/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[The Analysis of Zabbix history and trends Storing]]></title>
+    <link href="http://blog.yaorenjie.com/2015/03/04/The-Analysis-of-Zabbix-history-and-trends-Storing/"/>
+    <id>http://blog.yaorenjie.com/2015/03/04/The-Analysis-of-Zabbix-history-and-trends-Storing/</id>
+    <published>2015-03-04T01:41:25.000Z</published>
+    <updated>2015-09-07T09:10:54.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Intro">Intro</h1><p><code>history</code> and <code>trends</code> are two main tables in Zabbix database for storing data. There are also tables inherits <code>history</code> which are used to store different types of data. For example, table <code>history_uint</code> is to store uint data. Others are <code>history_str</code>, <code>history_log</code> and <code>history_text</code>. Please pay attention that there is only one table inherits table <code>trends</code> and its name is <code>table_uint</code>.</p>
 <h1 id="Entrance">Entrance</h1><p>The start of the whole process is in function <code>DCsync_all()</code>, <code>src/libs/zbxdbcache/dbcache.c</code>. <code>dbcache</code> is a feature which enables Zabbix to keep data in memory first and flush to database in batch.</p>
 <p>To make it more clearly, I wrote comments inline.</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span>	<span class="title">DCsync_all</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	zabbix_log(LOG_LEVEL_DEBUG, <span class="string">"In DCsync_all()"</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// call `DCsync_history` to sync history data from cache to database</span></span><br><span class="line">	DCsync_history(ZBX_SYNC_FULL);</span><br><span class="line">	<span class="comment">// assert code is running in Zabbix Server. Zabbix Server WILL NOT run codes below</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="number">0</span> != (daemon_type &amp; ZBX_DAEMON_TYPE_SERVER))</span><br><span class="line">		<span class="comment">// sync trends data. </span></span><br><span class="line">		DCsync_trends();</span><br><span class="line">	zabbix_log(LOG_LEVEL_DEBUG, <span class="string">"End of DCsync_all()"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -620,68 +313,24 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span>	<span class="title">DCadd_trend</span><span class="params">(ZBX_DC_HISTORY *history, ZBX_DC_TREND **trends, <span class="keyword">int</span> *trends_alloc, <span class="keyword">int</span> *trends_num)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="comment">// get trend data from database by itemid</span></span><br><span class="line">	trend = DCget_trend(history-&gt;itemid);</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">switch</span> (trend-&gt;value_type)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">case</span> ITEM_VALUE_TYPE_FLOAT:</span><br><span class="line">			...</span><br><span class="line">			<span class="comment">// calculate the new data</span></span><br><span class="line">			trend-&gt;value_avg.dbl = (trend-&gt;num * trend-&gt;value_avg.dbl</span><br><span class="line">				+ history-&gt;value.dbl) / (trend-&gt;num + <span class="number">1</span>);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>Above all, I think we are clear on the fact how Zabbix update history and trends.</p>
 <p>Below is the process:<br><img src="/images/zabbix_history_trends.jps" alt="Alt text"></p>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Intro">Intro</h1><p><code>history</code> and <code>trends</code> are two main tables in Zabbix database for storing data. There are ]]>
+    </summary>
     
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/" itemprop="url">
-                Zabbix install issues with aclocal 1.14 is missing
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          Posted on
-          <time itemprop="dateCreated" datetime="2015-02-27T07:14:35+08:00" content="2015-02-27">
-            2015-02-27
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h1 id="Backgroud">Backgroud</h1><p><code>configure</code> is okay, the next step is <code>make install</code>. But <code>make install</code> exist with error which said it cannot find <code>aclocal-1.14</code> like below:</p>
+      <category term="C" scheme="http://blog.yaorenjie.com/tags/C/"/>
+    
+      <category term="Zabbix" scheme="http://blog.yaorenjie.com/tags/Zabbix/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Zabbix install issues with aclocal 1.14 is missing]]></title>
+    <link href="http://blog.yaorenjie.com/2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/"/>
+    <id>http://blog.yaorenjie.com/2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/</id>
+    <published>2015-02-26T23:14:35.000Z</published>
+    <updated>2015-09-07T09:10:24.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Backgroud">Backgroud</h1><p><code>configure</code> is okay, the next step is <code>make install</code>. But <code>make install</code> exist with error which said it cannot find <code>aclocal-1.14</code> like below:</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[baniuyao@YaoRenjies-CentOS zabbix-2.4.4]$ sudo make install&#10;CDPATH=&#34;$&#123;ZSH_VERSION+.&#125;:&#34; &#38;&#38; cd . &#38;&#38; /bin/sh /home/baniuyao/apps/zabbix-2.4.4/missing aclocal-1.14 -I m4&#10;/home/baniuyao/apps/zabbix-2.4.4/missing: line 81: aclocal-1.14: command not found&#10;WARNING: &#39;aclocal-1.14&#39; is missing on your system.&#10;         You should only need it if you modified &#39;acinclude.m4&#39; or&#10;         &#39;configure.ac&#39; or m4 files included by &#39;configure.ac&#39;.&#10;         The &#39;aclocal&#39; program is part of the GNU Automake package:&#10;         &#60;http://www.gnu.org/software/automake&#62;&#10;         It also requires GNU Autoconf, GNU m4 and Perl in order to run:&#10;         &#60;http://www.gnu.org/software/autoconf&#62;&#10;         &#60;http://www.gnu.org/software/m4/&#62;&#10;         &#60;http://www.perl.org/&#62;&#10;make: *** [aclocal.m4] Error 127</span><br></pre></td></tr></table></figure>
 <p>But the system has <code>aclocal-1.14</code> already:</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[baniuyao@YaoRenjies-CentOS ~]$ which aclocal-1.14&#10;/usr/local/bin/aclocal-1.14</span><br></pre></td></tr></table></figure>
@@ -691,68 +340,24 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo autoreconf -ivf</span><br></pre></td></tr></table></figure>
 <p>Let’s figure out what <code>-ivf</code> means.</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-v, --verbose            verbosely report processing&#10;-f, --force              consider all files obsolete&#10;-i, --install            copy missing auxiliary files</span><br></pre></td></tr></table></figure>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Backgroud">Backgroud</h1><p><code>configure</code> is okay, the next step is <code>make install</code>. But <code>make install</code]]>
+    </summary>
     
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/13/Install-Thrift-with-glibc-on-CentOS/" itemprop="url">
-                Install Thrift with glibc on CentOS
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          Posted on
-          <time itemprop="dateCreated" datetime="2015-01-13T16:08:12+08:00" content="2015-01-13">
-            2015-01-13
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h1 id="Install_glib">Install glib</h1><h2 id="Install_Development_Tools">Install Development Tools</h2><p><code>Development Tools</code> is a group of pacakges in yum such as <code>automake</code>, <code>autoconf</code> and so on.</p>
+      <category term="C" scheme="http://blog.yaorenjie.com/tags/C/"/>
+    
+      <category term="Zabbix" scheme="http://blog.yaorenjie.com/tags/Zabbix/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Install Thrift with glibc on CentOS]]></title>
+    <link href="http://blog.yaorenjie.com/2015/01/13/Install-Thrift-with-glibc-on-CentOS/"/>
+    <id>http://blog.yaorenjie.com/2015/01/13/Install-Thrift-with-glibc-on-CentOS/</id>
+    <published>2015-01-13T08:08:12.000Z</published>
+    <updated>2015-09-07T09:09:23.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Install_glib">Install glib</h1><h2 id="Install_Development_Tools">Install Development Tools</h2><p><code>Development Tools</code> is a group of pacakges in yum such as <code>automake</code>, <code>autoconf</code> and so on.</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum -y update&#10;sudo yum -y groupinstall &#34;Development Tools&#34;&#10;sudo yum install -y wget</span><br></pre></td></tr></table></figure>
 <h2 id="Upgrade_some_tools">Upgrade some tools</h2><p>Although some tools are included in the <code>Development Tools</code>, <code>glibc</code> and <code>thrift</code> need new version of those tools. We need to upgrade them.</p>
 <h3 id="autoconf">autoconf</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz&#10;tar xvf autoconf-2.69.tar.gz&#10;cd autoconf-2.69&#10;./configure&#10;make&#10;sudo make install</span><br></pre></td></tr></table></figure>
@@ -762,197 +367,17 @@
 <h2 id="Check">Check</h2><p><code>pkgconfig</code> is in <code>/usr/local/lib/pkgconfig</code> or <code>/usr/lib64/pkgconfig</code>. Please find it by yourself by <code>locate pkgconfig</code>. Further, you must add <code>PKG_CONFIG_PATH</code> in your environment variables.</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -lrt /usr/local/lib/pkgconfig&#10;echo &#34;export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig&#34; &#62;&#62; /etc/profile&#10;source /etc/profile</span><br></pre></td></tr></table></figure>
 <h1 id="Install_Thrift_(finally_*_2)">Install Thrift (finally * 2)</h1><p>If you get <code>thrift</code> from <code>git</code>, you must run <code>bootstrap.sh</code> first.</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd thrift-0.9.2&#10;./configure --with-lua=no&#10;result:&#10;Building C++ Library ......... : no&#10;Building C (GLib) Library .... : yes&#10;Building Java Library ........ : no&#10;Building C# Library .......... : no&#10;Building Python Library ...... : yes&#10;Building Ruby Library ........ : no&#10;Building Haskell Library ..... : no&#10;Building Perl Library ........ : no&#10;Building PHP Library ......... : no&#10;Building Erlang Library ...... : no&#10;Building Go Library .......... : no&#10;Building D Library ........... : no&#10;Building NodeJS Library ...... : no&#10;Building Lua Library ......... : yes&#10;make &#10;make install</span><br></pre></td></tr></table></figure></span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd thrift-0.9.2&#10;./configure --with-lua=no&#10;result:&#10;Building C++ Library ......... : no&#10;Building C (GLib) Library .... : yes&#10;Building Java Library ........ : no&#10;Building C# Library .......... : no&#10;Building Python Library ...... : yes&#10;Building Ruby Library ........ : no&#10;Building Haskell Library ..... : no&#10;Building Perl Library ........ : no&#10;Building PHP Library ......... : no&#10;Building Erlang Library ...... : no&#10;Building Go Library .......... : no&#10;Building D Library ........... : no&#10;Building NodeJS Library ...... : no&#10;Building Lua Library ......... : yes&#10;make &#10;make install</span><br></pre></td></tr></table></figure>]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Install_glib">Install glib</h1><h2 id="Install_Development_Tools">Install Development Tools</h2><p><code>Development Tools</code> is]]>
+    </summary>
     
-  </section>
-
-  
- </div>
-
-        
-
-        
-      </div>
-
-      
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      <section class="site-overview">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" src="/images/default_avatar.jpg" alt="Renjie Yao" itemprop="image"/>
-          <p class="site-author-name" itemprop="name">Renjie Yao</p>
-        </div>
-        <p class="site-description motion-element" itemprop="description"></p>
-        <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">6</span>
-              <span class="site-state-item-name">posts</span>
-            </a>
-          </div>
-
-          <div class="site-state-item site-state-categories">
-            
-              <span class="site-state-item-count">0</span>
-              <span class="site-state-item-name">categories</span>
-              
-          </div>
-
-          <div class="site-state-item site-state-tags">
-            <a href="/tags">
-              <span class="site-state-item-count">8</span>
-              <span class="site-state-item-name">tags</span>
-              </a>
-          </div>
-
-        </nav>
-
-        
-          <div class="feed-link motion-element">
-            <a href="/atom.xml" rel="alternate">
-              <i class="menu-item-icon icon-next-feed"></i>
-              RSS
-            </a>
-          </div>
-        
-
-        <div class="links-of-author motion-element">
-          
-        </div>
-
-        
-        
-
-        <div class="links-of-author motion-element">
-          
-        </div>
-
-      </section>
-
-      
-
-    </div>
-  </aside>
-
-
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner"> <div class="copyright" >
-  
-  &copy; &nbsp; 
-  <span itemprop="copyrightYear">2015</span>
-  <span class="with-love">
-    <i class="icon-next-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Renjie Yao</span>
-</div>
-
-<div class="powered-by">
-  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
-</div>
-
-<div class="theme-info">
-  Theme -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT
-  </a>
-</div>
-
-
- </div>
-    </footer>
-
-    <div class="back-to-top"></div>
-  </div>
-
-  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
-
-  
-  
-  
+      <category term="c" scheme="http://blog.yaorenjie.com/tags/c/"/>
     
+      <category term="linux" scheme="http://blog.yaorenjie.com/tags/linux/"/>
     
-
+      <category term="thrift" scheme="http://blog.yaorenjie.com/tags/thrift/"/>
+    
+  </entry>
   
-
-
-  
-  
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
-  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
-
-
-  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
-  
-
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
-
-  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
-
-
-
-
-  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-
-  
-
-  <script type="text/javascript">
-    $(document).ready(function () {
-      if (CONFIG.sidebar === 'always') {
-        displaySidebar();
-      }
-      if (isMobile()) {
-        FastClick.attach(document.body);
-      }
-    });
-  </script>
-
-  
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/lazyload.js"></script>
-  <script type="text/javascript">
-    $(function () {
-      $("#posts").find('img').lazyload({
-        placeholder: "/images/loading.gif",
-        effect: "fadeIn"
-      });
-    });
-  </script>
-</body>
-</html>
+</feed>
