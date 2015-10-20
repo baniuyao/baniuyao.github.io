@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.yaorenjie.com/"/>
-  <updated>2015-09-07T09:12:04.000Z</updated>
+  <updated>2015-10-20T10:41:36.000Z</updated>
   <id>http://blog.yaorenjie.com/</id>
   
   <author>
@@ -13,6 +13,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Convert SOCKS5 Proxy to HTTP Proxy on Mac]]></title>
+    <link href="http://blog.yaorenjie.com/2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/"/>
+    <id>http://blog.yaorenjie.com/2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/</id>
+    <published>2015-10-20T09:30:12.000Z</published>
+    <updated>2015-10-20T10:41:36.000Z</updated>
+    <content type="html"><![CDATA[<p>We usually use ShadowsocksX on Mac to build a SOCKS5 tunnel. But as a developer, I need HTTP Proxy in many places such as npm or some IDE tools. I need a tool to build a HTTP Proxy and pack data stream to SOCKS5 tunnel.</p>
+<p>I found a solution of using a tool called <code>polipo</code>. We can simply install this tool by <code>homebrew</code>.</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew instasll polipo</span><br></pre></td></tr></table></figure>
+<p>After installed <code>polipo</code>, let’s make it work by a simple command.</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">polipo socksParentProxy=localhost:1080</span><br></pre></td></tr></table></figure>
+<p><code>localhost:1080</code> is your local SOCKS5 address. In default, HTTP proxy created by <code>polipo</code> is running on <code>localhost:8123</code>.</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>We usually use ShadowsocksX on Mac to build a SOCKS5 tunnel. But as a developer, I need HTTP Proxy in many places such as npm or some IDE]]>
+    </summary>
+    
+      <category term="Linux" scheme="http://blog.yaorenjie.com/tags/Linux/"/>
+    
+      <category term="Mac" scheme="http://blog.yaorenjie.com/tags/Mac/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Advanced Python Data Structure]]></title>

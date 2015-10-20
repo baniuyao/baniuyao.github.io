@@ -2,6 +2,8 @@
 <html class="theme-next use-motion ">
 <head>
   
+    
+
 
 <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -30,7 +32,7 @@
 
 
 
-  <meta name="keywords" content="C,Zabbix," />
+  <meta name="keywords" content="Linux,Mac," />
 
 
 
@@ -41,19 +43,16 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="Backgroudconfigure is okay, the next step is make install. But make install exist with error which said it cannot find aclocal-1.14 like below:
-1[baniuyao@YaoRenjies-CentOS zabbix-2.4.4]$ sudo make in">
+<meta name="description" content="We usually use ShadowsocksX on Mac to build a SOCKS5 tunnel. But as a developer, I need HTTP Proxy in many places such as npm or some IDE tools. I need a tool to build a HTTP Proxy and pack data strea">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Zabbix install issues with aclocal 1.14 is missing">
-<meta property="og:url" content="http://blog.yaorenjie.com/2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/index.html">
+<meta property="og:title" content="Convert SOCKS5 Proxy to HTTP Proxy on Mac">
+<meta property="og:url" content="http://blog.yaorenjie.com/2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/index.html">
 <meta property="og:site_name" content="Renjie Yao's Blog">
-<meta property="og:description" content="Backgroudconfigure is okay, the next step is make install. But make install exist with error which said it cannot find aclocal-1.14 like below:
-1[baniuyao@YaoRenjies-CentOS zabbix-2.4.4]$ sudo make in">
-<meta property="og:updated_time" content="2015-09-07T09:10:24.000Z">
+<meta property="og:description" content="We usually use ShadowsocksX on Mac to build a SOCKS5 tunnel. But as a developer, I need HTTP Proxy in many places such as npm or some IDE tools. I need a tool to build a HTTP Proxy and pack data strea">
+<meta property="og:updated_time" content="2015-10-20T10:41:36.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Zabbix install issues with aclocal 1.14 is missing">
-<meta name="twitter:description" content="Backgroudconfigure is okay, the next step is make install. But make install exist with error which said it cannot find aclocal-1.14 like below:
-1[baniuyao@YaoRenjies-CentOS zabbix-2.4.4]$ sudo make in">
+<meta name="twitter:title" content="Convert SOCKS5 Proxy to HTTP Proxy on Mac">
+<meta name="twitter:description" content="We usually use ShadowsocksX on Mac to build a SOCKS5 tunnel. But as a developer, I need HTTP Proxy in many places such as npm or some IDE tools. I need a tool to build a HTTP Proxy and pack data strea">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -63,7 +62,7 @@
   };
 </script>
 
-  <title> Zabbix install issues with aclocal 1.14 is missing | Renjie Yao's Blog </title>
+  <title> Convert SOCKS5 Proxy to HTTP Proxy on Mac | Renjie Yao's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -172,7 +171,7 @@
           
           
             
-              Zabbix install issues with aclocal 1.14 is missing
+              Convert SOCKS5 Proxy to HTTP Proxy on Mac
             
           
         </h1>
@@ -181,8 +180,8 @@
       <div class="post-meta">
         <span class="post-time">
           Posted on
-          <time itemprop="dateCreated" datetime="2015-02-27T07:14:35+08:00" content="2015-02-27">
-            2015-02-27
+          <time itemprop="dateCreated" datetime="2015-10-20T17:30:12+08:00" content="2015-10-20">
+            2015-10-20
           </time>
         </span>
 
@@ -192,8 +191,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/#comments" itemprop="discussionUrl">
-              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/" itemprop="commentsCount"></span>
+            <a href="/2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/" itemprop="commentsCount"></span>
             </a>
           </span>
           
@@ -207,16 +206,12 @@
       
 
       
-        <span itemprop="articleBody"><h1 id="Backgroud">Backgroud</h1><p><code>configure</code> is okay, the next step is <code>make install</code>. But <code>make install</code> exist with error which said it cannot find <code>aclocal-1.14</code> like below:</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[baniuyao@YaoRenjies-CentOS zabbix-2.4.4]$ sudo make install&#10;CDPATH=&#34;$&#123;ZSH_VERSION+.&#125;:&#34; &#38;&#38; cd . &#38;&#38; /bin/sh /home/baniuyao/apps/zabbix-2.4.4/missing aclocal-1.14 -I m4&#10;/home/baniuyao/apps/zabbix-2.4.4/missing: line 81: aclocal-1.14: command not found&#10;WARNING: &#39;aclocal-1.14&#39; is missing on your system.&#10;         You should only need it if you modified &#39;acinclude.m4&#39; or&#10;         &#39;configure.ac&#39; or m4 files included by &#39;configure.ac&#39;.&#10;         The &#39;aclocal&#39; program is part of the GNU Automake package:&#10;         &#60;http://www.gnu.org/software/automake&#62;&#10;         It also requires GNU Autoconf, GNU m4 and Perl in order to run:&#10;         &#60;http://www.gnu.org/software/autoconf&#62;&#10;         &#60;http://www.gnu.org/software/m4/&#62;&#10;         &#60;http://www.perl.org/&#62;&#10;make: *** [aclocal.m4] Error 127</span><br></pre></td></tr></table></figure>
-<p>But the system has <code>aclocal-1.14</code> already:</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[baniuyao@YaoRenjies-CentOS ~]$ which aclocal-1.14&#10;/usr/local/bin/aclocal-1.14</span><br></pre></td></tr></table></figure>
-<h1 id="Solution">Solution</h1><p>This is because we don’t have some <code>autoconf</code>(<em>.ac) and <code>automake</code>(</em>.am) files. We can <code>touch</code> these.</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch configure.ac aclocal.m4 configure Makefile.am Makefile.in</span><br></pre></td></tr></table></figure>
-<p>Or we can use <code>autoreconf</code> to generate.</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo autoreconf -ivf</span><br></pre></td></tr></table></figure>
-<p>Let’s figure out what <code>-ivf</code> means.</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-v, --verbose            verbosely report processing&#10;-f, --force              consider all files obsolete&#10;-i, --install            copy missing auxiliary files</span><br></pre></td></tr></table></figure>
+        <span itemprop="articleBody"><p>We usually use ShadowsocksX on Mac to build a SOCKS5 tunnel. But as a developer, I need HTTP Proxy in many places such as npm or some IDE tools. I need a tool to build a HTTP Proxy and pack data stream to SOCKS5 tunnel.</p>
+<p>I found a solution of using a tool called <code>polipo</code>. We can simply install this tool by <code>homebrew</code>.</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew instasll polipo</span><br></pre></td></tr></table></figure>
+<p>After installed <code>polipo</code>, let’s make it work by a simple command.</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">polipo socksParentProxy=localhost:1080</span><br></pre></td></tr></table></figure>
+<p><code>localhost:1080</code> is your local SOCKS5 address. In default, HTTP proxy created by <code>polipo</code> is running on <code>localhost:8123</code>.</p>
 </span>
       
     </div>
@@ -225,9 +220,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/C/" rel="tag">#C</a>
+            <a href="/tags/Linux/" rel="tag">#Linux</a>
           
-            <a href="/tags/Zabbix/" rel="tag">#Zabbix</a>
+            <a href="/tags/Mac/" rel="tag">#Mac</a>
           
         </div>
       
@@ -236,13 +231,11 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/03/04/The-Analysis-of-Zabbix-history-and-trends-Storing/" rel="prev">The Analysis of Zabbix history and trends Storing</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/01/13/Install-Thrift-with-glibc-on-CentOS/" rel="next">Install Thrift with glibc on CentOS</a>
+              <a href="/2015/08/27/Advanced-Python-Data-Structure/" rel="next">Advanced Python Data Structure</a>
             
           </div>
         </div>
@@ -367,7 +360,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Backgroud"><span class="nav-number">1.</span> <span class="nav-text">Backgroud</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Solution"><span class="nav-number">2.</span> <span class="nav-text">Solution</span></a></li></ol></div>
+              <p class="post-toc-empty">This post does not have a Table Of Contents</p>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
@@ -421,9 +414,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'renjieyaoblog';
-      var disqus_identifier = '2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/';
-      var disqus_title = 'Zabbix install issues with aclocal 1.14 is missing';
-      var disqus_url = 'http://blog.yaorenjie.com/2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/';
+      var disqus_identifier = '2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/';
+      var disqus_title = 'Convert SOCKS5 Proxy to HTTP Proxy on Mac';
+      var disqus_url = 'http://blog.yaorenjie.com/2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
