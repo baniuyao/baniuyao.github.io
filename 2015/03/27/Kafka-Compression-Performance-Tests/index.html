@@ -55,7 +55,7 @@
 <meta property="og:image" content="http://blog.yaorenjie.com/images/compression_latency.png">
 <meta property="og:image" content="http://blog.yaorenjie.com/images/cosumer_time_cost.png">
 <meta property="og:image" content="http://blog.yaorenjie.com/images/overview.png">
-<meta property="og:updated_time" content="2015-09-07T09:18:03.000Z">
+<meta property="og:updated_time" content="2015-10-30T07:04:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kafka Compression Performance Tests">
 <meta name="twitter:description" content="Kafka Compression Performance TestsBackgroudKafka use End-to-End compression model which means that Producer and Consumer are doing the compression and de-compression jobs. This feature enables the re">
@@ -333,7 +333,27 @@
 </ul>
 <p>Because of the box I use to test, when I use <code>lz4</code> in testing, I got OOM exception. I think the casuse of this exception is the Java code will get all lines of the <code>passport.access.log</code> and send to <code>Kafka</code> in a very short time. So I used <code>batch.size</code> of 2000, 2500, 3000, 3500, 4000, 4500 and 5000. Using big <code>batch.size</code> will increass the latency and this will give JVM some time to do the GC jobs.</p>
 <p>Below is the result</p>
-<h3 id="Compression_Rate">Compression Rate</h3><p>The value is better when it is smaller<br>|-|none|gzip|snappy|lz4|<br>|–:|—:|–:|—–:|–:|<br>|Average Compression Rate|100%|19.21%|78.19%|31.37%|</p>
+<h3 id="Compression_Rate">Compression Rate</h3><p>The value is better when it is smaller</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">-</th>
+<th style="text-align:right">none</th>
+<th style="text-align:right">gzip</th>
+<th style="text-align:right">snappy</th>
+<th style="text-align:right">lz4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">Average Compression Rate</td>
+<td style="text-align:right">100%</td>
+<td style="text-align:right">19.21%</td>
+<td style="text-align:right">78.19%</td>
+<td style="text-align:right">31.37%</td>
+</tr>
+</tbody>
+</table>
 <p><img src="/images/compression_rate.png" alt="Alt text"></p>
 <h3 id="Throughput">Throughput</h3><p>When I enabled the compression, the througput decreased. Let’s see the result.</p>
 <table>
