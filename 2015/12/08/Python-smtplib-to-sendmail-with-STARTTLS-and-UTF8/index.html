@@ -2,6 +2,8 @@
 <html class="theme-next use-motion ">
 <head>
   
+    
+
 
 <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -30,7 +32,7 @@
 
 
 
-  <meta name="keywords" content="Linux,Mac," />
+  <meta name="keywords" content="python," />
 
 
 
@@ -41,16 +43,16 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="We usually use ShadowsocksX on Mac to build a SOCKS5 tunnel. But as a developer, I need HTTP Proxy in many places such as npm or some IDE tools. I need a tool to build a HTTP Proxy and pack data strea">
+<meta name="description" content="IntroPython is a very powerful and useful tool in our daily work especially for DevOps. Sending mail is also a very simple need. I’ve wrote serveral scripts for sending mail because I could not find t">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Convert SOCKS5 Proxy to HTTP Proxy on Mac">
-<meta property="og:url" content="http://blog.yaorenjie.com/2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/index.html">
+<meta property="og:title" content="Python smtplib to sendmail with STARTTL and UTF8">
+<meta property="og:url" content="http://blog.yaorenjie.com/2015/12/08/Python-smtplib-to-sendmail-with-STARTTLS-and-UTF8/index.html">
 <meta property="og:site_name" content="Renjie Yao's Blog">
-<meta property="og:description" content="We usually use ShadowsocksX on Mac to build a SOCKS5 tunnel. But as a developer, I need HTTP Proxy in many places such as npm or some IDE tools. I need a tool to build a HTTP Proxy and pack data strea">
-<meta property="og:updated_time" content="2015-10-20T10:41:36.000Z">
+<meta property="og:description" content="IntroPython is a very powerful and useful tool in our daily work especially for DevOps. Sending mail is also a very simple need. I’ve wrote serveral scripts for sending mail because I could not find t">
+<meta property="og:updated_time" content="2015-12-08T01:59:56.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Convert SOCKS5 Proxy to HTTP Proxy on Mac">
-<meta name="twitter:description" content="We usually use ShadowsocksX on Mac to build a SOCKS5 tunnel. But as a developer, I need HTTP Proxy in many places such as npm or some IDE tools. I need a tool to build a HTTP Proxy and pack data strea">
+<meta name="twitter:title" content="Python smtplib to sendmail with STARTTL and UTF8">
+<meta name="twitter:description" content="IntroPython is a very powerful and useful tool in our daily work especially for DevOps. Sending mail is also a very simple need. I’ve wrote serveral scripts for sending mail because I could not find t">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -60,7 +62,7 @@
   };
 </script>
 
-  <title> Convert SOCKS5 Proxy to HTTP Proxy on Mac | Renjie Yao's Blog </title>
+  <title> Python smtplib to sendmail with STARTTL and UTF8 | Renjie Yao's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -169,7 +171,7 @@
           
           
             
-              Convert SOCKS5 Proxy to HTTP Proxy on Mac
+              Python smtplib to sendmail with STARTTL and UTF8
             
           
         </h1>
@@ -178,8 +180,8 @@
       <div class="post-meta">
         <span class="post-time">
           Posted on
-          <time itemprop="dateCreated" datetime="2015-10-20T17:30:12+08:00" content="2015-10-20">
-            2015-10-20
+          <time itemprop="dateCreated" datetime="2015-12-08T09:39:21+08:00" content="2015-12-08">
+            2015-12-08
           </time>
         </span>
 
@@ -189,8 +191,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/#comments" itemprop="discussionUrl">
-              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/" itemprop="commentsCount"></span>
+            <a href="/2015/12/08/Python-smtplib-to-sendmail-with-STARTTLS-and-UTF8/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/08/Python-smtplib-to-sendmail-with-STARTTLS-and-UTF8/" itemprop="commentsCount"></span>
             </a>
           </span>
           
@@ -204,12 +206,8 @@
       
 
       
-        <span itemprop="articleBody"><p>We usually use ShadowsocksX on Mac to build a SOCKS5 tunnel. But as a developer, I need HTTP Proxy in many places such as npm or some IDE tools. I need a tool to build a HTTP Proxy and pack data stream to SOCKS5 tunnel.</p>
-<p>I found a solution of using a tool called <code>polipo</code>. We can simply install this tool by <code>homebrew</code>.</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew instasll polipo</span><br></pre></td></tr></table></figure>
-<p>After installed <code>polipo</code>, let’s make it work by a simple command.</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">polipo socksParentProxy=localhost:1080</span><br></pre></td></tr></table></figure>
-<p><code>localhost:1080</code> is your local SOCKS5 address. In default, HTTP proxy created by <code>polipo</code> is running on <code>localhost:8123</code>.</p>
+        <span itemprop="articleBody"><h1 id="Intro">Intro</h1><p><code>Python</code> is a very powerful and useful tool in our daily work especially for DevOps. Sending mail is also a very simple need. I’ve wrote serveral scripts for sending mail because I could not find the scripts I made before. This time I wanna get the things done - made is open on Github with GPLv3.</p>
+<h1 id="Code">Code</h1><p>Project address is here: <a href="https://github.com/baniuyao/python-sendmail%20A" target="_blank" rel="external">python-sendmail on Github</a>.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># This program is free software; you can redistribute it and/or modify</span></span><br><span class="line"><span class="comment"># it under the terms of the GNU General Public License as published by</span></span><br><span class="line"><span class="comment"># the Free Software Foundation; either version 3 of the License, or</span></span><br><span class="line"><span class="comment"># (at your option) any later version.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">import</span> smtplib, sys</span><br><span class="line"><span class="keyword">from</span> email.MIMEText <span class="keyword">import</span> MIMEText</span><br><span class="line"></span><br><span class="line"><span class="comment"># you can change this constant to parameters of sendmail</span></span><br><span class="line">USR_FROM = <span class="string">'me@yaorenjie.com'</span></span><br><span class="line">USR = <span class="string">'me'</span></span><br><span class="line">PASSWD = <span class="string">'HELLO_WORLD'</span></span><br><span class="line"></span><br><span class="line">SMTP_SERVER = <span class="string">'email.yaorenjie.com'</span></span><br><span class="line">SMTP_PORT = <span class="number">587</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sendmail</span><span class="params">(usr_to, subject, msg, subtype=<span class="string">'html'</span>)</span>:</span></span><br><span class="line">    usr_from = USR_FROM</span><br><span class="line">    msg = MIMEText(msg, subtype, _charset=<span class="string">'utf-8'</span>)</span><br><span class="line">    msg[<span class="string">'Subject'</span>] = subject</span><br><span class="line">    msg[<span class="string">'To'</span>] = <span class="string">';'</span>.join(usr_to)</span><br><span class="line">    msg[<span class="string">'From'</span>] = usr_from</span><br><span class="line">    server = smtplib.SMTP()</span><br><span class="line">    server.connect(SMTP_SERVER, SMTP_PORT)</span><br><span class="line">    <span class="comment"># ONLY for debug</span></span><br><span class="line">    <span class="comment"># server.set_debuglevel(1)</span></span><br><span class="line">    <span class="comment"># if exchange use STARTTLS auth, you need to uncomment next line</span></span><br><span class="line">    <span class="comment"># server.starttls()</span></span><br><span class="line">    server.login(USR, PASSWD)</span><br><span class="line">    server.sendmail(usr_from, usr_to, msg.as_string())</span><br><span class="line">    server.quit()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="string">"""</span><br><span class="line">    Example:</span><br><span class="line">    python sendmail.py --usr_to mike@mail.com peter@mail.com --subject 'TEST_SUBJECT' --msg 'TEST_MSG'</span><br><span class="line"></span><br><span class="line">    Remark:</span><br><span class="line">    1. msg supports HTML and Chinese</span><br><span class="line">    """</span></span><br><span class="line">    parser = argparse.ArgumentParser(description=<span class="string">'parser for senemail'</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'--usr_to'</span>, dest=<span class="string">'usr_to'</span>, nargs=<span class="string">'+'</span>, required=<span class="keyword">True</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'--subject'</span>, dest=<span class="string">'subject'</span>, required=<span class="keyword">True</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'--msg'</span>, dest=<span class="string">'msg'</span>, required=<span class="keyword">True</span>)</span><br><span class="line">    args = parser.parse_args()</span><br><span class="line">    sendmail(usr_to=args.usr_to, subject=args.subject, msg=args.msg)</span><br></pre></td></tr></table></figure></p>
 </span>
       
     </div>
@@ -218,9 +216,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Linux/" rel="tag">#Linux</a>
-          
-            <a href="/tags/Mac/" rel="tag">#Mac</a>
+            <a href="/tags/python/" rel="tag">#python</a>
           
         </div>
       
@@ -229,13 +225,11 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/12/08/Python-smtplib-to-sendmail-with-STARTTLS-and-UTF8/" rel="prev">Python smtplib to sendmail with STARTTL and UTF8</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/08/27/Advanced-Python-Data-Structure/" rel="next">Advanced Python Data Structure</a>
+              <a href="/2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/" rel="next">Convert SOCKS5 Proxy to HTTP Proxy on Mac</a>
             
           </div>
         </div>
@@ -360,7 +354,7 @@
           <div class="post-toc">
             
             
-              <p class="post-toc-empty">This post does not have a Table Of Contents</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Intro"><span class="nav-number">1.</span> <span class="nav-text">Intro</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Code"><span class="nav-number">2.</span> <span class="nav-text">Code</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
@@ -414,9 +408,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'renjieyaoblog';
-      var disqus_identifier = '2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/';
-      var disqus_title = 'Convert SOCKS5 Proxy to HTTP Proxy on Mac';
-      var disqus_url = 'http://blog.yaorenjie.com/2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/';
+      var disqus_identifier = '2015/12/08/Python-smtplib-to-sendmail-with-STARTTLS-and-UTF8/';
+      var disqus_title = 'Python smtplib to sendmail with STARTTL and UTF8';
+      var disqus_url = 'http://blog.yaorenjie.com/2015/12/08/Python-smtplib-to-sendmail-with-STARTTLS-and-UTF8/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
