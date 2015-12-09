@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.yaorenjie.com/"/>
-  <updated>2015-12-08T01:59:56.000Z</updated>
+  <updated>2015-12-09T10:06:03.000Z</updated>
   <id>http://blog.yaorenjie.com/</id>
   
   <author>
@@ -13,6 +13,27 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Tricks on Crontab]]></title>
+    <link href="http://blog.yaorenjie.com/2015/12/09/Tricks-on-Crontab/"/>
+    <id>http://blog.yaorenjie.com/2015/12/09/Tricks-on-Crontab/</id>
+    <published>2015-12-09T10:01:40.000Z</published>
+    <updated>2015-12-09T10:06:03.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="‘@’_in_Crontab">‘@’ in Crontab</h1><p>‘@’ sysmbol is available in crontab and it very useful especially for <code>@reboot</code>. <code>@reboot</code> makes it possible to run a script while machine starts.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@reboot     -   This runs the Cron job when the machine is started up or <span class="keyword">if</span> the Cron daemon is restarted</span><br><span class="line"></span><br><span class="line">@midnight   -   This runs the Cron job once a day at midnight, it<span class="string">'s the equivalent of 0 0 * * *</span><br><span class="line"></span><br><span class="line">@daily      -   Does exactly the same as @midnight</span><br><span class="line"></span><br><span class="line">@weekly     -   This runs a Cron job once a week on a Sunday the equivalent of 0 0 * * 0</span><br><span class="line"></span><br><span class="line">@monthly    -   This runs a Cron job once a month on the first day of every month at midnight and is the same as 0 0 1 * *</span><br><span class="line"></span><br><span class="line">@annually   -   Runs a Cron job once a year at midnight on the first day of the first month and is the equivalent of 0 0  1 1 *</span><br><span class="line"></span><br><span class="line">@yearly     -   The same as annually</span></span><br></pre></td></tr></table></figure>
+<p>An example for run a command when the machine starts:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@reboot date &gt;&gt; /tmp/date.log</span><br></pre></td></tr></table></figure>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="‘@’_in_Crontab">‘@’ in Crontab</h1><p>‘@’ sysmbol is available in crontab and it very useful especially for <code>@reboot</code>. <c]]>
+    </summary>
+    
+      <category term="Crontab" scheme="http://blog.yaorenjie.com/tags/Crontab/"/>
+    
+      <category term="Linux" scheme="http://blog.yaorenjie.com/tags/Linux/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Python smtplib to sendmail with STARTTL and UTF8]]></title>
