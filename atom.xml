@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.yaorenjie.com/"/>
-  <updated>2016-05-19T02:44:56.000Z</updated>
+  <updated>2016-05-19T02:46:05.000Z</updated>
   <id>http://blog.yaorenjie.com/</id>
   
   <author>
@@ -19,12 +19,8 @@
     <link href="http://blog.yaorenjie.com/2016/05/19/Awesome-dataviz/"/>
     <id>http://blog.yaorenjie.com/2016/05/19/Awesome-dataviz/</id>
     <published>2016-05-19T02:42:15.000Z</published>
-    <updated>2016-05-19T02:44:56.000Z</updated>
-    <content type="html"><![CDATA[<ul>
-<li>Data</li>
-<li>Visualization</li>
-</ul>
-<p>From <a href="https://github.com/fasouto/awesome-dataviz" target="_blank" rel="external">fasouto github</a></p>
+    <updated>2016-05-19T02:46:05.000Z</updated>
+    <content type="html"><![CDATA[<p>From <a href="https://github.com/fasouto/awesome-dataviz" target="_blank" rel="external">fasouto github</a></p>
 <h1 id="Awesome_dataviz">Awesome dataviz <a href="https://github.com/sindresorhus/awesome" target="_blank" rel="external"><img src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg" alt="Awesome"></a></h1><p>A curated list of awesome data visualizations frameworks, libraries and software. Inspired by <a href="https://github.com/vinta/awesome-python" target="_blank" rel="external">awesome-python</a>.</p>
 <h2 id="Table_of_contents">Table of contents</h2><ul>
 <li><a href="#awesome-dataviz">Awesome dataviz</a><ul>
@@ -188,12 +184,13 @@
 <p>To the extent possible under law, <a href="http://fabiosouto.me/" target="_blank" rel="external">Fabio Souto</a> has waived all copyright and related or neighboring rights to this work.</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<ul>
-<li>Data</li>
-<li>Visualization</li>
-</ul>
-<p>From <a href="https://github.com/fasouto/awesome-dataviz" target="_blank" rel="external">]]>
+    <![CDATA[<p>From <a href="https://github.com/fasouto/awesome-dataviz" target="_blank" rel="external">fasouto github</a></p>
+<h1 id="Awesome_dataviz">]]>
     </summary>
+    
+      <category term="Data" scheme="http://blog.yaorenjie.com/tags/Data/"/>
+    
+      <category term="Visualization" scheme="http://blog.yaorenjie.com/tags/Visualization/"/>
     
   </entry>
   
