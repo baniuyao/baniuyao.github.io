@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.yaorenjie.com/"/>
-  <updated>2016-06-09T04:05:16.000Z</updated>
+  <updated>2016-06-09T04:06:28.000Z</updated>
   <id>http://blog.yaorenjie.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://blog.yaorenjie.com/2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/"/>
     <id>http://blog.yaorenjie.com/2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/</id>
     <published>2016-06-09T02:54:17.000Z</published>
-    <updated>2016-06-09T04:05:16.000Z</updated>
+    <updated>2016-06-09T04:06:28.000Z</updated>
     <content type="html"><![CDATA[<h1 id="Download_source_tarball_from_github">Download source tarball from github</h1><p>You can get CAS from git easily:)</p>
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone <span class="string">https:</span><span class="comment">//github.com/apereo/cas.git</span></span><br></pre></td></tr></table></figure>
 <h1 id="compile">compile</h1><h2 id="get_gradle">get gradle</h2><p>CAS can be compiled by <code>gradle</code>, when you first run <code>gradlew</code>(gradle wrapper), the project will download gradle-XXX-bin.zip. If you already have it or you have some problems downloading it(such as GFW), you can simply edit `{CAS_PWD}/gradle/wrapper/gradle-wrapper.properties” like below:</p>
@@ -33,7 +33,8 @@
 <p>It is casuse by the conflict between <code>commons-io:2.4</code> and <code>commons-io:2.5</code> in <code>cas-server-support-pac4j</code>, we need to add <code>-DskipVersionConflict=true</code> in bootstrap scripts.</p>
 <p>If you build it in IntelliJ IDEA, set this parameter in <code>Preferences-Build,Execution,Deployment-Build Tools-Gradle-Gradle VM options</code>.</p>
 <p>Plus, if you want to use http proxy in gradle, you need to set these parameters:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-DproxySet=<span class="literal">true</span> -DproxyHost=<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> -DproxyPort=<span class="number">8123</span></span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-DproxySet=<span class="literal">true</span> -DproxyHost=<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> -DproxyPort=<span class="number">8123</span></span><br></pre></td></tr></table></figure>
+<h1 id="To_Be_Contined…">To Be Contined…</h1>]]></content>
     <summary type="html">
     <![CDATA[<h1 id="Download_source_tarball_from_github">Download source tarball from github</h1><p>You can get CAS from git easily:)</p>
 <figure class=]]>
