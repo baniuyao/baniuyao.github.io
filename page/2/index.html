@@ -44,7 +44,7 @@
 <meta name="description">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Renjie Yao's Blog">
-<meta property="og:url" content="http://blog.yaorenjie.com/tags/linux/index.html">
+<meta property="og:url" content="http://blog.yaorenjie.com/page/2/index.html">
 <meta property="og:site_name" content="Renjie Yao's Blog">
 <meta property="og:description">
 <meta name="twitter:card" content="summary">
@@ -59,7 +59,7 @@
   };
 </script>
 
-  <title> Tag: linux | Renjie Yao's Blog </title>
+  <title> Renjie Yao's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -87,7 +87,9 @@
 
 
 
-  <div class="container one-column ">
+  <div class="container one-column 
+   page-home 
+">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -155,41 +157,94 @@
     <main id="main" class="main">
       <div class="main-inner">
         <div id="content" class="content"> 
-
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        linux
-        <small>Tag</small>
-      </h2>
-    </div>
-
+  <section id="posts" class="posts-expand">
     
       
 
-  <article class="post post-type-normal"itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
 
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2015/01/13/Install-Thrift-with-glibc-on-CentOS/" itemprop="url">
-              <span itemprop="name">Install Thrift with glibc on CentOS</span>
-            </a>
-        
-      </h1>
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/01/13/Install-Thrift-with-glibc-on-CentOS/" itemprop="url">
+                Install Thrift with glibc on CentOS
+              </a>
+            
+          
+        </h1>
+      
 
       <div class="post-meta">
-        <time class="post-time" datetime="2015-01-13T08:08:12.000Z" itemprop="dateCreated" content="2015-01-13"> 01-13 </time>
-      </div>
+        <span class="post-time">
+          Posted on
+          <time itemprop="dateCreated" datetime="2015-01-13T16:08:12+08:00" content="2015-01-13">
+            2015-01-13
+          </time>
+        </span>
 
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/01/13/Install-Thrift-with-glibc-on-CentOS/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/01/13/Install-Thrift-with-glibc-on-CentOS/" itemprop="commentsCount"></span>
+            </a>
+          </span>
+          
+        
+      </div>
     </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h1 id="Install_glib">Install glib</h1><h2 id="Install_Development_Tools">Install Development Tools</h2><p><code>Development Tools</code> is a group of pacakges in yum such as <code>automake</code>, <code>autoconf</code> and so on.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo yum -y update</span><br><span class="line">sudo yum -y groupinstall <span class="string">"Development Tools"</span></span><br><span class="line">sudo yum install -y wget</span><br></pre></td></tr></table></figure>
+<h2 id="Upgrade_some_tools">Upgrade some tools</h2><p>Although some tools are included in the <code>Development Tools</code>, <code>glibc</code> and <code>thrift</code> need new version of those tools. We need to upgrade them.</p>
+<h3 id="autoconf">autoconf</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://ftp.gnu.org/gnu/autoconf/autoconf-<span class="number">2.69</span>.tar.gz</span><br><span class="line">tar xvf autoconf-<span class="number">2.69</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> autoconf-<span class="number">2.69</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<h3 id="automake">automake</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://ftp.gnu.org/gnu/automake/automake-<span class="number">1.14</span>.tar.gz</span><br><span class="line">tar xvf automake-<span class="number">1.14</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> automake-<span class="number">1.14</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<h3 id="bison">bison</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://ftp.gnu.org/gnu/bison/bison-<span class="number">2.5</span>.<span class="number">1</span>.tar.gz</span><br><span class="line">tar xvf bison-<span class="number">2.5</span>.<span class="number">1</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> bison-<span class="number">2.5</span>.<span class="number">1</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<h2 id="Install_glib_(finally)">Install glib (finally)</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://ftp.gnome.org/pub/gnome/sources/glib/<span class="number">2.42</span>/glib-<span class="number">2.42</span>.<span class="number">0</span>.tar.xz</span><br><span class="line">tar xvf glib-<span class="number">2.42</span>.<span class="number">0</span>.tar.xz</span><br><span class="line"><span class="built_in">cd</span> glib-<span class="number">2.42</span>.<span class="number">0</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<h2 id="Check">Check</h2><p><code>pkgconfig</code> is in <code>/usr/local/lib/pkgconfig</code> or <code>/usr/lib64/pkgconfig</code>. Please find it by yourself by <code>locate pkgconfig</code>. Further, you must add <code>PKG_CONFIG_PATH</code> in your environment variables.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls -lrt /usr/<span class="built_in">local</span>/lib/pkgconfig</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig"</span> &gt;&gt; /etc/profile</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br></pre></td></tr></table></figure>
+<h1 id="Install_Thrift_(finally_*_2)">Install Thrift (finally * 2)</h1><p>If you get <code>thrift</code> from <code>git</code>, you must run <code>bootstrap.sh</code> first.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> thrift-<span class="number">0.9</span>.<span class="number">2</span></span><br><span class="line">./configure --with-lua=no</span><br><span class="line">result:</span><br><span class="line">Building C++ Library ......... : no</span><br><span class="line">Building C (GLib) Library .... : yes</span><br><span class="line">Building Java Library ........ : no</span><br><span class="line">Building C<span class="comment"># Library .......... : no</span></span><br><span class="line">Building Python Library ...... : yes</span><br><span class="line">Building Ruby Library ........ : no</span><br><span class="line">Building Haskell Library ..... : no</span><br><span class="line">Building Perl Library ........ : no</span><br><span class="line">Building PHP Library ......... : no</span><br><span class="line">Building Erlang Library ...... : no</span><br><span class="line">Building Go Library .......... : no</span><br><span class="line">Building D Library ........... : no</span><br><span class="line">Building NodeJS Library ...... : no</span><br><span class="line">Building Lua Library ......... : yes</span><br><span class="line">make </span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </article>
 
 
     
-  </div>
+  </section>
 
   
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/">&laquo;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+
  </div>
 
         
@@ -316,12 +371,6 @@
   
   
   
-    <script type="text/javascript">
-      postMotionOptions = {stagger: 100, drag: true};
-    </script>
-  
-
-  
     
     
 
@@ -329,7 +378,7 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'renjieyaoblog';
-      var disqus_identifier = 'tags/linux/index.html';
+      var disqus_identifier = 'page/2/index.html';
       var disqus_title = '';
       var disqus_url = '';
 

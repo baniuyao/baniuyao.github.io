@@ -170,6 +170,87 @@
           
           
             
+              <a class="post-title-link" href="/2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/" itemprop="url">
+                Build Jasig CAS from Zero (1)  - Build CAS Server
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          Posted on
+          <time itemprop="dateCreated" datetime="2016-06-09T10:54:17+08:00" content="2016-06-09">
+            2016-06-09
+          </time>
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/" itemprop="commentsCount"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h1 id="Download_source_tarball_from_github">Download source tarball from github</h1><p>You can get CAS from git easily:)</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone <span class="string">https:</span><span class="comment">//github.com/apereo/cas.git</span></span><br></pre></td></tr></table></figure>
+<h1 id="compile">compile</h1><h2 id="get_gradle">get gradle</h2><p>CAS can be compiled by <code>gradle</code>, when you first run <code>gradlew</code>(gradle wrapper), the project will download gradle-XXX-bin.zip. If you already have it or you have some problems downloading it(such as GFW), you can simply edit `{CAS_PWD}/gradle/wrapper/gradle-wrapper.properties” like below:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="setting">distributionBase=<span class="value">GRADLE_USER_HOME</span></span></span><br><span class="line"><span class="setting">distributionPath=<span class="value">wrapper/dists</span></span></span><br><span class="line"><span class="setting">zipStoreBase=<span class="value">GRADLE_USER_HOME</span></span></span><br><span class="line"><span class="setting">zipStorePath=<span class="value">wrapper/dists</span></span></span><br><span class="line"><span class="setting">distributionUrl=<span class="value">https\://services.gradle.org/distributions/gradle-<span class="number">2.13</span>-all.zip</span></span></span><br></pre></td></tr></table></figure>
+<p>Replace <code>distributionUrl</code> with your own url.</p>
+<p>If you have local gradle zip file, use the zip file name directly and put zip file into <code>{CAS_PWD}/gradle/wrapper</code>. For example if my gradle zip file is <code>gradle-2.10-bin.zip</code>, you need parameter <code>distributionUrl</code> like this:</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">...</span><br><span class="line"></span>distributionUtl=gradle-2.10-bin.zip</span><br></pre></td></tr></table></figure>
+<h2 id="compile_cas_project">compile cas project</h2><p>There is two bootstrap shell in cas directory, <code>dev-build.sh</code> and <code>dev-build-no-tests.sh</code>. The difference between them is obviously shown in their names - <code>dev-build-no-tests.sh</code> will set this flag <code>-DskipAspectJ=true</code></p>
+<p>When you run <code>dev-build.sh</code> or <code>dev-build-no-tests.sh</code> for a couple of minutes, you will get this fail result because of some conflicts.</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">:cas-server-support-pac4j</span><span class="symbol">:compileAspect</span></span><br><span class="line"><span class="constant">Download </span>...</span><br><span class="line">&gt; <span class="symbol">:cas-server-support-pac4j</span><span class="symbol">:compileAspecFAILED</span></span><br><span class="line"></span><br><span class="line"><span class="constant">FAILURE:</span> <span class="constant">Build </span>failed with an exception.</span><br><span class="line"></span><br><span class="line">* <span class="constant">What </span>went <span class="symbol">wrong:</span></span><br><span class="line"><span class="constant">Execution </span>failed <span class="keyword">for</span> task <span class="string">':cas-server-support-pac4j:compileAspect'</span>.</span><br><span class="line">&gt; <span class="constant">Could </span><span class="keyword">not</span> resolve all dependencies <span class="keyword">for</span> configuration <span class="string">':cas-server-support-pac4j:compile'</span>.</span><br><span class="line">   &gt; <span class="constant">A </span>conflict was found between the following <span class="symbol">modules:</span></span><br><span class="line">      - commons-<span class="symbol">io:</span>commons-<span class="symbol">io:</span><span class="number">2.4</span></span><br><span class="line">      - commons-<span class="symbol">io:</span>commons-<span class="symbol">io:</span><span class="number">2.5</span></span><br><span class="line"></span><br><span class="line">* <span class="constant">Try:</span></span><br><span class="line"><span class="constant">Run </span>with --stacktrace option to get the stack trace. <span class="constant">Run </span>with --info <span class="keyword">or</span> --debug option to get more log output.</span><br><span class="line"></span><br><span class="line"><span class="constant">BUILD FAILED</span></span><br><span class="line"></span><br><span class="line"><span class="constant">Total </span><span class="symbol">time:</span> <span class="number">10</span> mins <span class="number">48.643</span> secs</span><br></pre></td></tr></table></figure>
+<p>It is casuse by the conflict between <code>commons-io:2.4</code> and <code>commons-io:2.5</code> in <code>cas-server-support-pac4j</code>, we need to add <code>-DskipVersionConflict=true</code> in bootstrap scripts.</p>
+<p>If you build it in IntelliJ IDEA, set this parameter in <code>Preferences-Build,Execution,Deployment-Build Tools-Gradle-Gradle VM options</code>.</p>
+<p>Plus, if you want to use http proxy in gradle, you need to set these parameters:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-DproxySet=<span class="literal">true</span> -DproxyHost=<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> -DproxyPort=<span class="number">8123</span></span><br></pre></td></tr></table></figure></span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2016/05/19/Awesome-dataviz/" itemprop="url">
                 Awesome dataviz
               </a>
@@ -1221,88 +1302,13 @@
 
 
     
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/01/13/Install-Thrift-with-glibc-on-CentOS/" itemprop="url">
-                Install Thrift with glibc on CentOS
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          Posted on
-          <time itemprop="dateCreated" datetime="2015-01-13T16:08:12+08:00" content="2015-01-13">
-            2015-01-13
-          </time>
-        </span>
-
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/01/13/Install-Thrift-with-glibc-on-CentOS/#comments" itemprop="discussionUrl">
-              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/01/13/Install-Thrift-with-glibc-on-CentOS/" itemprop="commentsCount"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h1 id="Install_glib">Install glib</h1><h2 id="Install_Development_Tools">Install Development Tools</h2><p><code>Development Tools</code> is a group of pacakges in yum such as <code>automake</code>, <code>autoconf</code> and so on.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo yum -y update</span><br><span class="line">sudo yum -y groupinstall <span class="string">"Development Tools"</span></span><br><span class="line">sudo yum install -y wget</span><br></pre></td></tr></table></figure>
-<h2 id="Upgrade_some_tools">Upgrade some tools</h2><p>Although some tools are included in the <code>Development Tools</code>, <code>glibc</code> and <code>thrift</code> need new version of those tools. We need to upgrade them.</p>
-<h3 id="autoconf">autoconf</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://ftp.gnu.org/gnu/autoconf/autoconf-<span class="number">2.69</span>.tar.gz</span><br><span class="line">tar xvf autoconf-<span class="number">2.69</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> autoconf-<span class="number">2.69</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-<h3 id="automake">automake</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://ftp.gnu.org/gnu/automake/automake-<span class="number">1.14</span>.tar.gz</span><br><span class="line">tar xvf automake-<span class="number">1.14</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> automake-<span class="number">1.14</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-<h3 id="bison">bison</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://ftp.gnu.org/gnu/bison/bison-<span class="number">2.5</span>.<span class="number">1</span>.tar.gz</span><br><span class="line">tar xvf bison-<span class="number">2.5</span>.<span class="number">1</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> bison-<span class="number">2.5</span>.<span class="number">1</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-<h2 id="Install_glib_(finally)">Install glib (finally)</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://ftp.gnome.org/pub/gnome/sources/glib/<span class="number">2.42</span>/glib-<span class="number">2.42</span>.<span class="number">0</span>.tar.xz</span><br><span class="line">tar xvf glib-<span class="number">2.42</span>.<span class="number">0</span>.tar.xz</span><br><span class="line"><span class="built_in">cd</span> glib-<span class="number">2.42</span>.<span class="number">0</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-<h2 id="Check">Check</h2><p><code>pkgconfig</code> is in <code>/usr/local/lib/pkgconfig</code> or <code>/usr/lib64/pkgconfig</code>. Please find it by yourself by <code>locate pkgconfig</code>. Further, you must add <code>PKG_CONFIG_PATH</code> in your environment variables.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls -lrt /usr/<span class="built_in">local</span>/lib/pkgconfig</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig"</span> &gt;&gt; /etc/profile</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br></pre></td></tr></table></figure>
-<h1 id="Install_Thrift_(finally_*_2)">Install Thrift (finally * 2)</h1><p>If you get <code>thrift</code> from <code>git</code>, you must run <code>bootstrap.sh</code> first.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> thrift-<span class="number">0.9</span>.<span class="number">2</span></span><br><span class="line">./configure --with-lua=no</span><br><span class="line">result:</span><br><span class="line">Building C++ Library ......... : no</span><br><span class="line">Building C (GLib) Library .... : yes</span><br><span class="line">Building Java Library ........ : no</span><br><span class="line">Building C<span class="comment"># Library .......... : no</span></span><br><span class="line">Building Python Library ...... : yes</span><br><span class="line">Building Ruby Library ........ : no</span><br><span class="line">Building Haskell Library ..... : no</span><br><span class="line">Building Perl Library ........ : no</span><br><span class="line">Building PHP Library ......... : no</span><br><span class="line">Building Erlang Library ...... : no</span><br><span class="line">Building Go Library .......... : no</span><br><span class="line">Building D Library ........... : no</span><br><span class="line">Building NodeJS Library ...... : no</span><br><span class="line">Building Lua Library ......... : yes</span><br><span class="line">make </span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">&raquo;</a>
+  </nav>
+
  </div>
 
         
@@ -1334,7 +1340,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-count">11</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -1348,7 +1354,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">16</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
