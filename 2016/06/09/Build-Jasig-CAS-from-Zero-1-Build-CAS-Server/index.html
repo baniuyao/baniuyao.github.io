@@ -44,21 +44,21 @@
 
 
 <meta name="description" content="Download source tarball from githubYou can get CAS from git easily:)
-1git clone https://github.com/apereo/cas.git
-compileget gradleCAS can be compiled by gradle, when you first run gradlew(gradle wrap">
+123git clone https://github.com/apereo/cas.gitgit fetchgit checkout 4.2.x
+The master branch is not a can-be-compiled version. I got">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Build Jasig CAS from Zero (1)  - Build CAS Server">
 <meta property="og:url" content="http://blog.yaorenjie.com/2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/index.html">
 <meta property="og:site_name" content="Renjie Yao's Blog">
 <meta property="og:description" content="Download source tarball from githubYou can get CAS from git easily:)
-1git clone https://github.com/apereo/cas.git
-compileget gradleCAS can be compiled by gradle, when you first run gradlew(gradle wrap">
-<meta property="og:updated_time" content="2016-06-09T04:06:28.000Z">
+123git clone https://github.com/apereo/cas.gitgit fetchgit checkout 4.2.x
+The master branch is not a can-be-compiled version. I got">
+<meta property="og:updated_time" content="2016-06-09T15:39:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Build Jasig CAS from Zero (1)  - Build CAS Server">
 <meta name="twitter:description" content="Download source tarball from githubYou can get CAS from git easily:)
-1git clone https://github.com/apereo/cas.git
-compileget gradleCAS can be compiled by gradle, when you first run gradlew(gradle wrap">
+123git clone https://github.com/apereo/cas.gitgit fetchgit checkout 4.2.x
+The master branch is not a can-be-compiled version. I got">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -213,7 +213,10 @@ compileget gradleCAS can be compiled by gradle, when you first run gradlew(gradl
 
       
         <span itemprop="articleBody"><h1 id="Download_source_tarball_from_github">Download source tarball from github</h1><p>You can get CAS from git easily:)</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone <span class="string">https:</span><span class="comment">//github.com/apereo/cas.git</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https:<span class="comment">//github.com/apereo/cas.git</span></span><br><span class="line">git fetch</span><br><span class="line">git checkout <span class="number">4.2</span>.x</span><br></pre></td></tr></table></figure>
+<p>The master branch is not a can-be-compiled version. I got failure information when I run compile commands in <code>master</code> branch:</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$./dev-build-<span class="keyword">no</span>-tests.<span class="keyword">sh</span></span><br><span class="line"></span><br><span class="line">FAILURE: Build failed with <span class="keyword">an</span> exception.</span><br><span class="line"></span><br><span class="line"><span class="comment">* Where:</span></span><br><span class="line">Build <span class="keyword">file</span> '/private/tmp/cas/cas-management-webapp/build.gradle' <span class="keyword">line</span>: 28</span><br><span class="line"></span><br><span class="line"><span class="comment">* What went wrong:</span></span><br><span class="line">A problem occurred evaluating project ':cas-management-webapp'.</span><br><span class="line">&gt; <span class="keyword">No</span> such property: java <span class="keyword">for</span> <span class="keyword">class</span>: org.gradle.api.java.archives.internal.DefaultManifest</span><br><span class="line"></span><br><span class="line"><span class="comment">* Try:</span></span><br><span class="line"><span class="keyword">Run</span> with --stacktrace option to get the <span class="keyword">stack</span> trace. <span class="keyword">Run</span> with --info or --debug option to get <span class="keyword">more</span> <span class="keyword">log</span> output.</span><br><span class="line"></span><br><span class="line">BUILD FAILED</span><br><span class="line"></span><br><span class="line"><span class="keyword">Total</span> time: 11.67 secs</span><br></pre></td></tr></table></figure>
+<p>The stable version version in <a href="https://github.com/apereo/cas/releases" target="_blank" rel="external">cas release page</a> is 4.2.2. So just checkout out the stable version.</p>
 <h1 id="compile">compile</h1><h2 id="get_gradle">get gradle</h2><p>CAS can be compiled by <code>gradle</code>, when you first run <code>gradlew</code>(gradle wrapper), the project will download gradle-XXX-bin.zip. If you already have it or you have some problems downloading it(such as GFW), you can simply edit `{CAS_PWD}/gradle/wrapper/gradle-wrapper.properties” like below:</p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="setting">distributionBase=<span class="value">GRADLE_USER_HOME</span></span></span><br><span class="line"><span class="setting">distributionPath=<span class="value">wrapper/dists</span></span></span><br><span class="line"><span class="setting">zipStoreBase=<span class="value">GRADLE_USER_HOME</span></span></span><br><span class="line"><span class="setting">zipStorePath=<span class="value">wrapper/dists</span></span></span><br><span class="line"><span class="setting">distributionUrl=<span class="value">https\://services.gradle.org/distributions/gradle-<span class="number">2.13</span>-all.zip</span></span></span><br></pre></td></tr></table></figure>
 <p>Replace <code>distributionUrl</code> with your own url.</p>
@@ -226,6 +229,9 @@ compileget gradleCAS can be compiled by gradle, when you first run gradlew(gradl
 <p>If you build it in IntelliJ IDEA, set this parameter in <code>Preferences-Build,Execution,Deployment-Build Tools-Gradle-Gradle VM options</code>.</p>
 <p>Plus, if you want to use http proxy in gradle, you need to set these parameters:</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-DproxySet=<span class="literal">true</span> -DproxyHost=<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> -DproxyPort=<span class="number">8123</span></span><br></pre></td></tr></table></figure>
+<h2 id="For_IDE">For IDE</h2><p>We need to execute extra command for IDE</p>
+<h3 id="IDEA">IDEA</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew idea</span><br></pre></td></tr></table></figure>
+<h3 id="Eclipse">Eclipse</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew eclipse</span><br></pre></td></tr></table></figure>
 <h1 id="To_Be_Contined…">To Be Contined…</h1></span>
       
     </div>
@@ -376,7 +382,7 @@ compileget gradleCAS can be compiled by gradle, when you first run gradlew(gradl
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Download_source_tarball_from_github"><span class="nav-number">1.</span> <span class="nav-text">Download source tarball from github</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#compile"><span class="nav-number">2.</span> <span class="nav-text">compile</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#get_gradle"><span class="nav-number">2.1.</span> <span class="nav-text">get gradle</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#compile_cas_project"><span class="nav-number">2.2.</span> <span class="nav-text">compile cas project</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#To_Be_Contined…"><span class="nav-number">3.</span> <span class="nav-text">To Be Contined…</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Download_source_tarball_from_github"><span class="nav-number">1.</span> <span class="nav-text">Download source tarball from github</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#compile"><span class="nav-number">2.</span> <span class="nav-text">compile</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#get_gradle"><span class="nav-number">2.1.</span> <span class="nav-text">get gradle</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#compile_cas_project"><span class="nav-number">2.2.</span> <span class="nav-text">compile cas project</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#For_IDE"><span class="nav-number">2.3.</span> <span class="nav-text">For IDE</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IDEA"><span class="nav-number">2.3.1.</span> <span class="nav-text">IDEA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Eclipse"><span class="nav-number">2.3.2.</span> <span class="nav-text">Eclipse</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#To_Be_Contined…"><span class="nav-number">3.</span> <span class="nav-text">To Be Contined…</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
