@@ -2,8 +2,6 @@
 <html class="theme-next use-motion ">
 <head>
   
-    
-
 
 <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -53,7 +51,7 @@ The master branch is not a can-be-compiled version. I got">
 <meta property="og:description" content="Download source tarball from githubYou can get CAS from git easily:)
 123git clone https://github.com/apereo/cas.gitgit fetchgit checkout 4.2.x
 The master branch is not a can-be-compiled version. I got">
-<meta property="og:updated_time" content="2016-06-09T15:39:15.000Z">
+<meta property="og:updated_time" content="2016-06-20T07:51:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Build Jasig CAS from Zero (1)  - Build CAS Server">
 <meta name="twitter:description" content="Download source tarball from githubYou can get CAS from git easily:)
@@ -223,7 +221,7 @@ The master branch is not a can-be-compiled version. I got">
 <p>If you have local gradle zip file, use the zip file name directly and put zip file into <code>{CAS_PWD}/gradle/wrapper</code>. For example if my gradle zip file is <code>gradle-2.10-bin.zip</code>, you need parameter <code>distributionUrl</code> like this:</p>
 <figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">...</span><br><span class="line"></span>distributionUtl=gradle-2.10-bin.zip</span><br></pre></td></tr></table></figure>
 <h2 id="compile_cas_project">compile cas project</h2><p>There is two bootstrap shell in cas directory, <code>dev-build.sh</code> and <code>dev-build-no-tests.sh</code>. The difference between them is obviously shown in their names - <code>dev-build-no-tests.sh</code> will set this flag <code>-DskipAspectJ=true</code></p>
-<p>When you run <code>dev-build.sh</code> or <code>dev-build-no-tests.sh</code> for a couple of minutes, you will get this fail result because of some conflicts.</p>
+<p>When you run <code>dev-build.sh</code> or <code>dev-build-no-tests.sh</code> for a couple of minutes, you will probably get this conflicts failure.</p>
 <figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">:cas-server-support-pac4j</span><span class="symbol">:compileAspect</span></span><br><span class="line"><span class="constant">Download </span>...</span><br><span class="line">&gt; <span class="symbol">:cas-server-support-pac4j</span><span class="symbol">:compileAspecFAILED</span></span><br><span class="line"></span><br><span class="line"><span class="constant">FAILURE:</span> <span class="constant">Build </span>failed with an exception.</span><br><span class="line"></span><br><span class="line">* <span class="constant">What </span>went <span class="symbol">wrong:</span></span><br><span class="line"><span class="constant">Execution </span>failed <span class="keyword">for</span> task <span class="string">':cas-server-support-pac4j:compileAspect'</span>.</span><br><span class="line">&gt; <span class="constant">Could </span><span class="keyword">not</span> resolve all dependencies <span class="keyword">for</span> configuration <span class="string">':cas-server-support-pac4j:compile'</span>.</span><br><span class="line">   &gt; <span class="constant">A </span>conflict was found between the following <span class="symbol">modules:</span></span><br><span class="line">      - commons-<span class="symbol">io:</span>commons-<span class="symbol">io:</span><span class="number">2.4</span></span><br><span class="line">      - commons-<span class="symbol">io:</span>commons-<span class="symbol">io:</span><span class="number">2.5</span></span><br><span class="line"></span><br><span class="line">* <span class="constant">Try:</span></span><br><span class="line"><span class="constant">Run </span>with --stacktrace option to get the stack trace. <span class="constant">Run </span>with --info <span class="keyword">or</span> --debug option to get more log output.</span><br><span class="line"></span><br><span class="line"><span class="constant">BUILD FAILED</span></span><br><span class="line"></span><br><span class="line"><span class="constant">Total </span><span class="symbol">time:</span> <span class="number">10</span> mins <span class="number">48.643</span> secs</span><br></pre></td></tr></table></figure>
 <p>It is casuse by the conflict between <code>commons-io:2.4</code> and <code>commons-io:2.5</code> in <code>cas-server-support-pac4j</code>, we need to add <code>-DskipVersionConflict=true</code> in bootstrap scripts.</p>
 <p>If you build it in IntelliJ IDEA, set this parameter in <code>Preferences-Build,Execution,Deployment-Build Tools-Gradle-Gradle VM options</code>.</p>
@@ -232,7 +230,7 @@ The master branch is not a can-be-compiled version. I got">
 <h2 id="For_IDE">For IDE</h2><p>We need to execute extra command for IDE</p>
 <h3 id="IDEA">IDEA</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew idea</span><br></pre></td></tr></table></figure>
 <h3 id="Eclipse">Eclipse</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew eclipse</span><br></pre></td></tr></table></figure>
-<h1 id="To_Be_Contined…">To Be Contined…</h1></span>
+<h1 id="To_Be_Contined…w">To Be Contined…w</h1></span>
       
     </div>
 
@@ -252,6 +250,8 @@ The master branch is not a can-be-compiled version. I got">
       
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/20/Using-pip-and-easy-install-with-Chinese-repo/" rel="prev">Using pip and easy_install with Chinese repo</a>
             
           </div>
 
@@ -323,7 +323,7 @@ The master branch is not a can-be-compiled version. I got">
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-count">12</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -337,7 +337,7 @@ The master branch is not a can-be-compiled version. I got">
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-count">19</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
@@ -382,7 +382,7 @@ The master branch is not a can-be-compiled version. I got">
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Download_source_tarball_from_github"><span class="nav-number">1.</span> <span class="nav-text">Download source tarball from github</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#compile"><span class="nav-number">2.</span> <span class="nav-text">compile</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#get_gradle"><span class="nav-number">2.1.</span> <span class="nav-text">get gradle</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#compile_cas_project"><span class="nav-number">2.2.</span> <span class="nav-text">compile cas project</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#For_IDE"><span class="nav-number">2.3.</span> <span class="nav-text">For IDE</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IDEA"><span class="nav-number">2.3.1.</span> <span class="nav-text">IDEA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Eclipse"><span class="nav-number">2.3.2.</span> <span class="nav-text">Eclipse</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#To_Be_Contined…"><span class="nav-number">3.</span> <span class="nav-text">To Be Contined…</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Download_source_tarball_from_github"><span class="nav-number">1.</span> <span class="nav-text">Download source tarball from github</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#compile"><span class="nav-number">2.</span> <span class="nav-text">compile</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#get_gradle"><span class="nav-number">2.1.</span> <span class="nav-text">get gradle</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#compile_cas_project"><span class="nav-number">2.2.</span> <span class="nav-text">compile cas project</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#For_IDE"><span class="nav-number">2.3.</span> <span class="nav-text">For IDE</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IDEA"><span class="nav-number">2.3.1.</span> <span class="nav-text">IDEA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Eclipse"><span class="nav-number">2.3.2.</span> <span class="nav-text">Eclipse</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#To_Be_Contined…w"><span class="nav-number">3.</span> <span class="nav-text">To Be Contined…w</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>

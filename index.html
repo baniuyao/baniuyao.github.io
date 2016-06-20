@@ -170,6 +170,76 @@
           
           
             
+              <a class="post-title-link" href="/2016/06/20/Using-pip-and-easy-install-with-Chinese-repo/" itemprop="url">
+                Using pip and easy_install with Chinese repo
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          Posted on
+          <time itemprop="dateCreated" datetime="2016-06-20T15:47:16+08:00" content="2016-06-20">
+            2016-06-20
+          </time>
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2016/06/20/Using-pip-and-easy-install-with-Chinese-repo/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/20/Using-pip-and-easy-install-with-Chinese-repo/" itemprop="commentsCount"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>For some reasons, <code>pypi.python.org</code> is not available or has a slow download rate. We can simply using <a href="http://pypi.douban.com/simple" target="_blank" rel="external">douban pypi</a> or <a href="http://pypi.v2ex.com/simple" target="_blank" rel="external">v2ex pypi</a> by two ways.</p>
+<h2 id="edit_env">edit env</h2><p>Edit env will enable <code>pip</code> using own pypi in default. In Linux and Mac, the file is in <code>%HOME/.pip/pip.conf</code>. And the content is:</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line"><span class="keyword">find</span>-links=http:<span class="comment">//pypi.douban.com/simple</span></span><br><span class="line">[install]</span><br><span class="line"><span class="keyword">find</span>-links=</span><br><span class="line">    http:<span class="comment">//pypi.douban.com/simple</span></span><br><span class="line">    http:<span class="comment">//pypi.v2ex.com/simple</span></span><br></pre></td></tr></table></figure></span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/" itemprop="url">
                 Build Jasig CAS from Zero (1)  - Build CAS Server
               </a>
@@ -219,7 +289,7 @@
 <p>If you have local gradle zip file, use the zip file name directly and put zip file into <code>{CAS_PWD}/gradle/wrapper</code>. For example if my gradle zip file is <code>gradle-2.10-bin.zip</code>, you need parameter <code>distributionUrl</code> like this:</p>
 <figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">...</span><br><span class="line"></span>distributionUtl=gradle-2.10-bin.zip</span><br></pre></td></tr></table></figure>
 <h2 id="compile_cas_project">compile cas project</h2><p>There is two bootstrap shell in cas directory, <code>dev-build.sh</code> and <code>dev-build-no-tests.sh</code>. The difference between them is obviously shown in their names - <code>dev-build-no-tests.sh</code> will set this flag <code>-DskipAspectJ=true</code></p>
-<p>When you run <code>dev-build.sh</code> or <code>dev-build-no-tests.sh</code> for a couple of minutes, you will get this fail result because of some conflicts.</p>
+<p>When you run <code>dev-build.sh</code> or <code>dev-build-no-tests.sh</code> for a couple of minutes, you will probably get this conflicts failure.</p>
 <figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">:cas-server-support-pac4j</span><span class="symbol">:compileAspect</span></span><br><span class="line"><span class="constant">Download </span>...</span><br><span class="line">&gt; <span class="symbol">:cas-server-support-pac4j</span><span class="symbol">:compileAspecFAILED</span></span><br><span class="line"></span><br><span class="line"><span class="constant">FAILURE:</span> <span class="constant">Build </span>failed with an exception.</span><br><span class="line"></span><br><span class="line">* <span class="constant">What </span>went <span class="symbol">wrong:</span></span><br><span class="line"><span class="constant">Execution </span>failed <span class="keyword">for</span> task <span class="string">':cas-server-support-pac4j:compileAspect'</span>.</span><br><span class="line">&gt; <span class="constant">Could </span><span class="keyword">not</span> resolve all dependencies <span class="keyword">for</span> configuration <span class="string">':cas-server-support-pac4j:compile'</span>.</span><br><span class="line">   &gt; <span class="constant">A </span>conflict was found between the following <span class="symbol">modules:</span></span><br><span class="line">      - commons-<span class="symbol">io:</span>commons-<span class="symbol">io:</span><span class="number">2.4</span></span><br><span class="line">      - commons-<span class="symbol">io:</span>commons-<span class="symbol">io:</span><span class="number">2.5</span></span><br><span class="line"></span><br><span class="line">* <span class="constant">Try:</span></span><br><span class="line"><span class="constant">Run </span>with --stacktrace option to get the stack trace. <span class="constant">Run </span>with --info <span class="keyword">or</span> --debug option to get more log output.</span><br><span class="line"></span><br><span class="line"><span class="constant">BUILD FAILED</span></span><br><span class="line"></span><br><span class="line"><span class="constant">Total </span><span class="symbol">time:</span> <span class="number">10</span> mins <span class="number">48.643</span> secs</span><br></pre></td></tr></table></figure>
 <p>It is casuse by the conflict between <code>commons-io:2.4</code> and <code>commons-io:2.5</code> in <code>cas-server-support-pac4j</code>, we need to add <code>-DskipVersionConflict=true</code> in bootstrap scripts.</p>
 <p>If you build it in IntelliJ IDEA, set this parameter in <code>Preferences-Build,Execution,Deployment-Build Tools-Gradle-Gradle VM options</code>.</p>
@@ -228,7 +298,7 @@
 <h2 id="For_IDE">For IDE</h2><p>We need to execute extra command for IDE</p>
 <h3 id="IDEA">IDEA</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew idea</span><br></pre></td></tr></table></figure>
 <h3 id="Eclipse">Eclipse</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew eclipse</span><br></pre></td></tr></table></figure>
-<h1 id="To_Be_Contined…">To Be Contined…</h1></span>
+<h1 id="To_Be_Contined…w">To Be Contined…w</h1></span>
         
       
     </div>
@@ -1231,84 +1301,6 @@
 
 
     
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/" itemprop="url">
-                Zabbix install issues with aclocal 1.14 is missing
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          Posted on
-          <time itemprop="dateCreated" datetime="2015-02-27T07:14:35+08:00" content="2015-02-27">
-            2015-02-27
-          </time>
-        </span>
-
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/#comments" itemprop="discussionUrl">
-              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/" itemprop="commentsCount"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h1 id="Backgroud">Backgroud</h1><p><code>configure</code> is okay, the next step is <code>make install</code>. But <code>make install</code> exist with error which said it cannot find <code>aclocal-1.14</code> like below:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[baniuyao@YaoRenjies-CentOS zabbix-<span class="number">2.4</span>.<span class="number">4</span>]$ sudo make install</span><br><span class="line">CDPATH=<span class="string">"<span class="variable">$&#123;ZSH_VERSION+.&#125;</span>:"</span> &amp;&amp; <span class="built_in">cd</span> . &amp;&amp; /bin/sh /home/baniuyao/apps/zabbix-<span class="number">2.4</span>.<span class="number">4</span>/missing aclocal-<span class="number">1.14</span> -I m4</span><br><span class="line">/home/baniuyao/apps/zabbix-<span class="number">2.4</span>.<span class="number">4</span>/missing: line <span class="number">81</span>: aclocal-<span class="number">1.14</span>: <span class="built_in">command</span> not found</span><br><span class="line">WARNING: <span class="string">'aclocal-1.14'</span> is missing on your system.</span><br><span class="line">         You should only need it <span class="keyword">if</span> you modified <span class="string">'acinclude.m4'</span> or</span><br><span class="line">         <span class="string">'configure.ac'</span> or m4 files included by <span class="string">'configure.ac'</span>.</span><br><span class="line">         The <span class="string">'aclocal'</span> program is part of the GNU Automake package:</span><br><span class="line">         &lt;http://www.gnu.org/software/automake&gt;</span><br><span class="line">         It also requires GNU Autoconf, GNU m4 and Perl <span class="keyword">in</span> order to run:</span><br><span class="line">         &lt;http://www.gnu.org/software/autoconf&gt;</span><br><span class="line">         &lt;http://www.gnu.org/software/m4/&gt;</span><br><span class="line">         &lt;http://www.perl.org/&gt;</span><br><span class="line">make: *** [aclocal.m4] Error <span class="number">127</span></span><br></pre></td></tr></table></figure>
-<p>But the system has <code>aclocal-1.14</code> already:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[baniuyao@YaoRenjies-CentOS ~]$ <span class="built_in">which</span> aclocal-<span class="number">1.14</span></span><br><span class="line">/usr/<span class="built_in">local</span>/bin/aclocal-<span class="number">1.14</span></span><br></pre></td></tr></table></figure>
-<h1 id="Solution">Solution</h1><p>This is because we don’t have some <code>autoconf</code>(<em>.ac) and <code>automake</code>(</em>.am) files. We can <code>touch</code> these.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch configure.ac aclocal.m4 configure Makefile.am Makefile.in</span><br></pre></td></tr></table></figure>
-<p>Or we can use <code>autoreconf</code> to generate.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo autoreconf -ivf</span><br></pre></td></tr></table></figure>
-<p>Let’s figure out what <code>-ivf</code> means.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-v, --verbose            verbosely report processing</span><br><span class="line"><span class="operator">-f</span>, --force              consider all files obsolete</span><br><span class="line">-i, --install            copy missing auxiliary files</span><br></pre></td></tr></table></figure>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1347,7 +1339,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-count">12</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -1361,7 +1353,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-count">19</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
