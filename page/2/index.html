@@ -170,6 +170,93 @@
           
           
             
+              <a class="post-title-link" href="/2015/03/04/The-Analysis-of-Zabbix-history-and-trends-Storing/" itemprop="url">
+                The Analysis of Zabbix history and trends Storing
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          Posted on
+          <time itemprop="dateCreated" datetime="2015-03-04T09:41:25+08:00" content="2015-03-04">
+            2015-03-04
+          </time>
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/03/04/The-Analysis-of-Zabbix-history-and-trends-Storing/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/03/04/The-Analysis-of-Zabbix-history-and-trends-Storing/" itemprop="commentsCount"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h1 id="Intro">Intro</h1><p><code>history</code> and <code>trends</code> are two main tables in Zabbix database for storing data. There are also tables inherits <code>history</code> which are used to store different types of data. For example, table <code>history_uint</code> is to store uint data. Others are <code>history_str</code>, <code>history_log</code> and <code>history_text</code>. Please pay attention that there is only one table inherits table <code>trends</code> and its name is <code>table_uint</code>.</p>
+<h1 id="Entrance">Entrance</h1><p>The start of the whole process is in function <code>DCsync_all()</code>, <code>src/libs/zbxdbcache/dbcache.c</code>. <code>dbcache</code> is a feature which enables Zabbix to keep data in memory first and flush to database in batch.</p>
+<p>To make it more clearly, I wrote comments inline.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span>	<span class="title">DCsync_all</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	zabbix_log(LOG_LEVEL_DEBUG, <span class="string">"In DCsync_all()"</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// call `DCsync_history` to sync history data from cache to database</span></span><br><span class="line">	DCsync_history(ZBX_SYNC_FULL);</span><br><span class="line">	<span class="comment">// assert code is running in Zabbix Server. Zabbix Server WILL NOT run codes below</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="number">0</span> != (daemon_type &amp; ZBX_DAEMON_TYPE_SERVER))</span><br><span class="line">		<span class="comment">// sync trends data. </span></span><br><span class="line">		DCsync_trends();</span><br><span class="line">	zabbix_log(LOG_LEVEL_DEBUG, <span class="string">"End of DCsync_all()"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="DCsync_history()">DCsync_history()</h1><p>Since we are talking about Zabbix Server, so we will only take a look at <code>DCsync_history()</code>. In this paragraph, I have simplified the code in <code>DCsync_history()</code> to help readers understand the core process of flushing data to database.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">DBbegin();</span><br><span class="line">	</span><br><span class="line"><span class="comment">// while in Zabbix Server mode</span></span><br><span class="line"><span class="keyword">if</span> (<span class="number">0</span> != (daemon_type &amp; ZBX_DAEMON_TYPE_SERVER))</span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="comment">// add data to history</span></span><br><span class="line">	DCmass_add_history(history, history_num);</span><br><span class="line">	<span class="comment">// update trends</span></span><br><span class="line">	DCmass_update_trends(history, history_num);</span><br><span class="line">	...		</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">	DCmass_proxy_add_history(history, history_num);</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line">DBcommit();</span><br></pre></td></tr></table></figure>
+<h1 id="DCmass_add_history()">DCmass_add_history()</h1><p>Let’s take a look into <code>DCmass_add_history()</code>.</p>
+<p>It will calculate the numbers for each type of items.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span> (history[i].value_type)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">case</span> ITEM_VALUE_TYPE_FLOAT:</span><br><span class="line">			h_num++;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> ITEM_VALUE_TYPE_UINT64:</span><br><span class="line">			huint_num++;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> ITEM_VALUE_TYPE_STR:</span><br><span class="line">			hstr_num++;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> ITEM_VALUE_TYPE_TEXT:</span><br><span class="line">			htext_num++;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> ITEM_VALUE_TYPE_LOG:</span><br><span class="line">			hlog_num++;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>And then, call function to write data to database.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* history */</span></span><br><span class="line"><span class="keyword">if</span> (<span class="number">0</span> != h_num)</span><br><span class="line">	dc_add_history_dbl(history, history_num);</span><br><span class="line"><span class="comment">/* history_uint */</span></span><br><span class="line"><span class="keyword">if</span> (<span class="number">0</span> != huint_num)</span><br><span class="line">	dc_add_history_uint(history, history_num);</span><br></pre></td></tr></table></figure>
+<p>Finally, we can touch the sql in <code>dc_add_history_dbl()</code>.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span>	<span class="title">dc_add_history_dbl</span><span class="params">(ZBX_DC_HISTORY *history, <span class="keyword">int</span> history_num)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; history_num; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		...</span><br><span class="line">		zbx_db_insert_add_values(&amp;db_insert, history[i].itemid, history[i].ts.sec, history[i].ts.ns,</span><br><span class="line">				history[i].value.dbl);</span><br><span class="line">	&#125;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="DCmass_update_trends">DCmass_update_trends</h1><p>Let’s see the code first.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span>	<span class="title">DCmass_update_trends</span><span class="params">(ZBX_DC_HISTORY *history, <span class="keyword">int</span> history_num)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; history_num; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		...</span><br><span class="line">		DCadd_trend(&amp;history[i], &amp;trends, &amp;trends_alloc, &amp;trends_num);</span><br><span class="line">	&#125;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">while</span> (<span class="number">0</span> &lt; trends_num)</span><br><span class="line">		<span class="comment">// flush trends while we actually HAVE trends data to flush</span></span><br><span class="line">		DCflush_trends(trends, &amp;trends_num, <span class="number">1</span>);</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>We get that the main process is in the function <code>DCadd_trend()</code>. Let’s move on to it.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span>	<span class="title">DCadd_trend</span><span class="params">(ZBX_DC_HISTORY *history, ZBX_DC_TREND **trends, <span class="keyword">int</span> *trends_alloc, <span class="keyword">int</span> *trends_num)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="comment">// get trend data from database by itemid</span></span><br><span class="line">	trend = DCget_trend(history-&gt;itemid);</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">switch</span> (trend-&gt;value_type)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">case</span> ITEM_VALUE_TYPE_FLOAT:</span><br><span class="line">			...</span><br><span class="line">			<span class="comment">// calculate the new data</span></span><br><span class="line">			trend-&gt;value_avg.dbl = (trend-&gt;num * trend-&gt;value_avg.dbl</span><br><span class="line">				+ history-&gt;value.dbl) / (trend-&gt;num + <span class="number">1</span>);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Above all, I think we are clear on the fact how Zabbix update history and trends.</p>
+<p>Below is the process:<br><img src="/images/zabbix_history_trends.jpg" alt="Alt text"></p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/" itemprop="url">
                 Zabbix install issues with aclocal 1.14 is missing
               </a>
@@ -354,7 +441,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-count">13</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -368,7 +455,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">19</span>
+              <span class="site-state-item-count">22</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>

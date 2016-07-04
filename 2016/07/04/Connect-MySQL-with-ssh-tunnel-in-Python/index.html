@@ -2,6 +2,8 @@
 <html class="theme-next use-motion ">
 <head>
   
+    
+
 
 <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -30,7 +32,7 @@
 
 
 
-  <meta name="keywords" content="bottle,python," />
+  <meta name="keywords" content="MySQL,Python,SSHTunnel," />
 
 
 
@@ -41,16 +43,19 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="Solution123456789101112from bottle import Bottle, request, response, runapp = Bottle() @app.hook(&apos;after_request&apos;)def enable_cors():    &quot;&quot;&quot;    You need to add some headers to each request.    Don&apos;t use">
+<meta name="description" content="Sometimes you can only connect to MySQL via a certain server for security reasons. But apparently, coding in IDE(e.g PyCharm) is easier. For this circumstance, we can use sshtunnel.
+So we have a MySQL">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Enable CORS in bottle.py">
-<meta property="og:url" content="http://blog.yaorenjie.com/2015/06/03/Enable-CORS-in-bottle-py/index.html">
+<meta property="og:title" content="Connect MySQL with ssh tunnel in Python">
+<meta property="og:url" content="http://blog.yaorenjie.com/2016/07/04/Connect-MySQL-with-ssh-tunnel-in-Python/index.html">
 <meta property="og:site_name" content="Renjie Yao's Blog">
-<meta property="og:description" content="Solution123456789101112from bottle import Bottle, request, response, runapp = Bottle() @app.hook(&apos;after_request&apos;)def enable_cors():    &quot;&quot;&quot;    You need to add some headers to each request.    Don&apos;t use">
-<meta property="og:updated_time" content="2015-09-07T09:10:36.000Z">
+<meta property="og:description" content="Sometimes you can only connect to MySQL via a certain server for security reasons. But apparently, coding in IDE(e.g PyCharm) is easier. For this circumstance, we can use sshtunnel.
+So we have a MySQL">
+<meta property="og:updated_time" content="2016-07-04T07:01:30.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Enable CORS in bottle.py">
-<meta name="twitter:description" content="Solution123456789101112from bottle import Bottle, request, response, runapp = Bottle() @app.hook(&apos;after_request&apos;)def enable_cors():    &quot;&quot;&quot;    You need to add some headers to each request.    Don&apos;t use">
+<meta name="twitter:title" content="Connect MySQL with ssh tunnel in Python">
+<meta name="twitter:description" content="Sometimes you can only connect to MySQL via a certain server for security reasons. But apparently, coding in IDE(e.g PyCharm) is easier. For this circumstance, we can use sshtunnel.
+So we have a MySQL">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -60,7 +65,7 @@
   };
 </script>
 
-  <title> Enable CORS in bottle.py | Renjie Yao's Blog </title>
+  <title> Connect MySQL with ssh tunnel in Python | Renjie Yao's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -169,7 +174,7 @@
           
           
             
-              Enable CORS in bottle.py
+              Connect MySQL with ssh tunnel in Python
             
           
         </h1>
@@ -178,8 +183,8 @@
       <div class="post-meta">
         <span class="post-time">
           Posted on
-          <time itemprop="dateCreated" datetime="2015-06-03T10:22:27+08:00" content="2015-06-03">
-            2015-06-03
+          <time itemprop="dateCreated" datetime="2016-07-04T14:45:41+08:00" content="2016-07-04">
+            2016-07-04
           </time>
         </span>
 
@@ -189,8 +194,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/06/03/Enable-CORS-in-bottle-py/#comments" itemprop="discussionUrl">
-              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/06/03/Enable-CORS-in-bottle-py/" itemprop="commentsCount"></span>
+            <a href="/2016/07/04/Connect-MySQL-with-ssh-tunnel-in-Python/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/07/04/Connect-MySQL-with-ssh-tunnel-in-Python/" itemprop="commentsCount"></span>
             </a>
           </span>
           
@@ -204,7 +209,9 @@
       
 
       
-        <span itemprop="articleBody"><h1 id="Solution">Solution</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> Bottle, request, response, run</span><br><span class="line">app = Bottle()</span><br><span class="line"> </span><br><span class="line"><span class="decorator">@app.hook('after_request')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">enable_cors</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span><br><span class="line">    You need to add some headers to each request.</span><br><span class="line">    Don't use the wildcard '*' for Access-Control-Allow-Origin in production.</span><br><span class="line">    """</span></span><br><span class="line">    response.headers[<span class="string">'Access-Control-Allow-Origin'</span>] = <span class="string">'*'</span></span><br><span class="line">    response.headers[<span class="string">'Access-Control-Allow-Methods'</span>] = <span class="string">'PUT, GET, POST, DELETE, OPTIONS'</span></span><br><span class="line">    response.headers[<span class="string">'Access-Control-Allow-Headers'</span>] = <span class="string">'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'</span></span><br></pre></td></tr></table></figure>
+        <span itemprop="articleBody"><p>Sometimes you can only connect to MySQL via a certain server for security reasons. But apparently, coding in IDE(e.g PyCharm) is easier. For this circumstance, we can use <a href="https://pypi.python.org/pypi/sshtunnel" target="_blank" rel="external">sshtunnel</a>.</p>
+<p>So we have a MySQL server on <code>127.0.0.3:3306</code>, its mysql login name and password is <code>MYSQL_USER</code> and <code>MYSQL_PASSWORD</code>. And we can only connect to this mysql via server <code>127.0.0.2:22</code>, and its login name and password is <code>root</code> and <code>SERVER_PASSWORD</code>. Let’s figure out how <code>sshtunnel</code> is working.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> SSHTunnelForwarder((<span class="string">'127.0.0.2'</span>, <span class="number">22</span>), ssh_password=<span class="string">'SERVER_PASSWORD'</span>, ssh_username=<span class="string">'root'</span>, remote_bind_address=(<span class="string">'127.0.0.3'</span>, <span class="number">3306</span>)) <span class="keyword">as</span> server:</span><br><span class="line">       conn = MySQLdb.connect(host=<span class="string">'127.0.0.1'</span>, port=server.local_bind_port, user=<span class="string">'MYSQL_USER'</span>, passwd=<span class="string">'MYSQL_PASSWORD'</span>)</span><br><span class="line">       cursor = conn.cursor()</span><br></pre></td></tr></table></figure>
 </span>
       
     </div>
@@ -213,9 +220,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/bottle/" rel="tag">#bottle</a>
+            <a href="/tags/MySQL/" rel="tag">#MySQL</a>
           
-            <a href="/tags/python/" rel="tag">#python</a>
+            <a href="/tags/Python/" rel="tag">#Python</a>
+          
+            <a href="/tags/SSHTunnel/" rel="tag">#SSHTunnel</a>
           
         </div>
       
@@ -224,13 +233,11 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/08/27/Advanced-Python-Data-Structure/" rel="prev">Advanced Python Data Structure</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/03/27/Kafka-Compression-Performance-Tests/" rel="next">Kafka Compression Performance Tests</a>
+              <a href="/2016/06/20/Using-pip-and-easy-install-with-Chinese-repo/" rel="next">Using pip and easy_install with Chinese repo</a>
             
           </div>
         </div>
@@ -355,7 +362,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Solution"><span class="nav-number">1.</span> <span class="nav-text">Solution</span></a></li></ol></div>
+              <p class="post-toc-empty">This post does not have a Table Of Contents</p>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
@@ -409,9 +416,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'renjieyaoblog';
-      var disqus_identifier = '2015/06/03/Enable-CORS-in-bottle-py/';
-      var disqus_title = 'Enable CORS in bottle.py';
-      var disqus_url = 'http://blog.yaorenjie.com/2015/06/03/Enable-CORS-in-bottle-py/';
+      var disqus_identifier = '2016/07/04/Connect-MySQL-with-ssh-tunnel-in-Python/';
+      var disqus_title = 'Connect MySQL with ssh tunnel in Python';
+      var disqus_url = 'http://blog.yaorenjie.com/2016/07/04/Connect-MySQL-with-ssh-tunnel-in-Python/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
