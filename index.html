@@ -170,6 +170,117 @@
           
           
             
+              <a class="post-title-link" href="/2016/07/08/Enable-lzo-in-Spark-and-IntelliJ-IDEA/" itemprop="url">
+                Enable lzo in Spark and IntelliJ IDEA
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          Posted on
+          <time itemprop="dateCreated" datetime="2016-07-08T09:32:13+08:00" content="2016-07-08">
+            2016-07-08
+          </time>
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2016/07/08/Enable-lzo-in-Spark-and-IntelliJ-IDEA/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/07/08/Enable-lzo-in-Spark-and-IntelliJ-IDEA/" itemprop="commentsCount"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h1 id="Intro">Intro</h1><p>LZO is a compression codec for Hadoop-environment component like hadoop, hbase, spark and so on. The problem I met is that I want to read and calculate data from Hive table in lzo by SparkSQL. In this post, I will show you how to enable lzo in a Spark box without extra hadoop lib and run SparkSQL in Intellij IDEA in Mac.</p>
+<h1 id="Box">Box</h1><ul>
+<li>spark-1.6.2-bin-hadoop2.6</li>
+<li>jdk-1.7</li>
+<li>hadoop-lzo-0.4.20</li>
+<li>maven3</li>
+</ul>
+<p>Spark node run on CentOS 7, and Intellij IDEA is on OS X EI Capitan.</p>
+<h1 id="Enable_lzo_in_spark_node">Enable lzo in spark node</h1><p>You can run spark in standalone without any other component, so it is easy to test wheather we have enable lzo. </p>
+<p>###1. Install linux lzo dependencies by yum</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum <span class="keyword">install</span> -y lzo-devel lzop</span><br></pre></td></tr></table></figure>
+<p>###2. clone hadoop-lzo repo from github at <a href="https://github.com/twitter/hadoop-lzo" target="_blank" rel="external">https://github.com/twitter/hadoop-lzo</a>. Then use maven.</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone <span class="string">https:</span><span class="comment">//github.com/twitter/hadoop-lzo</span></span><br><span class="line">cd hadoop-lzo</span><br><span class="line">mvn <span class="keyword">package</span></span><br></pre></td></tr></table></figure>
+<p>After package it, you will get a jar named <code>hadoop-lzo-0.4.20-SNAPSHOT.jar</code> in <code>target</code> directory.</p>
+<p>###3. Add jar to spark env by set env in <code>${SPARK_HOME}/conf/spark-conf.sh</code>.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> SPARK_CLASSPATH=$&#123;HADOOP-LZO_HOME&#125;/target/hadoop-lzo-<span class="number">0.4</span><span class="number">.20</span>-SNAPSHOT.jar</span><br></pre></td></tr></table></figure>
+<p><code>${SPARK_HOME}</code> and <code>${HADOOP-LZO_HOME}</code> is the directory you put spark and hadoop-lzo repo.</p>
+<p>###4. Run spark in standalone mode.</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cd</span> <span class="label">$&#123;SPARK_HOME&#125;</span></span><br><span class="line">./sbin/start-master.<span class="keyword">sh</span></span><br><span class="line">./sbin/start-slave.<span class="keyword">sh</span> spark:<span class="comment">//$&#123;SPARK_IP&#125;:$&#123;SPARK_PORT&#125;</span></span><br></pre></td></tr></table></figure>
+<p>###5. Test if lzo is availabe in spark by <code>spark-shell</code>.</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">cd $&#123;SPARK_HOME&#125;</span><br><span class="line">./bin/spark-shell</span><br><span class="line">scala&gt; sqlContext.setConf(<span class="string">"hive.metastore.uris"</span>, <span class="string">"thrift://cloudera-server:9083"</span>)</span><br><span class="line"></span><br><span class="line">scala&gt; sqlContext.setConf(<span class="string">"io.compression.codecs"</span>, <span class="string">"com.hadoop.compression.lzo.LzoCodec,com.hadoop.compression.lzo.LzopCodec"</span>)</span><br><span class="line"></span><br><span class="line">scala&gt; sqlContext.sql(<span class="string">"use default"</span>)</span><br><span class="line">res2: org.apache.spark.sql.DataFrame = [result: string]</span><br><span class="line"></span><br><span class="line">scala&gt; sqlContext.sql(<span class="string">"select cdn_ip, timestamp from total_cdn_log where date='2016-07-05' and hour='01' limit 10"</span>).show()</span><br><span class="line">+-----------+----------+</span><br><span class="line">|<span class="string">     cdn_ip</span>|<span class="string"> timestamp</span>|</span><br><span class="line">+-----------+----------+</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">+-----------+----------+</span><br></pre></td></tr></table></figure>
+<p>We must set <code>io.compression.codecs</code> to <code>com.hadoop.compression.lzo.LzoCodec,com.hadoop.compression.lzo.LzopCodec</code> because spark use snappy codec in default.</p>
+<h1 id="Enable_lzo_in_IntelliJ_IDEA">Enable lzo in IntelliJ IDEA</h1><p>I think you have make your SparkSQL job running - that is to say, scala box is okay in your IntelliJ IDEA. Mac OS is a little different with RedHat because it is based on FreeBSD and NetBSD’s implementions.</p>
+<p>###1. Install lzo dependencies by <code>brew</code></p>
+<p><code>brew</code> is an excellent package management tool in Mac which its full name is <code>Homebrew</code>. If you have not installed <code>brew</code>, you can go to its website <a href="http://brew.sh/" target="_blank" rel="external">http://brew.sh/</a>. Its install is easy with only one line command.</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">/usr/</span>bin<span class="regexp">/ruby -e "$(curl -fsSL https:/</span><span class="regexp">/raw.githubusercontent.com/</span>Homebrew<span class="regexp">/install/m</span>aster<span class="regexp">/install)"</span></span><br></pre></td></tr></table></figure>
+<p>Okay, let’s install <code>lzo</code> dependencies.</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">brew </span>install lzo lzop</span><br></pre></td></tr></table></figure>
+<p>###2. Package <code>hadoop-lzo</code></p>
+<p><strong>REMARK:</strong> Please <strong>DO NOT</strong> copy the <code>hadoop-lzo</code> from other system - such as CentOS that we run spark on. Because the maven procedure in <code>hadoop-lzo</code> contains some <code>gcc</code> process which is strongly connected with the system.</p>
+<p>To build <code>hadoop-lzo</code>, we need to specify the location we install <code>lzo</code>. </p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>brew list lzo</span><br><span class="line">/usr/local/<span class="constant">Cellar</span>/lzo/<span class="number">2.09</span>/<span class="keyword">include</span>/lzo/ (<span class="number">13</span> files)</span><br><span class="line">/usr/local/<span class="constant">Cellar</span>/lzo/<span class="number">2.09</span>/<span class="class"><span class="keyword">lib</span>/<span class="title">liblzo2</span>.2.<span class="title">dylib</span></span></span><br><span class="line">/usr/local/<span class="constant">Cellar</span>/lzo/<span class="number">2.09</span>/<span class="class"><span class="keyword">lib</span>/ (2 <span class="title">other</span> <span class="title">files</span>)</span></span><br><span class="line">/usr/local/<span class="constant">Cellar</span>/lzo/<span class="number">2.09</span>/share/doc/ (<span class="number">7</span> files)</span><br></pre></td></tr></table></figure>
+<p>Then we can get <code>hadoop-lzo</code> and package jar.</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git clone <span class="string">https:</span><span class="comment">//github.com/twitter/hadoop-lzo</span></span><br><span class="line">$ cd hadoop-lzo</span><br><span class="line">$ C_INCLUDE_PATH=<span class="regexp">/usr/</span>local<span class="regexp">/Cellar/</span>lzo<span class="regexp">/2.09/</span>include<span class="regexp">/ LIBRARY_PATH=/</span>usr<span class="regexp">/local/</span>Cellar<span class="regexp">/lzo/</span><span class="number">2.09</span><span class="regexp">/lib/</span>   mvn clean <span class="keyword">package</span></span><br></pre></td></tr></table></figure>
+<p><strong>REMARK:</strong> The guide <a href="https://gist.github.com/zedar/c43cbc7ff7f98abee885" target="_blank" rel="external">https://gist.github.com/zedar/c43cbc7ff7f98abee885</a> - Add LZO compresssion codecs to the Apache Hadoop and Spark is little wrong for set <code>C_INCLUDE_PATH</code>. In the guide, he said<br><code>C_INCLUDE_PATH=/usr/local/Cellar/lzo/2.06/include/lzo/</code>, it should be <code>C_INCLUDE_PATH=/usr/local/Cellar/lzo/2.09/include/</code>. We do not need add lzo suffix.</p>
+<p>###3. Config the IntelliJ IDEA box</p>
+<p>The first step is add <code>hadoop-lzo-0.4.20-SNAPSHOT.jar</code> to your scala project.</p>
+<p><img src="/images/idea_lzo_add_jar.png" alt="Alt text"></p>
+<p>The next step is add <code>java.library.path</code> to your jvm options in your menu <code>Run-Edit configurations...</code>. The option you need to add is like <code>-Djava.library.path=/Users/yaorenjie/Documents/git/hadoop-lzo/target</code></p>
+<p><img src="/images/idea_lzo_add_jvm.png" alt="Alt text"></p>
+<p><strong>REMARK:</strong> You must specify the build directory you run maven. If you want to use other directory, you <strong>MUST</strong> move all files in <code>target</code>. The <code>hadoop-lzo</code> need native <code>gpl</code> library in <code>target</code> directory.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ll native/Mac_OS_X-x86_64-<span class="number">64</span>/lib</span><br><span class="line">total <span class="number">208</span></span><br><span class="line">-rwxr-xr-x  <span class="number">1</span> yaorenjie  staff  <span class="number">21780</span> Jul  <span class="number">7</span> <span class="number">17</span>:<span class="number">36</span> libgplcompression<span class="number">.0</span>.dylib</span><br><span class="line">-rw-r--r--  <span class="number">1</span> yaorenjie  staff   <span class="number">1164</span> Jul  <span class="number">7</span> <span class="number">17</span>:<span class="number">36</span> libgplcompression.la</span><br><span class="line">lrwxr-xr-x  <span class="number">1</span> yaorenjie  staff     <span class="number">25</span> Jul  <span class="number">7</span> <span class="number">17</span>:<span class="number">36</span> libgplcompression.dylib -&gt; libgplcompression<span class="number">.0</span>.dylib</span><br><span class="line">-rw-r--r--  <span class="number">1</span> yaorenjie  staff  <span class="number">69744</span> Jul  <span class="number">7</span> <span class="number">17</span>:<span class="number">36</span> libgplcompression.a</span><br></pre></td></tr></table></figure>
+<p>If you want to dig it out, you can get this process in <code>GPLNativeCodeLoader</code></p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2016/07/04/Connect-MySQL-with-ssh-tunnel-in-Python/" itemprop="url">
                 Connect MySQL with ssh tunnel in Python
               </a>
@@ -990,301 +1101,6 @@
 
 
     
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/03/27/Kafka-Compression-Performance-Tests/" itemprop="url">
-                Kafka Compression Performance Tests
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          Posted on
-          <time itemprop="dateCreated" datetime="2015-03-27T14:01:05+08:00" content="2015-03-27">
-            2015-03-27
-          </time>
-        </span>
-
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/03/27/Kafka-Compression-Performance-Tests/#comments" itemprop="discussionUrl">
-              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/03/27/Kafka-Compression-Performance-Tests/" itemprop="commentsCount"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h1 id="Kafka_Compression_Performance_Tests">Kafka Compression Performance Tests</h1><h2 id="Backgroud">Backgroud</h2><p><code>Kafka</code> use <code>End-to-End</code> compression model which means that <code>Producer</code> and <code>Consumer</code> are doing the compression and de-compression jobs. This feature enables the reduction of on-the-fly network costs and the <code>Broker</code> will increase its cpu load.</p>
-<h2 id="Environment">Environment</h2><h3 id="Hardware_Box">Hardware Box</h3><table>
-<thead>
-<tr>
-<th style="text-align:right">CPU</th>
-<th style="text-align:right">Memory</th>
-<th style="text-align:right">Disk</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right">2.5 GHz Intel Core i7</td>
-<td style="text-align:right">16GB</td>
-<td style="text-align:right">512GB SSD</td>
-</tr>
-</tbody>
-</table>
-<h3 id="Software_Box">Software Box</h3><table>
-<thead>
-<tr>
-<th style="text-align:right">Kafka</th>
-<th style="text-align:right">JDK</th>
-<th style="text-align:right">Scala</th>
-<th style="text-align:right">Broker</th>
-<th style="text-align:right">Producer</th>
-<th style="text-align:right">JVM</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right">0.8.2.1</td>
-<td style="text-align:right">1.7.0u75</td>
-<td style="text-align:right">2.11</td>
-<td style="text-align:right">1</td>
-<td style="text-align:right">1</td>
-<td style="text-align:right">-Xms4G -Xmx4G -Xmn2G</td>
-</tr>
-</tbody>
-</table>
-<h3 id="Kafka_Configuration">Kafka Configuration</h3><table>
-<thead>
-<tr>
-<th style="text-align:right">Replica</th>
-<th style="text-align:right">Partition</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right">1</td>
-<td style="text-align:right">1</td>
-</tr>
-</tbody>
-</table>
-<h3 id="Messages_Content">Messages Content</h3><p>The content I used to send to <code>Kafka</code> is a nginx log which contains 607,781 lines and 200MB. Each line is like below:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> - - [<span class="number">24</span>/Mar/<span class="number">2015</span>:<span class="number">15</span>:<span class="number">57</span>:<span class="number">09</span> +<span class="number">0800</span>] <span class="string">"GET /login?gotype=2 HTTP/1.1"</span> <span class="string">"0.002"</span> <span class="number">200</span> <span class="number">3177</span> <span class="string">"http://abc.com/URLhtml"</span> <span class="string">"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET4.0C; .NET4.0E)"</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> foo.com foo-hostname</span><br></pre></td></tr></table></figure>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$wc</span> -l passport<span class="class">.access</span><span class="class">.log</span></span><br><span class="line">  <span class="number">607781</span> passport<span class="class">.access</span><span class="class">.log</span></span><br><span class="line">~/Downloads</span><br><span class="line"><span class="variable">$du</span> -sh passport<span class="class">.access</span><span class="class">.log</span></span><br><span class="line"><span class="number">200</span>M	passport<span class="class">.access</span><span class="class">.log</span></span><br></pre></td></tr></table></figure>
-<h2 id="Baseline_Test">Baseline Test</h2><h3 id="Kafka_Producer_Configuration">Kafka Producer Configuration</h3><table>
-<thead>
-<tr>
-<th style="text-align:right">compression.type</th>
-<th style="text-align:right">buffered.memory</th>
-<th style="text-align:right">acks</th>
-<th style="text-align:right">linger.ms</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right">None</td>
-<td style="text-align:right">32MB</td>
-<td style="text-align:right">1</td>
-<td style="text-align:right">0</td>
-</tr>
-</tbody>
-</table>
-<h3 id="Test_Result">Test Result</h3><p>The first test is going to figure out the fact that the value we defined in <code>batch.size</code> is not the exactly batch size <code>Producer</code> will use. I got the real batch size of <code>Producer</code> by using its metrics API. Tests have been done with <code>batch.size</code> of 200, 500, 1000, 1200, 1500, 2000. Chart below is the result: </p>
-<p><img src="/images/batch_size.png" alt="Alt text"></p>
-<p>We can see clearly that <code>batch.size</code> is a smaller than <code>batch-size-avg</code>(it is the excatly batch size <code>Producer</code> used). And while the <code>batch.size</code> is 200 and 500, the <code>batch-size-avg</code> is almost the same - aroud 370. That is to say, <code>batch-size-avg</code> is not only settled by the parameter <code>batch.size</code>, furthermore, it is also related to other factor.</p>
-<p>All tests have been done in different <code>batch.size</code> of 500, 1000, 1200, 1500 and 2000. Why I didn’t use <code>batch.size</code> of 200 because the phenomenon in the above paragraph.</p>
-<p>Let’s take a look on the <code>Producer</code> baseline：</p>
-<p><img src="/images/producer_baseline.png" alt="Alt text"></p>
-<p>The throughput rised along with the increasing of <code>batch.size</code>. And the latency rised as well. Let me make a simple math calculation. I use the <code>batch.size</code> of 500 for the base number and get the percentage of throughput and latency increasement.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:right">-</th>
-<th style="text-align:right">500</th>
-<th style="text-align:right">1000</th>
-<th style="text-align:right">1200</th>
-<th style="text-align:right">1500</th>
-<th style="text-align:right">2000</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right">throughtput</td>
-<td style="text-align:right">100%</td>
-<td style="text-align:right">183.25%</td>
-<td style="text-align:right">230.74%</td>
-<td style="text-align:right">289.59%</td>
-<td style="text-align:right">387.81%</td>
-</tr>
-<tr>
-<td style="text-align:right">latency</td>
-<td style="text-align:right">100%</td>
-<td style="text-align:right">117.47%</td>
-<td style="text-align:right">121.40%</td>
-<td style="text-align:right">123.76%</td>
-<td style="text-align:right">128.31%</td>
-</tr>
-</tbody>
-</table>
-<p><img src="/images/producer_baseline_ratio.png" alt="Alt text"></p>
-<h3 id="Conclusion">Conclusion</h3><p>The throughtput of <code>Producer</code> can get much higher with the increasing of <code>batch.size</code>. And at the meantime, latency will increas in a very tiny level.</p>
-<h2 id="Producer_Performance_with_Compression">Producer Performance with Compression</h2><p><code>Kafka</code> support three different compression type：</p>
-<ul>
-<li>gzip</li>
-<li>snappy</li>
-<li>lz4</li>
-</ul>
-<p>Because of the box I use to test, when I use <code>lz4</code> in testing, I got OOM exception. I think the casuse of this exception is the Java code will get all lines of the <code>passport.access.log</code> and send to <code>Kafka</code> in a very short time. So I used <code>batch.size</code> of 2000, 2500, 3000, 3500, 4000, 4500 and 5000. Using big <code>batch.size</code> will increass the latency and this will give JVM some time to do the GC jobs.</p>
-<p>Below is the result</p>
-<h3 id="Compression_Rate">Compression Rate</h3><p>The value is better when it is smaller</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:right">-</th>
-<th style="text-align:right">none</th>
-<th style="text-align:right">gzip</th>
-<th style="text-align:right">snappy</th>
-<th style="text-align:right">lz4</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right">Average Compression Rate</td>
-<td style="text-align:right">100%</td>
-<td style="text-align:right">19.21%</td>
-<td style="text-align:right">78.19%</td>
-<td style="text-align:right">31.37%</td>
-</tr>
-</tbody>
-</table>
-<p><img src="/images/compression_rate.png" alt="Alt text"></p>
-<h3 id="Throughput">Throughput</h3><p>When I enabled the compression, the througput decreased. Let’s see the result.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:right">-</th>
-<th style="text-align:right">none</th>
-<th style="text-align:right">gzip</th>
-<th style="text-align:right">snappy</th>
-<th style="text-align:right">lz4</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right">Average Throughtput</td>
-<td style="text-align:right">151901.1038</td>
-<td style="text-align:right">39346.00017</td>
-<td style="text-align:right">119707.5266</td>
-<td style="text-align:right">191469.8994</td>
-</tr>
-</tbody>
-</table>
-<p><img src="/images/compression_throughput.png" alt="Alt text"></p>
-<h3 id="Latency">Latency</h3><p>Result:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:right">-</th>
-<th style="text-align:right">none</th>
-<th style="text-align:right">gzip</th>
-<th style="text-align:right">snappy</th>
-<th style="text-align:right">lz4</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right">Average Latency ms</td>
-<td style="text-align:right">0.25</td>
-<td style="text-align:right">4.97</td>
-<td style="text-align:right">0.41</td>
-<td style="text-align:right">0.66</td>
-</tr>
-<tr>
-<td style="text-align:right">Ratio</td>
-<td style="text-align:right">100.00%</td>
-<td style="text-align:right">1937.61%</td>
-<td style="text-align:right">159.99%</td>
-<td style="text-align:right">258.62%</td>
-</tr>
-</tbody>
-</table>
-<p><img src="/images/compression_latency.png" alt="Alt text"></p>
-<h1 id="Consumer_Performance_with_Compression">Consumer Performance with Compression</h1><p>Because <code>Kafka</code> 0.8.2.1 has not enabled the new <code>Consumer</code>, so I cannot get the detailed metrics like I have got in <code>Producer</code>. So in this test, I use the total time <code>Consumer</code> used to consumes a fixed number of messages to do the benchmark.</p>
-<p>The messages are <code>test.access.log</code> in twice size. Below is the result</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:right">-</th>
-<th style="text-align:left">none</th>
-<th style="text-align:right">gzip</th>
-<th style="text-align:center">snappy</th>
-<th style="text-align:right">lz4</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right">Time Cost ms</td>
-<td style="text-align:left">3218</td>
-<td style="text-align:right">5374</td>
-<td style="text-align:center">5216</td>
-<td style="text-align:right">4507</td>
-</tr>
-<tr>
-<td style="text-align:right">Time Cost Increase Rate</td>
-<td style="text-align:left">100%</td>
-<td style="text-align:right">167%</td>
-<td style="text-align:center">162.09%</td>
-<td style="text-align:right">140.06%</td>
-</tr>
-</tbody>
-</table>
-<p><img src="/images/cosumer_time_cost.png" alt="Alt text"></p>
-<p>We can see <code>lz4</code> is the fastest.</p>
-<h1 id="Conclusion-1">Conclusion</h1><p><code>lz4</code> is the best choice in compression rate and both performance of <code>Producer</code> and <code>Consumer</code>. Below is the comparison of <code>lz4</code> performance and base line performance. For simplified the chart, this only shows the result with <code>batch.size</code> of 5000.</p>
-<p><img src="/images/overview.png" alt="Alt text"></p>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1323,7 +1139,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -1337,7 +1153,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-count">26</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
