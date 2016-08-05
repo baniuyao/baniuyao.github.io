@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.yaorenjie.com/"/>
-  <updated>2016-07-08T03:00:03.000Z</updated>
+  <updated>2016-08-05T10:04:18.000Z</updated>
   <id>http://blog.yaorenjie.com/</id>
   
   <author>
@@ -13,6 +13,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Run pyspark in Python3]]></title>
+    <link href="http://blog.yaorenjie.com/2016/08/05/Run-pyspark-in-Python3/"/>
+    <id>http://blog.yaorenjie.com/2016/08/05/Run-pyspark-in-Python3/</id>
+    <published>2016-08-05T09:47:53.000Z</published>
+    <updated>2016-08-05T10:04:18.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Backgroud">Backgroud</h1><p>We were using spark in Scala environment for a long time and it did its job well. Now we need to query spark in python3 scripts and this post is a simple how-to guide for pyspark.</p>
+<h1 id="Prerequisites">Prerequisites</h1><ol>
+<li>jdk</li>
+<li>spark</li>
+<li>python3</li>
+<li>set <code>JAVA_HOME</code> and <code>SPARK_HOME</code> in env</li>
+</ol>
+<p><code>pyspark</code> is in your <code>SPARK_HOME/python</code>, you need to put it into you python path. You can <code>cp</code> or <code>ln</code> the directory to you python3 path, another method is use <code>sys.path.append</code> in your scripts.</p>
+<h1 id="Example">Example</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark <span class="keyword">import</span> SparkContext, SparkConf</span><br><span class="line"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> HiveContext</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    conf = SparkConf()</span><br><span class="line">    conf.set(<span class="string">'spark.executor.memory'</span>, <span class="string">'16g'</span>)</span><br><span class="line">    sc = SparkContext(<span class="string">'spark://10.3.99.42:7077'</span>, appName=<span class="string">'test'</span>, conf=conf)</span><br><span class="line">    sc.setLogLevel(<span class="string">'ERROR'</span>)</span><br><span class="line">    hiveContext = HiveContext(sc)</span><br><span class="line">    hiveContext.setConf(<span class="string">'hive.metastore.uris'</span>, <span class="string">'thrift://127.0.0.1:9083'</span>)</span><br><span class="line">    hiveContext.setConf(<span class="string">'io.compression.codecs'</span>, <span class="string">'org.apache.hadoop.io.compress.SnappyCodec'</span>)</span><br><span class="line">    hiveContext.sql(<span class="string">'use default'</span>)</span><br><span class="line">    hiveContext.sql(<span class="string">"select * from table"</span>).show()</span><br></pre></td></tr></table></figure>]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Backgroud">Backgroud</h1><p>We were using spark in Scala environment for a long time and it did its job well. Now we need to query s]]>
+    </summary>
+    
+      <category term="hive" scheme="http://blog.yaorenjie.com/tags/hive/"/>
+    
+      <category term="python3" scheme="http://blog.yaorenjie.com/tags/python3/"/>
+    
+      <category term="spark" scheme="http://blog.yaorenjie.com/tags/spark/"/>
+    
+      <category term="sparksql" scheme="http://blog.yaorenjie.com/tags/sparksql/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Enable lzo in Spark and IntelliJ IDEA]]></title>

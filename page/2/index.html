@@ -170,6 +170,75 @@
           
           
             
+              <a class="post-title-link" href="/2015/06/03/Enable-CORS-in-bottle-py/" itemprop="url">
+                Enable CORS in bottle.py
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          Posted on
+          <time itemprop="dateCreated" datetime="2015-06-03T10:22:27+08:00" content="2015-06-03">
+            2015-06-03
+          </time>
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/06/03/Enable-CORS-in-bottle-py/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/06/03/Enable-CORS-in-bottle-py/" itemprop="commentsCount"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h1 id="Solution">Solution</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> Bottle, request, response, run</span><br><span class="line">app = Bottle()</span><br><span class="line"> </span><br><span class="line"><span class="decorator">@app.hook('after_request')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">enable_cors</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span><br><span class="line">    You need to add some headers to each request.</span><br><span class="line">    Don't use the wildcard '*' for Access-Control-Allow-Origin in production.</span><br><span class="line">    """</span></span><br><span class="line">    response.headers[<span class="string">'Access-Control-Allow-Origin'</span>] = <span class="string">'*'</span></span><br><span class="line">    response.headers[<span class="string">'Access-Control-Allow-Methods'</span>] = <span class="string">'PUT, GET, POST, DELETE, OPTIONS'</span></span><br><span class="line">    response.headers[<span class="string">'Access-Control-Allow-Headers'</span>] = <span class="string">'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'</span></span><br></pre></td></tr></table></figure>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2015/03/27/Kafka-Compression-Performance-Tests/" itemprop="url">
                 Kafka Compression Performance Tests
               </a>
@@ -736,7 +805,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-count">15</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -750,7 +819,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">26</span>
+              <span class="site-state-item-count">29</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>

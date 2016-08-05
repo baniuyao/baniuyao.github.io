@@ -2,6 +2,8 @@
 <html class="theme-next use-motion ">
 <head>
   
+    
+
 
 <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -30,7 +32,7 @@
 
 
 
-  <meta name="keywords" content="Crontab,Linux," />
+  <meta name="keywords" content="hive,python3,spark,sparksql," />
 
 
 
@@ -41,19 +43,19 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="‘@’ in Crontab‘@’ sysmbol is available in crontab and it very useful especially for @reboot. @reboot makes it possible to run a script while machine starts.
-12345678910111213@reboot     -   This runs">
+<meta name="description" content="BackgroudWe were using spark in Scala environment for a long time and it did its job well. Now we need to query spark in python3 scripts and this post is a simple how-to guide for pyspark.
+Prerequisit">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Tricks on Crontab">
-<meta property="og:url" content="http://blog.yaorenjie.com/2015/12/09/Tricks-on-Crontab/index.html">
+<meta property="og:title" content="Run pyspark in Python3">
+<meta property="og:url" content="http://blog.yaorenjie.com/2016/08/05/Run-pyspark-in-Python3/index.html">
 <meta property="og:site_name" content="Renjie Yao's Blog">
-<meta property="og:description" content="‘@’ in Crontab‘@’ sysmbol is available in crontab and it very useful especially for @reboot. @reboot makes it possible to run a script while machine starts.
-12345678910111213@reboot     -   This runs">
-<meta property="og:updated_time" content="2015-12-09T10:06:03.000Z">
+<meta property="og:description" content="BackgroudWe were using spark in Scala environment for a long time and it did its job well. Now we need to query spark in python3 scripts and this post is a simple how-to guide for pyspark.
+Prerequisit">
+<meta property="og:updated_time" content="2016-08-05T10:04:18.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Tricks on Crontab">
-<meta name="twitter:description" content="‘@’ in Crontab‘@’ sysmbol is available in crontab and it very useful especially for @reboot. @reboot makes it possible to run a script while machine starts.
-12345678910111213@reboot     -   This runs">
+<meta name="twitter:title" content="Run pyspark in Python3">
+<meta name="twitter:description" content="BackgroudWe were using spark in Scala environment for a long time and it did its job well. Now we need to query spark in python3 scripts and this post is a simple how-to guide for pyspark.
+Prerequisit">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -63,7 +65,7 @@
   };
 </script>
 
-  <title> Tricks on Crontab | Renjie Yao's Blog </title>
+  <title> Run pyspark in Python3 | Renjie Yao's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -172,7 +174,7 @@
           
           
             
-              Tricks on Crontab
+              Run pyspark in Python3
             
           
         </h1>
@@ -181,8 +183,8 @@
       <div class="post-meta">
         <span class="post-time">
           Posted on
-          <time itemprop="dateCreated" datetime="2015-12-09T18:01:40+08:00" content="2015-12-09">
-            2015-12-09
+          <time itemprop="dateCreated" datetime="2016-08-05T17:47:53+08:00" content="2016-08-05">
+            2016-08-05
           </time>
         </span>
 
@@ -192,8 +194,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/12/09/Tricks-on-Crontab/#comments" itemprop="discussionUrl">
-              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/09/Tricks-on-Crontab/" itemprop="commentsCount"></span>
+            <a href="/2016/08/05/Run-pyspark-in-Python3/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/08/05/Run-pyspark-in-Python3/" itemprop="commentsCount"></span>
             </a>
           </span>
           
@@ -207,11 +209,15 @@
       
 
       
-        <span itemprop="articleBody"><h1 id="‘@’_in_Crontab">‘@’ in Crontab</h1><p>‘@’ sysmbol is available in crontab and it very useful especially for <code>@reboot</code>. <code>@reboot</code> makes it possible to run a script while machine starts.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@reboot     -   This runs the Cron job when the machine is started up or <span class="keyword">if</span> the Cron daemon is restarted</span><br><span class="line"></span><br><span class="line">@midnight   -   This runs the Cron job once a day at midnight, it<span class="string">'s the equivalent of 0 0 * * *</span><br><span class="line"></span><br><span class="line">@daily      -   Does exactly the same as @midnight</span><br><span class="line"></span><br><span class="line">@weekly     -   This runs a Cron job once a week on a Sunday the equivalent of 0 0 * * 0</span><br><span class="line"></span><br><span class="line">@monthly    -   This runs a Cron job once a month on the first day of every month at midnight and is the same as 0 0 1 * *</span><br><span class="line"></span><br><span class="line">@annually   -   Runs a Cron job once a year at midnight on the first day of the first month and is the equivalent of 0 0  1 1 *</span><br><span class="line"></span><br><span class="line">@yearly     -   The same as annually</span></span><br></pre></td></tr></table></figure>
-<p>An example for run a command when the machine starts:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@reboot date &gt;&gt; /tmp/date.log</span><br></pre></td></tr></table></figure>
-</span>
+        <span itemprop="articleBody"><h1 id="Backgroud">Backgroud</h1><p>We were using spark in Scala environment for a long time and it did its job well. Now we need to query spark in python3 scripts and this post is a simple how-to guide for pyspark.</p>
+<h1 id="Prerequisites">Prerequisites</h1><ol>
+<li>jdk</li>
+<li>spark</li>
+<li>python3</li>
+<li>set <code>JAVA_HOME</code> and <code>SPARK_HOME</code> in env</li>
+</ol>
+<p><code>pyspark</code> is in your <code>SPARK_HOME/python</code>, you need to put it into you python path. You can <code>cp</code> or <code>ln</code> the directory to you python3 path, another method is use <code>sys.path.append</code> in your scripts.</p>
+<h1 id="Example">Example</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark <span class="keyword">import</span> SparkContext, SparkConf</span><br><span class="line"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> HiveContext</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    conf = SparkConf()</span><br><span class="line">    conf.set(<span class="string">'spark.executor.memory'</span>, <span class="string">'16g'</span>)</span><br><span class="line">    sc = SparkContext(<span class="string">'spark://10.3.99.42:7077'</span>, appName=<span class="string">'test'</span>, conf=conf)</span><br><span class="line">    sc.setLogLevel(<span class="string">'ERROR'</span>)</span><br><span class="line">    hiveContext = HiveContext(sc)</span><br><span class="line">    hiveContext.setConf(<span class="string">'hive.metastore.uris'</span>, <span class="string">'thrift://127.0.0.1:9083'</span>)</span><br><span class="line">    hiveContext.setConf(<span class="string">'io.compression.codecs'</span>, <span class="string">'org.apache.hadoop.io.compress.SnappyCodec'</span>)</span><br><span class="line">    hiveContext.sql(<span class="string">'use default'</span>)</span><br><span class="line">    hiveContext.sql(<span class="string">"select * from table"</span>).show()</span><br></pre></td></tr></table></figure></span>
       
     </div>
 
@@ -219,9 +225,13 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Crontab/" rel="tag">#Crontab</a>
+            <a href="/tags/hive/" rel="tag">#hive</a>
           
-            <a href="/tags/Linux/" rel="tag">#Linux</a>
+            <a href="/tags/python3/" rel="tag">#python3</a>
+          
+            <a href="/tags/spark/" rel="tag">#spark</a>
+          
+            <a href="/tags/sparksql/" rel="tag">#sparksql</a>
           
         </div>
       
@@ -230,13 +240,11 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/05/19/Awesome-dataviz/" rel="prev">Awesome dataviz</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/12/08/Python-smtplib-to-sendmail-with-STARTTLS-and-UTF8/" rel="next">Python smtplib to sendmail with STARTTL and UTF8</a>
+              <a href="/2016/07/08/Enable-lzo-in-Spark-and-IntelliJ-IDEA/" rel="next">Enable lzo in Spark and IntelliJ IDEA</a>
             
           </div>
         </div>
@@ -361,7 +369,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#‘@’_in_Crontab"><span class="nav-number">1.</span> <span class="nav-text">‘@’ in Crontab</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Backgroud"><span class="nav-number">1.</span> <span class="nav-text">Backgroud</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Prerequisites"><span class="nav-number">2.</span> <span class="nav-text">Prerequisites</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Example"><span class="nav-number">3.</span> <span class="nav-text">Example</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
@@ -415,9 +423,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'renjieyaoblog';
-      var disqus_identifier = '2015/12/09/Tricks-on-Crontab/';
-      var disqus_title = 'Tricks on Crontab';
-      var disqus_url = 'http://blog.yaorenjie.com/2015/12/09/Tricks-on-Crontab/';
+      var disqus_identifier = '2016/08/05/Run-pyspark-in-Python3/';
+      var disqus_title = 'Run pyspark in Python3';
+      var disqus_url = 'http://blog.yaorenjie.com/2016/08/05/Run-pyspark-in-Python3/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
