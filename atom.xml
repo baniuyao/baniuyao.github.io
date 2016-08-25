@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.yaorenjie.com/"/>
-  <updated>2016-08-05T10:04:18.000Z</updated>
+  <updated>2016-08-25T09:36:00.000Z</updated>
   <id>http://blog.yaorenjie.com/</id>
   
   <author>
@@ -13,6 +13,25 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Simple Method to Compare to JSON in Python]]></title>
+    <link href="http://blog.yaorenjie.com/2016/08/25/Simple-Method-to-Compare-to-JSON-in-Python/"/>
+    <id>http://blog.yaorenjie.com/2016/08/25/Simple-Method-to-Compare-to-JSON-in-Python/</id>
+    <published>2016-08-25T09:20:58.000Z</published>
+    <updated>2016-08-25T09:36:00.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Problem">Problem</h1><p>Recently I met a problem about how to compare to JSON. As we know, JSON is dict-like data structure, the order of its content is not import in the comparison. For example, <code>{&#39;name&#39;: &#39;frank&#39;, &#39;age&#39;: &#39;12&#39;}</code> equals <code>{&#39;age&#39;: &#39;12&#39;, &#39;name&#39;: &#39;frank&#39;}</code>. In the real world, perhaps there are some more complex data structures like list, tuple or nested-dict. </p>
+<h1 id="Solutions">Solutions</h1><p>In python(both python2 and python3), we can use <code>pprint</code> to get pretty print for JSON and other data structures. It will sort and format data first. And there is another method in <code>pprint</code> module called <code>pformat</code> which is used to get the output to a string. Let’s see the example.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pprint</span><br><span class="line"></span><br><span class="line">d1 = &#123;<span class="string">'name'</span>: <span class="string">'frank'</span>, <span class="string">'age'</span>: <span class="string">'12'</span>&#125;</span><br><span class="line">pformat_d1 = pprint.pformat(d1) <span class="comment"># pformat_d1: &#123;'age': '12', 'name': 'frank'&#125;</span></span><br><span class="line">d2 = &#123;<span class="string">'age'</span>: <span class="string">'12'</span>, <span class="string">'name'</span>: <span class="string">'frank'</span>&#125;</span><br><span class="line">pformat_d2 = pprint.pformat(d2) <span class="comment"># pformat_d2: &#123;'age': '12', 'name': 'frank'&#125;</span></span><br></pre></td></tr></table></figure>]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Problem">Problem</h1><p>Recently I met a problem about how to compare to JSON. As we know, JSON is dict-like data structure, the ord]]>
+    </summary>
+    
+      <category term="json" scheme="http://blog.yaorenjie.com/tags/json/"/>
+    
+      <category term="python" scheme="http://blog.yaorenjie.com/tags/python/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Run pyspark in Python3]]></title>

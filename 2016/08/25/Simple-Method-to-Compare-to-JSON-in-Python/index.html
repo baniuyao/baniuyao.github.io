@@ -2,6 +2,8 @@
 <html class="theme-next use-motion ">
 <head>
   
+    
+
 
 <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -30,7 +32,7 @@
 
 
 
-  <meta name="keywords" content="cas,gradle,jasig," />
+  <meta name="keywords" content="json,python," />
 
 
 
@@ -41,22 +43,16 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="Download source tarball from githubYou can get CAS from git easily:)
-123git clone https://github.com/apereo/cas.gitgit fetchgit checkout 4.2.x
-The master branch is not a can-be-compiled version. I got">
+<meta name="description" content="ProblemRecently I met a problem about how to compare to JSON. As we know, JSON is dict-like data structure, the order of its content is not import in the comparison. For example, {&amp;#39;name&amp;#39;: &amp;#39">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Build Jasig CAS from Zero (1)  - Build CAS Server">
-<meta property="og:url" content="http://blog.yaorenjie.com/2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/index.html">
+<meta property="og:title" content="Simple Method to Compare to JSON in Python">
+<meta property="og:url" content="http://blog.yaorenjie.com/2016/08/25/Simple-Method-to-Compare-to-JSON-in-Python/index.html">
 <meta property="og:site_name" content="Renjie Yao's Blog">
-<meta property="og:description" content="Download source tarball from githubYou can get CAS from git easily:)
-123git clone https://github.com/apereo/cas.gitgit fetchgit checkout 4.2.x
-The master branch is not a can-be-compiled version. I got">
-<meta property="og:updated_time" content="2016-06-20T07:51:05.000Z">
+<meta property="og:description" content="ProblemRecently I met a problem about how to compare to JSON. As we know, JSON is dict-like data structure, the order of its content is not import in the comparison. For example, {&amp;#39;name&amp;#39;: &amp;#39">
+<meta property="og:updated_time" content="2016-08-25T09:36:00.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Build Jasig CAS from Zero (1)  - Build CAS Server">
-<meta name="twitter:description" content="Download source tarball from githubYou can get CAS from git easily:)
-123git clone https://github.com/apereo/cas.gitgit fetchgit checkout 4.2.x
-The master branch is not a can-be-compiled version. I got">
+<meta name="twitter:title" content="Simple Method to Compare to JSON in Python">
+<meta name="twitter:description" content="ProblemRecently I met a problem about how to compare to JSON. As we know, JSON is dict-like data structure, the order of its content is not import in the comparison. For example, {&amp;#39;name&amp;#39;: &amp;#39">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -66,7 +62,7 @@ The master branch is not a can-be-compiled version. I got">
   };
 </script>
 
-  <title> Build Jasig CAS from Zero (1)  - Build CAS Server | Renjie Yao's Blog </title>
+  <title> Simple Method to Compare to JSON in Python | Renjie Yao's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -175,7 +171,7 @@ The master branch is not a can-be-compiled version. I got">
           
           
             
-              Build Jasig CAS from Zero (1)  - Build CAS Server
+              Simple Method to Compare to JSON in Python
             
           
         </h1>
@@ -184,8 +180,8 @@ The master branch is not a can-be-compiled version. I got">
       <div class="post-meta">
         <span class="post-time">
           Posted on
-          <time itemprop="dateCreated" datetime="2016-06-09T10:54:17+08:00" content="2016-06-09">
-            2016-06-09
+          <time itemprop="dateCreated" datetime="2016-08-25T17:20:58+08:00" content="2016-08-25">
+            2016-08-25
           </time>
         </span>
 
@@ -195,8 +191,8 @@ The master branch is not a can-be-compiled version. I got">
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/#comments" itemprop="discussionUrl">
-              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/" itemprop="commentsCount"></span>
+            <a href="/2016/08/25/Simple-Method-to-Compare-to-JSON-in-Python/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/08/25/Simple-Method-to-Compare-to-JSON-in-Python/" itemprop="commentsCount"></span>
             </a>
           </span>
           
@@ -210,27 +206,9 @@ The master branch is not a can-be-compiled version. I got">
       
 
       
-        <span itemprop="articleBody"><h1 id="Download_source_tarball_from_github">Download source tarball from github</h1><p>You can get CAS from git easily:)</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https:<span class="comment">//github.com/apereo/cas.git</span></span><br><span class="line">git fetch</span><br><span class="line">git checkout <span class="number">4.2</span>.x</span><br></pre></td></tr></table></figure>
-<p>The master branch is not a can-be-compiled version. I got failure information when I run compile commands in <code>master</code> branch:</p>
-<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$./dev-build-<span class="keyword">no</span>-tests.<span class="keyword">sh</span></span><br><span class="line"></span><br><span class="line">FAILURE: Build failed with <span class="keyword">an</span> exception.</span><br><span class="line"></span><br><span class="line"><span class="comment">* Where:</span></span><br><span class="line">Build <span class="keyword">file</span> '/private/tmp/cas/cas-management-webapp/build.gradle' <span class="keyword">line</span>: 28</span><br><span class="line"></span><br><span class="line"><span class="comment">* What went wrong:</span></span><br><span class="line">A problem occurred evaluating project ':cas-management-webapp'.</span><br><span class="line">&gt; <span class="keyword">No</span> such property: java <span class="keyword">for</span> <span class="keyword">class</span>: org.gradle.api.java.archives.internal.DefaultManifest</span><br><span class="line"></span><br><span class="line"><span class="comment">* Try:</span></span><br><span class="line"><span class="keyword">Run</span> with --stacktrace option to get the <span class="keyword">stack</span> trace. <span class="keyword">Run</span> with --info or --debug option to get <span class="keyword">more</span> <span class="keyword">log</span> output.</span><br><span class="line"></span><br><span class="line">BUILD FAILED</span><br><span class="line"></span><br><span class="line"><span class="keyword">Total</span> time: 11.67 secs</span><br></pre></td></tr></table></figure>
-<p>The stable version version in <a href="https://github.com/apereo/cas/releases" target="_blank" rel="external">cas release page</a> is 4.2.2. So just checkout out the stable version.</p>
-<h1 id="compile">compile</h1><h2 id="get_gradle">get gradle</h2><p>CAS can be compiled by <code>gradle</code>, when you first run <code>gradlew</code>(gradle wrapper), the project will download gradle-XXX-bin.zip. If you already have it or you have some problems downloading it(such as GFW), you can simply edit `{CAS_PWD}/gradle/wrapper/gradle-wrapper.properties” like below:</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="setting">distributionBase=<span class="value">GRADLE_USER_HOME</span></span></span><br><span class="line"><span class="setting">distributionPath=<span class="value">wrapper/dists</span></span></span><br><span class="line"><span class="setting">zipStoreBase=<span class="value">GRADLE_USER_HOME</span></span></span><br><span class="line"><span class="setting">zipStorePath=<span class="value">wrapper/dists</span></span></span><br><span class="line"><span class="setting">distributionUrl=<span class="value">https\://services.gradle.org/distributions/gradle-<span class="number">2.13</span>-all.zip</span></span></span><br></pre></td></tr></table></figure>
-<p>Replace <code>distributionUrl</code> with your own url.</p>
-<p>If you have local gradle zip file, use the zip file name directly and put zip file into <code>{CAS_PWD}/gradle/wrapper</code>. For example if my gradle zip file is <code>gradle-2.10-bin.zip</code>, you need parameter <code>distributionUrl</code> like this:</p>
-<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">...</span><br><span class="line"></span>distributionUtl=gradle-2.10-bin.zip</span><br></pre></td></tr></table></figure>
-<h2 id="compile_cas_project">compile cas project</h2><p>There is two bootstrap shell in cas directory, <code>dev-build.sh</code> and <code>dev-build-no-tests.sh</code>. The difference between them is obviously shown in their names - <code>dev-build-no-tests.sh</code> will set this flag <code>-DskipAspectJ=true</code></p>
-<p>When you run <code>dev-build.sh</code> or <code>dev-build-no-tests.sh</code> for a couple of minutes, you will probably get this conflicts failure.</p>
-<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">:cas-server-support-pac4j</span><span class="symbol">:compileAspect</span></span><br><span class="line"><span class="constant">Download </span>...</span><br><span class="line">&gt; <span class="symbol">:cas-server-support-pac4j</span><span class="symbol">:compileAspecFAILED</span></span><br><span class="line"></span><br><span class="line"><span class="constant">FAILURE:</span> <span class="constant">Build </span>failed with an exception.</span><br><span class="line"></span><br><span class="line">* <span class="constant">What </span>went <span class="symbol">wrong:</span></span><br><span class="line"><span class="constant">Execution </span>failed <span class="keyword">for</span> task <span class="string">':cas-server-support-pac4j:compileAspect'</span>.</span><br><span class="line">&gt; <span class="constant">Could </span><span class="keyword">not</span> resolve all dependencies <span class="keyword">for</span> configuration <span class="string">':cas-server-support-pac4j:compile'</span>.</span><br><span class="line">   &gt; <span class="constant">A </span>conflict was found between the following <span class="symbol">modules:</span></span><br><span class="line">      - commons-<span class="symbol">io:</span>commons-<span class="symbol">io:</span><span class="number">2.4</span></span><br><span class="line">      - commons-<span class="symbol">io:</span>commons-<span class="symbol">io:</span><span class="number">2.5</span></span><br><span class="line"></span><br><span class="line">* <span class="constant">Try:</span></span><br><span class="line"><span class="constant">Run </span>with --stacktrace option to get the stack trace. <span class="constant">Run </span>with --info <span class="keyword">or</span> --debug option to get more log output.</span><br><span class="line"></span><br><span class="line"><span class="constant">BUILD FAILED</span></span><br><span class="line"></span><br><span class="line"><span class="constant">Total </span><span class="symbol">time:</span> <span class="number">10</span> mins <span class="number">48.643</span> secs</span><br></pre></td></tr></table></figure>
-<p>It is casuse by the conflict between <code>commons-io:2.4</code> and <code>commons-io:2.5</code> in <code>cas-server-support-pac4j</code>, we need to add <code>-DskipVersionConflict=true</code> in bootstrap scripts.</p>
-<p>If you build it in IntelliJ IDEA, set this parameter in <code>Preferences-Build,Execution,Deployment-Build Tools-Gradle-Gradle VM options</code>.</p>
-<p>Plus, if you want to use http proxy in gradle, you need to set these parameters:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-DproxySet=<span class="literal">true</span> -DproxyHost=<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> -DproxyPort=<span class="number">8123</span></span><br></pre></td></tr></table></figure>
-<h2 id="For_IDE">For IDE</h2><p>We need to execute extra command for IDE</p>
-<h3 id="IDEA">IDEA</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew idea</span><br></pre></td></tr></table></figure>
-<h3 id="Eclipse">Eclipse</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew eclipse</span><br></pre></td></tr></table></figure>
-<h1 id="To_Be_Contined…w">To Be Contined…w</h1></span>
+        <span itemprop="articleBody"><h1 id="Problem">Problem</h1><p>Recently I met a problem about how to compare to JSON. As we know, JSON is dict-like data structure, the order of its content is not import in the comparison. For example, <code>{&#39;name&#39;: &#39;frank&#39;, &#39;age&#39;: &#39;12&#39;}</code> equals <code>{&#39;age&#39;: &#39;12&#39;, &#39;name&#39;: &#39;frank&#39;}</code>. In the real world, perhaps there are some more complex data structures like list, tuple or nested-dict. </p>
+<h1 id="Solutions">Solutions</h1><p>In python(both python2 and python3), we can use <code>pprint</code> to get pretty print for JSON and other data structures. It will sort and format data first. And there is another method in <code>pprint</code> module called <code>pformat</code> which is used to get the output to a string. Let’s see the example.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pprint</span><br><span class="line"></span><br><span class="line">d1 = &#123;<span class="string">'name'</span>: <span class="string">'frank'</span>, <span class="string">'age'</span>: <span class="string">'12'</span>&#125;</span><br><span class="line">pformat_d1 = pprint.pformat(d1) <span class="comment"># pformat_d1: &#123;'age': '12', 'name': 'frank'&#125;</span></span><br><span class="line">d2 = &#123;<span class="string">'age'</span>: <span class="string">'12'</span>, <span class="string">'name'</span>: <span class="string">'frank'</span>&#125;</span><br><span class="line">pformat_d2 = pprint.pformat(d2) <span class="comment"># pformat_d2: &#123;'age': '12', 'name': 'frank'&#125;</span></span><br></pre></td></tr></table></figure></span>
       
     </div>
 
@@ -238,11 +216,9 @@ The master branch is not a can-be-compiled version. I got">
       
         <div class="post-tags">
           
-            <a href="/tags/cas/" rel="tag">#cas</a>
+            <a href="/tags/json/" rel="tag">#json</a>
           
-            <a href="/tags/gradle/" rel="tag">#gradle</a>
-          
-            <a href="/tags/jasig/" rel="tag">#jasig</a>
+            <a href="/tags/python/" rel="tag">#python</a>
           
         </div>
       
@@ -251,13 +227,11 @@ The master branch is not a can-be-compiled version. I got">
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/06/20/Using-pip-and-easy-install-with-Chinese-repo/" rel="prev">Using pip and easy_install with Chinese repo</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/19/Awesome-dataviz/" rel="next">Awesome dataviz</a>
+              <a href="/2016/08/05/Run-pyspark-in-Python3/" rel="next">Run pyspark in Python3</a>
             
           </div>
         </div>
@@ -382,7 +356,7 @@ The master branch is not a can-be-compiled version. I got">
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Download_source_tarball_from_github"><span class="nav-number">1.</span> <span class="nav-text">Download source tarball from github</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#compile"><span class="nav-number">2.</span> <span class="nav-text">compile</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#get_gradle"><span class="nav-number">2.1.</span> <span class="nav-text">get gradle</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#compile_cas_project"><span class="nav-number">2.2.</span> <span class="nav-text">compile cas project</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#For_IDE"><span class="nav-number">2.3.</span> <span class="nav-text">For IDE</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IDEA"><span class="nav-number">2.3.1.</span> <span class="nav-text">IDEA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Eclipse"><span class="nav-number">2.3.2.</span> <span class="nav-text">Eclipse</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#To_Be_Contined…w"><span class="nav-number">3.</span> <span class="nav-text">To Be Contined…w</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Problem"><span class="nav-number">1.</span> <span class="nav-text">Problem</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Solutions"><span class="nav-number">2.</span> <span class="nav-text">Solutions</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
@@ -436,9 +410,9 @@ The master branch is not a can-be-compiled version. I got">
 
     <script type="text/javascript">
       var disqus_shortname = 'renjieyaoblog';
-      var disqus_identifier = '2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/';
-      var disqus_title = 'Build Jasig CAS from Zero (1)  - Build CAS Server';
-      var disqus_url = 'http://blog.yaorenjie.com/2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/';
+      var disqus_identifier = '2016/08/25/Simple-Method-to-Compare-to-JSON-in-Python/';
+      var disqus_title = 'Simple Method to Compare to JSON in Python';
+      var disqus_url = 'http://blog.yaorenjie.com/2016/08/25/Simple-Method-to-Compare-to-JSON-in-Python/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
