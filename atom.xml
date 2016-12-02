@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.yaorenjie.com/"/>
-  <updated>2016-08-25T09:36:00.000Z</updated>
+  <updated>2016-12-02T02:49:08.000Z</updated>
   <id>http://blog.yaorenjie.com/</id>
   
   <author>
@@ -13,6 +13,81 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[The Comparsion Between Apache Flume and Heka]]></title>
+    <link href="http://blog.yaorenjie.com/2016/12/01/The-Comparsion-Between-Apache-Flume-and-Heka/"/>
+    <id>http://blog.yaorenjie.com/2016/12/01/The-Comparsion-Between-Apache-Flume-and-Heka/</id>
+    <published>2016-12-01T09:45:32.000Z</published>
+    <updated>2016-12-02T02:49:08.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Environment">Environment</h1><p>This test’s main purpose is to choose the tool used to collect log on servers. In this test, we use Apache Flume and Heka to collect raw log data and send them into Kafka. The Kafka is in all default configuration. Linux is CentOS 6.4 with 12 cores CPU, 45GB memory and JDK 1.7.</p>
+<h2 id="Benchmark_Metrics">Benchmark Metrics</h2><ol>
+<li>mps - Message Per Second: This data is fetched from JMX port of Kafka. We get the total message count from Kafka, and then get this count again. The delta value is the message count in 1 second - mps. We can get mps by command line:</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar /tmp/cmdline-jmxclient-0.10.3.jar - localhost:9999 kafk&#13;a.server:name=MessagesInPerSec,type=BrokerTopicMetrics Count</span><br></pre></td></tr></table></figure>
+<ol>
+<li>channelSize (only for Flume): This metrics is the number of messages Flume cannot handle in a while. It can be a measurement to determin if the Flume is health. A health Flume instance should keep this value in a low number. We can get this value by Flume http service:</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -s localhost:34545/metrics | python -m json.tool | grep Channe&#13;lSize</span><br></pre></td></tr></table></figure>
+<ol>
+<li>%cpu and %mem: We get these two values directly by linux <code>top</code> command:</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flume_pid=`jps -m | grep App | cut -d&#39; &#39; -f1`&#13;flume_cpu=`top -b -n1 -p $flume_pid | grep $flume_pid | awk &#39;&#123;print&#13;$9&#125;&#39;`&#13;flume_mem=`top -b -n1 -p $flume_pid | grep $flume_pid | awk &#39;&#123;print&#13;$10&#125;&#39;`</span><br></pre></td></tr></table></figure>
+<h2 id="Benchmark_Items">Benchmark Items</h2><p>We used a tool to write log lines into log files with different mps - 5K, 10K, 50K.</p>
+<h1 id="Flume_Benchmarks">Flume Benchmarks</h1><h2 id="Flume_Configuration">Flume Configuration</h2><p><strong>JVM</strong>: </p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPTS=&#34;-Xms256m -Xmx256m -Dflume.monitoring.type=http -Dflume.m&#13;onitoring.port=34545&#34;</span><br></pre></td></tr></table></figure>
+<p><strong>Flume Configuration</strong>:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># META&#13;agent.sources = fileSource&#13;agent.channels = diskChannel memChannel&#13;agent.sinks = kafkaSink&#10;&#13;# SOURCE&#13;agent.sources.fileSource.type = exec&#13;agent.sources.fileSource.command = tail -F /tmp/example.log&#13;agent.sources.fileSource.channels = memChannel&#10;&#13;# CHANNEL&#13;agent.channels.memChannel.type = memory&#13;agent.channels.memChannel.capacity = 1000000&#13;agent.channels.memChannel.transactionCapacity = 10000&#10;&#13;# SINK&#13;agent.sinks.kafkaSink.type = org.apache.flume.sink.kafka.KafkaSink&#13;agent.sinks.kafkaSink.topic = flume_test&#13;agent.sinks.kafkaSink.brokerList = kafka:9092&#13;agent.sinks.kafkaSink.batchSize = 200&#13;agent.sinks.kafkaSink.channel = memChannel</span><br></pre></td></tr></table></figure>
+<h2 id="Flume_Benchmark_Results">Flume Benchmark Results</h2><h3 id="5K_mps">5K mps</h3><p><img src="/images/flume_heka/flume_5k_mps.png" alt="Alt text"></p>
+<p><img src="/images/flume_heka/flume_5k_mem.png" alt="Alt text"></p>
+<h3 id="10K_mps">10K mps</h3><p><img src="/images/flume_heka/flume_10k_mps.png" alt="Alt text"></p>
+<p><img src="/images/flume_heka/flume_10k_mem.png" alt="Alt text"></p>
+<h3 id="50K_mps">50K mps</h3><p><img src="/images/flume_heka/flume_50k_mps.png" alt="Alt text"></p>
+<p><img src="/images/flume_heka/flume_50k_mem.png" alt="Alt text"></p>
+<h1 id="Heka_Benchmarks">Heka Benchmarks</h1><h2 id="Heka_Configuration">Heka Configuration</h2><figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">[accesslogs]</span><span class="setting">type = <span class="value"><span class="string">"LogstreamerInput"</span></span></span><span class="setting">log_directory = <span class="value"><span class="string">"/tmp"</span></span></span><span class="setting">file_match = <span class="value"><span class="string">'example\.log'</span></span></span></span><br><span class="line"><span class="title">[PayloadEncoder]</span><span class="setting">append_newlines = <span class="value"><span class="keyword">false</span></span></span></span><br><span class="line"><span class="title">[KafkaOutput]</span><span class="setting">type = <span class="value"><span class="string">"KafkaOutput"</span></span></span><span class="setting">message_matcher = <span class="value"><span class="string">"TRUE"</span></span></span><span class="setting">topic = <span class="value"><span class="string">"heka_test"</span></span></span><span class="setting">addrs = <span class="value">[<span class="string">"kafka:9092"</span>]</span></span><span class="setting">encoder = <span class="value"><span class="string">"PayloadEncoder"</span></span></span><span class="setting">max_buffer_time = <span class="value"><span class="number">1000</span></span></span><span class="setting">max_buffered_bytes = <span class="value"><span class="number">1048576</span></span></span><span class="setting">required_acks = <span class="value"><span class="string">"NoResponse"</span></span></span></span><br></pre></td></tr></table></figure>
+<h2 id="Heka_Benchmark_Results">Heka Benchmark Results</h2><h3 id="5K_mps-1">5K mps</h3><p><img src="/images/flume_heka/heka_5k_mps.png" alt="Alt text"></p>
+<p><img src="/images/flume_heka/heka_5k_mem.png" alt="Alt text"></p>
+<h3 id="10K_mps-1">10K mps</h3><p><img src="/images/flume_heka/heka_10k_mps.png" alt="Alt text"></p>
+<p><img src="/images/flume_heka/heka_10k_mem.png" alt="Alt text"></p>
+<h3 id="50K_mps-1">50K mps</h3><p><img src="/images/flume_heka/heka_50k_mps.png" alt="Alt text"></p>
+<p><img src="/images/flume_heka/heka_50k_mem.png" alt="Alt text"></p>
+<h1 id="The_Comparison">The Comparison</h1><h2 id="About_Performance">About Performance</h2><p>As the charts said, both Flume and Heka can handle huge amout of log in very high speed. We usually deploy them on servers which act as business usage. That means, it would not take much pressure (if we use them behind Apache Kafka - another usage type is sending date <strong>TO</strong> Kafka, they could work well). Considering the Linux system costs, Heka takes advantages on %MEM while Flume does on %CPU. Heka is written in Golang so that the memory usage is much lower than Flume which is Java made. For %CPU, Flume uses less cpu than Heka. Chars are below:</p>
+<p><img src="/images/flume_heka/total_mem.png" alt="Alt text"></p>
+<p><img src="/images/flume_heka/total_cpu.png" alt="Alt text"></p>
+<h2 id="About_Usability">About Usability</h2><h3 id="Features">Features</h3><p>Flume’s configuration files are written in YAML while Heka’s in TOML. We can find out that writing in TOML is much more simple than YAML as well as we can understand more easily. As for the architectures, Flume is easier. It contains three main components - Source, Channel and Sink. <code>Source</code> defines the date source; <code>Sink</code> defines the destination of the date; <code>Channel</code> is the buffer date pipeline between <code>Source</code> and <code>Sink</code>. In our exmple, log files is the <code>Source</code> and Kafka is the <code>Sink</code>. <code>Source</code> puts date into <code>Channel</code> while <code>Sink</code> takes date from <code>Channel</code>. The architecture is like below:</p>
+<p><img src="/images/flume_heka/flume_arch.png" alt="Alt text"></p>
+<p>For Heka, its architecture is a little complex. Its <code>Inputs</code>, <code>Outputs</code> are like Flume’s <code>Source</code> and <code>Sink</code>. Heka adds many feature such as <code>Splitter</code>, <code>Decoder</code>, <code>Filter</code> and <code>Encoder</code> in addition. These feature enable Heka to handle date directly in Heka itself, in the same time, make Heka a more powerful tool in comparison of Flume. The architecture is like below: </p>
+<p><img src="/images/flume_heka/heka_arch" alt="Alt text"></p>
+<h3 id="Monitor">Monitor</h3><p>Both Flume and Heka enables HTTP API to get metrics. </p>
+<p>For Flume, we can add JVM parameters <code>-Dflume.monitoring.type=http -Dflume.monitoring.port=34545</code> to enable the HTTP API. And the date is like below (by <code>curl -s localhost:34545/metrics | python -m json.tool</code>):</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> &#123;    "CHANNEL.memChannel": &#123;        "ChannelCapacity": "1000000",        "ChannelFillPercentage": "0.0",        "ChannelSize": "0",        "EventPutAttemptCount": "10",        "EventPutSuccessCount": "10",        "EventTakeAttemptCount": "16",        "EventTakeSuccessCount": "10",        "StartTime": "1458887648261",        "StopTime": "0",        "Type": "CHANNEL"    &#125;,... </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>For Heka, we need to add this in to its configuration file, <code>ticker_interval</code> defines the interval Heka refresh the data:</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">[DashboardOutput]</span><span class="setting">ticker_interval = <span class="value"><span class="number">1</span></span></span></span><br></pre></td></tr></table></figure>
+<p>The result is like (by ``):</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> &#123;...&#125; ],  "outputs": [    &#123;      "Name": "KafkaOutput",      "ProcessMessageCount": &#123;        "representation": "count",        "value": 756698      &#125;,      "ProcessMessageDiscards": &#123;        "representation": "count",        "value": 0      &#125;,      "ProcessMessageFailures": &#123;        "representation": "count",		 "value": 0 &#125;	  &#125;, </span><br><span class="line">	...&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Problems">Problems</h3><ol>
+<li><p>Flume cannot read log file continously after restart. Flume uses <code>tail</code> to get log lines from log files so Flume does not know which line it has read or which line it need to start to read after Flume restarts. Heka will keep offset in a meta file and can read the date continously after restarting. In this point, Heka is better.</p>
+</li>
+<li><p>Flume cannot update log files according to the configurations. For example, we defined we need to get log files named ‘access_*.log’, Flume will not get the files working only when we modify the configuration files. For Heka, Heka will monitor the directory and update the log files in some interval time which is set in configuration files. The parameter is <code>rescan_interval</code>:</p>
+</li>
+</ol>
+<blockquote>
+<p>During logfile rotation, or if the logfile is not originally present on the system, this interval is how often the existence of the logfile will be checked for. The default of 5 seconds is usually fine. This interval is in milliseconds.</p>
+</blockquote>
+<h1 id="Conclusions">Conclusions</h1><p>Both Flume and Heka are good choice for our solutions. Heka is written Golang and we can start/stop it in seconds. For Flume, it always takes minutes to initialize or stop. And Heka can handle the circumstance of continoulsy reading while Flume can not. I think Heka would be a better choice.</p>
+<p>But the bad news is that Heka is deprecated by mozilla in May of 2016. We can get the detail inforation <a href="https://mail.mozilla.org/pipermail/heka/2016-May/001059.html" target="_blank" rel="external">here</a>. I thinks there are too many features in Heka and that makes Heka a heavy tool. I like it very much and my plan is to remove the additional components of Heka and make it a simple but powerful tool.</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Environment">Environment</h1><p>This test’s main purpose is to choose the tool used to collect log on servers. In this test, we use ]]>
+    </summary>
+    
+      <category term="Apache" scheme="http://blog.yaorenjie.com/tags/Apache/"/>
+    
+      <category term="Flume" scheme="http://blog.yaorenjie.com/tags/Flume/"/>
+    
+      <category term="Heka" scheme="http://blog.yaorenjie.com/tags/Heka/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Simple Method to Compare to JSON in Python]]></title>

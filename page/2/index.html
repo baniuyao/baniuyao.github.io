@@ -170,6 +170,80 @@
           
           
             
+              <a class="post-title-link" href="/2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/" itemprop="url">
+                Convert SOCKS5 Proxy to HTTP Proxy on Mac
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          Posted on
+          <time itemprop="dateCreated" datetime="2015-10-20T17:30:12+08:00" content="2015-10-20">
+            2015-10-20
+          </time>
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/" itemprop="commentsCount"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>We usually use ShadowsocksX on Mac to build a SOCKS5 tunnel. But as a developer, I need HTTP Proxy in many places such as npm or some IDE tools. I need a tool to build a HTTP Proxy and pack data stream to SOCKS5 tunnel.</p>
+<p>I found a solution of using a tool called <code>polipo</code>. We can simply install this tool by <code>homebrew</code>.</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew instasll polipo</span><br></pre></td></tr></table></figure>
+<p>After installed <code>polipo</code>, let’s make it work by a simple command.</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">polipo socksParentProxy=localhost:1080</span><br></pre></td></tr></table></figure>
+<p><code>localhost:1080</code> is your local SOCKS5 address. In default, HTTP proxy created by <code>polipo</code> is running on <code>localhost:8123</code>.</p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2015/08/27/Advanced-Python-Data-Structure/" itemprop="url">
                 Advanced Python Data Structure
               </a>
@@ -892,7 +966,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-count">17</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -906,7 +980,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">30</span>
+              <span class="site-state-item-count">33</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
