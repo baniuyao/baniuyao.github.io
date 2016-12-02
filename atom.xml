@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.yaorenjie.com/"/>
-  <updated>2016-12-02T02:49:08.000Z</updated>
+  <updated>2016-12-02T03:15:16.000Z</updated>
   <id>http://blog.yaorenjie.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://blog.yaorenjie.com/2016/12/01/The-Comparsion-Between-Apache-Flume-and-Heka/"/>
     <id>http://blog.yaorenjie.com/2016/12/01/The-Comparsion-Between-Apache-Flume-and-Heka/</id>
     <published>2016-12-01T09:45:32.000Z</published>
-    <updated>2016-12-02T02:49:08.000Z</updated>
+    <updated>2016-12-02T03:15:16.000Z</updated>
     <content type="html"><![CDATA[<h1 id="Environment">Environment</h1><p>This test’s main purpose is to choose the tool used to collect log on servers. In this test, we use Apache Flume and Heka to collect raw log data and send them into Kafka. The Kafka is in all default configuration. Linux is CentOS 6.4 with 12 cores CPU, 45GB memory and JDK 1.7.</p>
 <h2 id="Benchmark_Metrics">Benchmark Metrics</h2><ol>
 <li>mps - Message Per Second: This data is fetched from JMX port of Kafka. We get the total message count from Kafka, and then get this count again. The delta value is the message count in 1 second - mps. We can get mps by command line:</li>
@@ -34,18 +34,50 @@
 </ol>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flume_pid=`jps -m | grep App | cut -d&#39; &#39; -f1`&#13;flume_cpu=`top -b -n1 -p $flume_pid | grep $flume_pid | awk &#39;&#123;print&#13;$9&#125;&#39;`&#13;flume_mem=`top -b -n1 -p $flume_pid | grep $flume_pid | awk &#39;&#123;print&#13;$10&#125;&#39;`</span><br></pre></td></tr></table></figure>
 <h2 id="Benchmark_Items">Benchmark Items</h2><p>We used a tool to write log lines into log files with different mps - 5K, 10K, 50K.</p>
-<h1 id="Flume_Benchmarks">Flume Benchmarks</h1><h2 id="Flume_Configuration">Flume Configuration</h2><p><strong>JVM</strong>: </p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPTS=&#34;-Xms256m -Xmx256m -Dflume.monitoring.type=http -Dflume.m&#13;onitoring.port=34545&#34;</span><br></pre></td></tr></table></figure>
-<p><strong>Flume Configuration</strong>:</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># META&#13;agent.sources = fileSource&#13;agent.channels = diskChannel memChannel&#13;agent.sinks = kafkaSink&#10;&#13;# SOURCE&#13;agent.sources.fileSource.type = exec&#13;agent.sources.fileSource.command = tail -F /tmp/example.log&#13;agent.sources.fileSource.channels = memChannel&#10;&#13;# CHANNEL&#13;agent.channels.memChannel.type = memory&#13;agent.channels.memChannel.capacity = 1000000&#13;agent.channels.memChannel.transactionCapacity = 10000&#10;&#13;# SINK&#13;agent.sinks.kafkaSink.type = org.apache.flume.sink.kafka.KafkaSink&#13;agent.sinks.kafkaSink.topic = flume_test&#13;agent.sinks.kafkaSink.brokerList = kafka:9092&#13;agent.sinks.kafkaSink.batchSize = 200&#13;agent.sinks.kafkaSink.channel = memChannel</span><br></pre></td></tr></table></figure>
-<h2 id="Flume_Benchmark_Results">Flume Benchmark Results</h2><h3 id="5K_mps">5K mps</h3><p><img src="/images/flume_heka/flume_5k_mps.png" alt="Alt text"></p>
+<h1 id="Flume_Benchmarks">Flume Benchmarks</h1><h2 id="Flume_Configuration">Flume Configuration</h2><p><strong>JVM</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPTS=&#34;-Xms256m -Xmx256m -Dflume.monitoring.type=http -Dflume.monitoring.port=34545&#34;</span><br></pre></td></tr></table></figure>
+<p><strong>Flume Configuration</strong></p>
+<pre><code>agent<span class="class">.sources</span> = fileSource
+agent<span class="class">.channels</span> = diskChannel memChannel
+agent<span class="class">.sinks</span> = kafkaSink
+
+agent<span class="class">.sources</span><span class="class">.fileSource</span><span class="class">.type</span> = exec
+agent<span class="class">.sources</span><span class="class">.fileSource</span><span class="class">.command</span> = tail -F /tmp/example<span class="class">.log</span>
+agent<span class="class">.sources</span><span class="class">.fileSource</span><span class="class">.channels</span> = memChannel
+
+agent<span class="class">.channels</span><span class="class">.memChannel</span><span class="class">.type</span> = memory
+agent<span class="class">.channels</span><span class="class">.memChannel</span><span class="class">.capacity</span> = <span class="number">1000000</span>
+agent<span class="class">.channels</span><span class="class">.memChannel</span><span class="class">.transactionCapacity</span> = <span class="number">10000</span>
+
+agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span class="class">.type</span> = org<span class="class">.apache</span><span class="class">.flume</span><span class="class">.sink</span><span class="class">.kafka</span><span class="class">.KafkaSink</span>
+agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span class="class">.topic</span> = flume_test
+agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span class="class">.brokerList</span> = kafka:<span class="number">9092</span>
+agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span class="class">.batchSize</span> = <span class="number">200</span>
+agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span class="class">.channel</span> = memChannel
+</code></pre><h2 id="Flume_Benchmark_Results">Flume Benchmark Results</h2><h3 id="5K_mps">5K mps</h3><p><img src="/images/flume_heka/flume_5k_mps.png" alt="Alt text"></p>
 <p><img src="/images/flume_heka/flume_5k_mem.png" alt="Alt text"></p>
 <h3 id="10K_mps">10K mps</h3><p><img src="/images/flume_heka/flume_10k_mps.png" alt="Alt text"></p>
 <p><img src="/images/flume_heka/flume_10k_mem.png" alt="Alt text"></p>
 <h3 id="50K_mps">50K mps</h3><p><img src="/images/flume_heka/flume_50k_mps.png" alt="Alt text"></p>
 <p><img src="/images/flume_heka/flume_50k_mem.png" alt="Alt text"></p>
-<h1 id="Heka_Benchmarks">Heka Benchmarks</h1><h2 id="Heka_Configuration">Heka Configuration</h2><figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">[accesslogs]</span><span class="setting">type = <span class="value"><span class="string">"LogstreamerInput"</span></span></span><span class="setting">log_directory = <span class="value"><span class="string">"/tmp"</span></span></span><span class="setting">file_match = <span class="value"><span class="string">'example\.log'</span></span></span></span><br><span class="line"><span class="title">[PayloadEncoder]</span><span class="setting">append_newlines = <span class="value"><span class="keyword">false</span></span></span></span><br><span class="line"><span class="title">[KafkaOutput]</span><span class="setting">type = <span class="value"><span class="string">"KafkaOutput"</span></span></span><span class="setting">message_matcher = <span class="value"><span class="string">"TRUE"</span></span></span><span class="setting">topic = <span class="value"><span class="string">"heka_test"</span></span></span><span class="setting">addrs = <span class="value">[<span class="string">"kafka:9092"</span>]</span></span><span class="setting">encoder = <span class="value"><span class="string">"PayloadEncoder"</span></span></span><span class="setting">max_buffer_time = <span class="value"><span class="number">1000</span></span></span><span class="setting">max_buffered_bytes = <span class="value"><span class="number">1048576</span></span></span><span class="setting">required_acks = <span class="value"><span class="string">"NoResponse"</span></span></span></span><br></pre></td></tr></table></figure>
-<h2 id="Heka_Benchmark_Results">Heka Benchmark Results</h2><h3 id="5K_mps-1">5K mps</h3><p><img src="/images/flume_heka/heka_5k_mps.png" alt="Alt text"></p>
+<h1 id="Heka_Benchmarks">Heka Benchmarks</h1><h2 id="Heka_Configuration">Heka Configuration</h2><pre><code><span class="title">[accesslogs]</span>
+<span class="setting">type = <span class="value"><span class="string">"LogstreamerInput"</span></span></span>
+<span class="setting">log_directory = <span class="value"><span class="string">"/tmp"</span></span></span>
+<span class="setting">file_match = <span class="value"><span class="string">'example\.log'</span></span></span>
+<span class="title">
+[PayloadEncoder]</span>
+<span class="setting">append_newlines = <span class="value"><span class="keyword">false</span></span></span>
+<span class="title">
+[KafkaOutput]</span>
+<span class="setting">type = <span class="value"><span class="string">"KafkaOutput"</span></span></span>
+<span class="setting">message_matcher = <span class="value"><span class="string">"TRUE"</span></span></span>
+<span class="setting">topic = <span class="value"><span class="string">"heka_test"</span></span></span>
+<span class="setting">addrs = <span class="value">[<span class="string">"kafka:9092"</span>]</span></span>
+<span class="setting">encoder = <span class="value"><span class="string">"PayloadEncoder"</span></span></span>
+<span class="setting">max_buffer_time = <span class="value"><span class="number">1000</span></span></span>
+<span class="setting">max_buffered_bytes = <span class="value"><span class="number">1048576</span></span></span>
+<span class="setting">required_acks = <span class="value"><span class="string">"NoResponse"</span></span></span>
+</code></pre><h2 id="Heka_Benchmark_Results">Heka Benchmark Results</h2><h3 id="5K_mps-1">5K mps</h3><p><img src="/images/flume_heka/heka_5k_mps.png" alt="Alt text"></p>
 <p><img src="/images/flume_heka/heka_5k_mem.png" alt="Alt text"></p>
 <h3 id="10K_mps-1">10K mps</h3><p><img src="/images/flume_heka/heka_10k_mps.png" alt="Alt text"></p>
 <p><img src="/images/flume_heka/heka_10k_mem.png" alt="Alt text"></p>
@@ -60,12 +92,41 @@
 <p><img src="/images/flume_heka/heka_arch" alt="Alt text"></p>
 <h3 id="Monitor">Monitor</h3><p>Both Flume and Heka enables HTTP API to get metrics. </p>
 <p>For Flume, we can add JVM parameters <code>-Dflume.monitoring.type=http -Dflume.monitoring.port=34545</code> to enable the HTTP API. And the date is like below (by <code>curl -s localhost:34545/metrics | python -m json.tool</code>):</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> &#123;    "CHANNEL.memChannel": &#123;        "ChannelCapacity": "1000000",        "ChannelFillPercentage": "0.0",        "ChannelSize": "0",        "EventPutAttemptCount": "10",        "EventPutSuccessCount": "10",        "EventTakeAttemptCount": "16",        "EventTakeSuccessCount": "10",        "StartTime": "1458887648261",        "StopTime": "0",        "Type": "CHANNEL"    &#125;,... </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>For Heka, we need to add this in to its configuration file, <code>ticker_interval</code> defines the interval Heka refresh the data:</p>
-<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">[DashboardOutput]</span><span class="setting">ticker_interval = <span class="value"><span class="number">1</span></span></span></span><br></pre></td></tr></table></figure>
-<p>The result is like (by ``):</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> &#123;...&#125; ],  "outputs": [    &#123;      "Name": "KafkaOutput",      "ProcessMessageCount": &#123;        "representation": "count",        "value": 756698      &#125;,      "ProcessMessageDiscards": &#123;        "representation": "count",        "value": 0      &#125;,      "ProcessMessageFailures": &#123;        "representation": "count",		 "value": 0 &#125;	  &#125;, </span><br><span class="line">	...&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Problems">Problems</h3><ol>
+<pre><code><span class="collection">{
+       <span class="string">"CHANNEL.memChannel"</span>: <span class="collection">{
+           <span class="string">"ChannelCapacity"</span>: <span class="string">"1000000"</span>,
+           <span class="string">"ChannelFillPercentage"</span>: <span class="string">"0.0"</span>,
+           <span class="string">"EventPutAttemptCount"</span>: <span class="string">"10"</span>,
+           <span class="string">"EventPutSuccessCount"</span>: <span class="string">"10"</span>,
+           <span class="string">"EventTakeAttemptCount"</span>: <span class="string">"16"</span>,
+           <span class="string">"EventTakeSuccessCount"</span>: <span class="string">"10"</span>,
+           <span class="string">"StartTime"</span>: <span class="string">"1458887648261"</span>,
+           <span class="string">"StopTime"</span>: <span class="string">"0"</span>,
+           <span class="string">"Type"</span>: <span class="string">"CHANNEL"</span>
+           }</span>,
+           ...
+   }</span>
+</code></pre><p>For Heka, we need to add this in to its configuration file, <code>ticker_interval</code> defines the interval Heka refresh the data:</p>
+<pre><code><span class="title">[DashboardOutput]</span>
+<span class="setting">ticker_interval = <span class="value"><span class="number">1</span></span></span>
+</code></pre><p>The result is like (by ``):</p>
+<pre><code><span class="string">"outputs"</span>: [{
+    <span class="string">"Name"</span>: <span class="string">"KafkaOutput"</span>,
+    <span class="string">"ProcessMessageCount"</span>: {
+        <span class="string">"representation"</span>: <span class="string">"count"</span>,
+        <span class="string">"value"</span>: <span class="number">756698</span>
+    },
+    <span class="string">"ProcessMessageDiscards"</span>: {
+        <span class="string">"representation"</span>: <span class="string">"count"</span>,
+        <span class="string">"value"</span>: <span class="number">0</span>
+    },
+    <span class="string">"ProcessMessageFailures"</span>: {
+        <span class="string">"representation"</span>: <span class="string">"count"</span>,
+        <span class="string">"value"</span>: <span class="number">0</span> }
+    },
+    ...
+}
+</code></pre><h3 id="Problems">Problems</h3><ol>
 <li><p>Flume cannot read log file continously after restart. Flume uses <code>tail</code> to get log lines from log files so Flume does not know which line it has read or which line it need to start to read after Flume restarts. Heka will keep offset in a meta file and can read the date continously after restarting. In this point, Heka is better.</p>
 </li>
 <li><p>Flume cannot update log files according to the configurations. For example, we defined we need to get log files named ‘access_*.log’, Flume will not get the files working only when we modify the configuration files. For Heka, Heka will monitor the directory and update the log files in some interval time which is set in configuration files. The parameter is <code>rescan_interval</code>:</p>
