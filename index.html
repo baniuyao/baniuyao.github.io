@@ -208,7 +208,129 @@
 
       
         
-          <span itemprop="articleBody"></span>
+          <span itemprop="articleBody"><h1 id="Backgroud">Backgroud</h1><p>In my previous <a href="http://blog.yaorenjie.com/2015/03/27/Kafka-Compression-Performance-Tests/">blog about compression benchmark for Kafka</a>, I have made some tests for Kafka 0.8.2.1. Kafka 0.10 has made a lot of progress, and this post aims to make some benchmaks on Kafka 0.10. </p>
+<p>In this post, I’m going to test 3 parts:</p>
+<ol>
+<li>Producer - time cost, throughput, bandwidth, total traffic</li>
+<li>Consumer - time cost, throughput</li>
+<li>Capacity - disk usage, server/client CPU usage</li>
+</ol>
+<h1 id="Environment">Environment</h1><h2 id="Hardware_Box">Hardware Box</h2><p>I use Docker on Mac to run two containers - zk and kafka.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">Mac CPUs</th>
+<th style="text-align:right">Mac Memory</th>
+<th style="text-align:right">Mac Disk</th>
+<th style="text-align:right">Docker CPUs</th>
+<th style="text-align:right">Docker Memory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">2.5 GHz Intel Core i7</td>
+<td style="text-align:right">16GB</td>
+<td style="text-align:right">512GB SSD</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">2G</td>
+</tr>
+</tbody>
+</table>
+<p><code>docker-compose.yml</code> is below:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">version: &#34;2&#34;&#10;&#10;services:&#10;  zk:&#10;    image: kafka-0.10_zk:1&#10;    ports:&#10;      - &#34;2181:2181&#34;&#10;&#10;  kafka:&#10;    depends_on:&#10;      - zk&#10;    image: kafka-0.10_kafka:1&#10;    ports:&#10;      - &#34;9092:9092&#34;&#10;      - &#34;9999:9999&#34;&#10;    command: --override zookeeper.connect=zk:2181</span><br></pre></td></tr></table></figure>
+<h2 id="Software_Box">Software Box</h2><p><strong>All Kafka JVM parameters are default</strong> because the benchmark’s main purpose is to compare different compression algorithm to the <code>none</code> compression.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">Kafka Version</th>
+<th style="text-align:right">JDK</th>
+<th style="text-align:right">Scala</th>
+<th style="text-align:right">Broker</th>
+<th style="text-align:right">Kafka Replica</th>
+<th style="text-align:right">Kafka Partition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">0.10.1.0</td>
+<td style="text-align:right">1.7.0-b147</td>
+<td style="text-align:right">2.11</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">1</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Log_Files">Log Files</h2><p>The log file comes from nginx access logs, and it use 1.2GB disk space and it has 5,190,426 lines.</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@780e74bff80d kafka_2.11-0.10.1.0]# du -sh nginx.log&#10;1.2G&#9;nginx.log&#10;[root@780e74bff80d kafka_2.11-0.10.1.0]# wc -l nginx.log&#10;5190426 nginx.log&#10;[root@780e74bff80d kafka_2.11-0.10.1.0]# tail -1 nginx.log&#10;127.0.0.1&#9;hello.com&#9;127.0.0.1&#9;127.0.0.1&#9;-&#9;30/Dec/2016:09:43:28 +0800&#9;POST&#9;/index.php&#9;HTTP/1.1&#9;200&#9;64&#9;-&#9;Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727)&#9;127.0.0.1&#9;127.0.0.1:80&#9;0.016&#9;0.016</span><br></pre></td></tr></table></figure>
+<h1 id="Producer_Benchmark">Producer Benchmark</h1><p>To test Producer performance, I will use <code>kafka-console-producer.sh</code> to send <code>nginx.log</code> to kafka, <code>dstat</code> to get network metrics and <code>time</code> in linux to get the time costs. The details are below:</p>
+<ol>
+<li>time(second) - by Linux command <code>time</code></li>
+<li>throughtput(message/second) - <code>total lines</code>/<code>time</code></li>
+<li>bandwidth(MB/s) - by <code>dstat -nT</code></li>
+<li>traffic(MB) - <code>bandwidth</code> * <code>time</code></li>
+</ol>
+<p>The command to send messsages is:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@a7dd0e808964 kafka_2.11-0.10.1.0]# time bin/kafka-console-producer.sh --broker-list a7dd0e808964:9092 --topic test_producer --batch-size 2000 --compression-codec none &#60; nginx.log</span><br></pre></td></tr></table></figure>
+<p>The command to get network metrics is:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@a7dd0e808964 kafka_2.11-0.10.1.0]# dstat -nT&#10;-net/total- --epoch---&#10; recv  send|  epoch&#10;   0     0 |1483439091&#10;  86B  144B|1483439092&#10;   0     0 |1483439093</span><br></pre></td></tr></table></figure>
+<h2 id="Compression_Codec:_None">Compression Codec: None</h2><table>
+<thead>
+<tr>
+<th style="text-align:right">batch.size</th>
+<th style="text-align:right">time(sec)</th>
+<th style="text-align:right">throughput(msg/s)</th>
+<th style="text-align:right">bandwidth (MB/s)</th>
+<th style="text-align:right">traffic (MB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>500</strong></td>
+<td style="text-align:right">35.067</td>
+<td style="text-align:right">148014.54</td>
+<td style="text-align:right">38.3</td>
+<td style="text-align:right">1343.07</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1000</strong></td>
+<td style="text-align:right">35.579</td>
+<td style="text-align:right">145884.54</td>
+<td style="text-align:right">37.2</td>
+<td style="text-align:right">1323.54</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1500</strong></td>
+<td style="text-align:right">35.656</td>
+<td style="text-align:right">145569.5</td>
+<td style="text-align:right">38.3</td>
+<td style="text-align:right">1365.62</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>5000</strong></td>
+<td style="text-align:right">31.905</td>
+<td style="text-align:right">162683.78</td>
+<td style="text-align:right">41.8</td>
+<td style="text-align:right">1333.63</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>10000</strong></td>
+<td style="text-align:right">35.212</td>
+<td style="text-align:right">147405.03</td>
+<td style="text-align:right">38.3</td>
+<td style="text-align:right">1348.62</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>AVERAGE</strong></td>
+<td style="text-align:right">34.68</td>
+<td style="text-align:right">149911.48</td>
+<td style="text-align:right">38.78</td>
+<td style="text-align:right">1342.9</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/images/kafka010/producer_throughput_none.png" alt="Alt text"></p>
+</span>
         
       
     </div>
@@ -1245,7 +1367,7 @@ agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">33</span>
+              <span class="site-state-item-count">34</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
