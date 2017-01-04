@@ -49,8 +49,18 @@
 <meta property="og:url" content="http://blog.yaorenjie.com/2017/01/03/Kafka-0-10-Compression-Benchmark/index.html">
 <meta property="og:site_name" content="Renjie Yao's Blog">
 <meta property="og:description" content="BackgroudIn my previous blog about compression benchmark for Kafka, I have made some tests for Kafka 0.8.2.1. Kafka 0.10 has made a lot of progress, and this post aims to make some benchmaks on Kafka">
-<meta property="og:image" content="http://blog.yaorenjie.com/images/kafka010/producer_throughput_none.png">
-<meta property="og:updated_time" content="2017-01-03T10:40:33.000Z">
+<meta property="og:image" content="http://blog.yaorenjie.com/images/kafka010/producer_throughput.png">
+<meta property="og:image" content="http://blog.yaorenjie.com/images/kafka010/producer_bandwidth.png">
+<meta property="og:image" content="http://blog.yaorenjie.com/images/kafka010/producer_traffic.png">
+<meta property="og:image" content="http://blog.yaorenjie.com/images/kafka010/producer_overview.png">
+<meta property="og:image" content="http://blog.yaorenjie.com/images/kafka010/consumer_overview.png">
+<meta property="og:image" content="http://blog.yaorenjie.com/images/kafka010/consumer_overview_percentage.png">
+<meta property="og:image" content="http://blog.yaorenjie.com/images/kafka010/capacity_disk_space.png">
+<meta property="og:image" content="http://blog.yaorenjie.com/images/kafka010/capacity_producer_server_cpu.png">
+<meta property="og:image" content="http://blog.yaorenjie.com/images/kafka010/capacity_producer_client_cpu.png">
+<meta property="og:image" content="http://blog.yaorenjie.com/images/kafka010/capacity_consumer_server_cpu.png">
+<meta property="og:image" content="http://blog.yaorenjie.com/images/kafka010/capacity_consumer_client_cpu.png">
+<meta property="og:updated_time" content="2017-01-04T03:07:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kafka 0.10 Compression Benchmark">
 <meta name="twitter:description" content="BackgroudIn my previous blog about compression benchmark for Kafka, I have made some tests for Kafka 0.8.2.1. Kafka 0.10 has made a lot of progress, and this post aims to make some benchmaks on Kafka">
@@ -236,7 +246,7 @@
 </tbody>
 </table>
 <p><code>docker-compose.yml</code> is below:</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">version: &#34;2&#34;&#10;&#10;services:&#10;  zk:&#10;    image: kafka-0.10_zk:1&#10;    ports:&#10;      - &#34;2181:2181&#34;&#10;&#10;  kafka:&#10;    depends_on:&#10;      - zk&#10;    image: kafka-0.10_kafka:1&#10;    ports:&#10;      - &#34;9092:9092&#34;&#10;      - &#34;9999:9999&#34;&#10;    command: --override zookeeper.connect=zk:2181</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">version: <span class="string">"2"</span></span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  zk:</span><br><span class="line">    image: kafka-<span class="number">0.10</span>_zk:<span class="number">1</span></span><br><span class="line">    ports:</span><br><span class="line">      - <span class="string">"2181:2181"</span></span><br><span class="line"></span><br><span class="line">  kafka:</span><br><span class="line">    depends_on:</span><br><span class="line">      - zk</span><br><span class="line">    image: kafka-<span class="number">0.10</span>_kafka:<span class="number">1</span></span><br><span class="line">    ports:</span><br><span class="line">      - <span class="string">"9092:9092"</span></span><br><span class="line">      - <span class="string">"9999:9999"</span></span><br><span class="line">    command: --override zookeeper.connect=zk:<span class="number">2181</span></span><br></pre></td></tr></table></figure>
 <h2 id="Software_Box">Software Box</h2><p><strong>All Kafka JVM parameters are default</strong> because the benchmark’s main purpose is to compare different compression algorithm to the <code>none</code> compression.</p>
 <table>
 <thead>
@@ -261,7 +271,7 @@
 </tbody>
 </table>
 <h2 id="Log_Files">Log Files</h2><p>The log file comes from nginx access logs, and it use 1.2GB disk space and it has 5,190,426 lines.</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@780e74bff80d kafka_2.11-0.10.1.0]# du -sh nginx.log&#10;1.2G&#9;nginx.log&#10;[root@780e74bff80d kafka_2.11-0.10.1.0]# wc -l nginx.log&#10;5190426 nginx.log&#10;[root@780e74bff80d kafka_2.11-0.10.1.0]# tail -1 nginx.log&#10;127.0.0.1&#9;hello.com&#9;127.0.0.1&#9;127.0.0.1&#9;-&#9;30/Dec/2016:09:43:28 +0800&#9;POST&#9;/index.php&#9;HTTP/1.1&#9;200&#9;64&#9;-&#9;Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727)&#9;127.0.0.1&#9;127.0.0.1:80&#9;0.016&#9;0.016</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@<span class="number">780</span>e74bff80d kafka_2.<span class="number">11</span>-<span class="number">0.10</span>.<span class="number">1.0</span>]<span class="comment"># du -sh nginx.log</span></span><br><span class="line"><span class="number">1.2</span>G	nginx.log</span><br><span class="line">[root@<span class="number">780</span>e74bff80d kafka_2.<span class="number">11</span>-<span class="number">0.10</span>.<span class="number">1.0</span>]<span class="comment"># wc -l nginx.log</span></span><br><span class="line"><span class="number">5190426</span> nginx.log</span><br><span class="line">[root@<span class="number">780</span>e74bff80d kafka_2.<span class="number">11</span>-<span class="number">0.10</span>.<span class="number">1.0</span>]<span class="comment"># tail -1 nginx.log</span></span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>	hello.com	<span class="number">127.0</span>.<span class="number">0.1</span>	<span class="number">127.0</span>.<span class="number">0.1</span>	- <span class="number">30</span>/Dec/<span class="number">2016</span>:<span class="number">09</span>:<span class="number">43</span>:<span class="number">28</span> +<span class="number">0800</span> POST /index.php HTTP/<span class="number">1.1</span> <span class="number">200</span> <span class="number">64</span> -Mozilla/<span class="number">4.0</span> (compatible; MSIE <span class="number">7.0</span>; Windows NT <span class="number">5.1</span>; Trident/<span class="number">4.0</span>; .NET CLR <span class="number">2.0</span>.<span class="number">50727</span>) <span class="number">127.0</span>.<span class="number">0.1</span>	<span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">80</span>	<span class="number">0.016</span>	<span class="number">0.016</span></span><br></pre></td></tr></table></figure>
 <h1 id="Producer_Benchmark">Producer Benchmark</h1><p>To test Producer performance, I will use <code>kafka-console-producer.sh</code> to send <code>nginx.log</code> to kafka, <code>dstat</code> to get network metrics and <code>time</code> in linux to get the time costs. The details are below:</p>
 <ol>
 <li>time(second) - by Linux command <code>time</code></li>
@@ -270,10 +280,10 @@
 <li>traffic(MB) - <code>bandwidth</code> * <code>time</code></li>
 </ol>
 <p>The command to send messsages is:</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@a7dd0e808964 kafka_2.11-0.10.1.0]# time bin/kafka-console-producer.sh --broker-list a7dd0e808964:9092 --topic test_producer --batch-size 2000 --compression-codec none &#60; nginx.log</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@a7dd0e808964 kafka_2.<span class="number">11</span>-<span class="number">0.10</span>.<span class="number">1.0</span>]<span class="comment"># time bin/kafka-console-producer.sh --broker-list a7dd0e808964:9092 --topic test_producer --batch-size 2000 --compression-codec none &lt; nginx.log</span></span><br></pre></td></tr></table></figure>
 <p>The command to get network metrics is:</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@a7dd0e808964 kafka_2.11-0.10.1.0]# dstat -nT&#10;-net/total- --epoch---&#10; recv  send|  epoch&#10;   0     0 |1483439091&#10;  86B  144B|1483439092&#10;   0     0 |1483439093</span><br></pre></td></tr></table></figure>
-<h2 id="Compression_Codec:_None">Compression Codec: None</h2><table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@a7dd0e808964 kafka_2.<span class="number">11</span>-<span class="number">0.10</span>.<span class="number">1.0</span>]<span class="comment"># dstat -nT</span></span><br><span class="line">-net/total- --epoch---</span><br><span class="line"> recv  send|  epoch</span><br><span class="line">   <span class="number">0</span>     <span class="number">0</span> |<span class="number">1483439091</span></span><br><span class="line">  <span class="number">86</span>B  <span class="number">144</span>B|<span class="number">1483439092</span></span><br><span class="line">   <span class="number">0</span>     <span class="number">0</span> |<span class="number">1483439093</span></span><br></pre></td></tr></table></figure>
+<h2 id="Detail_Metrics_for_Every_Compression_Codecs">Detail Metrics for Every Compression Codecs</h2><h3 id="Compression_Codec:_none">Compression Codec: none</h3><table>
 <thead>
 <tr>
 <th style="text-align:right">batch.size</th>
@@ -328,7 +338,520 @@
 </tr>
 </tbody>
 </table>
-<p><img src="/images/kafka010/producer_throughput_none.png" alt="Alt text"></p>
+<h3 id="Compression_Codec:_gzip">Compression Codec: gzip</h3><table>
+<thead>
+<tr>
+<th style="text-align:right">batch.size</th>
+<th style="text-align:right">time(sec)</th>
+<th style="text-align:right">throughput(msg/s)</th>
+<th style="text-align:right">bandwidth (MB/s)</th>
+<th style="text-align:right">traffic (MB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>500</strong></td>
+<td style="text-align:right">73.302</td>
+<td style="text-align:right">70808.79</td>
+<td style="text-align:right">2.0</td>
+<td style="text-align:right">146.6</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1000</strong></td>
+<td style="text-align:right">68.695</td>
+<td style="text-align:right">75557.55</td>
+<td style="text-align:right">2.0</td>
+<td style="text-align:right">137.39</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1500</strong></td>
+<td style="text-align:right">72.471</td>
+<td style="text-align:right">71620.73</td>
+<td style="text-align:right">2.0</td>
+<td style="text-align:right">144.94</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>5000</strong></td>
+<td style="text-align:right">76.469</td>
+<td style="text-align:right">67876.21</td>
+<td style="text-align:right">2.0</td>
+<td style="text-align:right">152.94</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>10000</strong></td>
+<td style="text-align:right">73.865</td>
+<td style="text-align:right">70269.09</td>
+<td style="text-align:right">2.0</td>
+<td style="text-align:right">147.73</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>AVERAGE</strong></td>
+<td style="text-align:right">72.96</td>
+<td style="text-align:right">71226.47</td>
+<td style="text-align:right">2.0</td>
+<td style="text-align:right">145.92</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Compression_Codec:_snappy">Compression Codec: snappy</h3><table>
+<thead>
+<tr>
+<th style="text-align:right">batch.size</th>
+<th style="text-align:right">time(sec)</th>
+<th style="text-align:right">throughput(msg/s)</th>
+<th style="text-align:right">bandwidth (MB/s)</th>
+<th style="text-align:right">traffic (MB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>500</strong></td>
+<td style="text-align:right">29.163</td>
+<td style="text-align:right">177979.84</td>
+<td style="text-align:right">24.5</td>
+<td style="text-align:right">714.49</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1000</strong></td>
+<td style="text-align:right">33.959</td>
+<td style="text-align:right">152843.9</td>
+<td style="text-align:right">21.4</td>
+<td style="text-align:right">726.72</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1500</strong></td>
+<td style="text-align:right">31.152</td>
+<td style="text-align:right">166616.14</td>
+<td style="text-align:right">23.5</td>
+<td style="text-align:right">732.07</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>5000</strong></td>
+<td style="text-align:right">27.420</td>
+<td style="text-align:right">189293.440</td>
+<td style="text-align:right">28.0</td>
+<td style="text-align:right">767.76</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>10000</strong></td>
+<td style="text-align:right">28.019</td>
+<td style="text-align:right">185246.65</td>
+<td style="text-align:right">26.9</td>
+<td style="text-align:right">753.71</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>AVERAGE</strong></td>
+<td style="text-align:right">29.94</td>
+<td style="text-align:right">174395.99</td>
+<td style="text-align:right">24.86</td>
+<td style="text-align:right">738.95</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Compression_Codec:_lz4">Compression Codec: lz4</h3><table>
+<thead>
+<tr>
+<th style="text-align:right">batch.size</th>
+<th style="text-align:right">time(sec)</th>
+<th style="text-align:right">throughput(msg/s)</th>
+<th style="text-align:right">bandwidth (MB/s)</th>
+<th style="text-align:right">traffic (MB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>500</strong></td>
+<td style="text-align:right">17.937</td>
+<td style="text-align:right">289369.79</td>
+<td style="text-align:right">14.01</td>
+<td style="text-align:right">251.3</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1000</strong></td>
+<td style="text-align:right">17.837</td>
+<td style="text-align:right">290992.1</td>
+<td style="text-align:right">13.70</td>
+<td style="text-align:right">244.37</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1500</strong></td>
+<td style="text-align:right">17.143</td>
+<td style="text-align:right">302772.33</td>
+<td style="text-align:right">14.03</td>
+<td style="text-align:right">240.52</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>5000</strong></td>
+<td style="text-align:right">18.525</td>
+<td style="text-align:right">280184.94</td>
+<td style="text-align:right">13.43</td>
+<td style="text-align:right">248.79</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>10000</strong></td>
+<td style="text-align:right">20.567</td>
+<td style="text-align:right">252366.7</td>
+<td style="text-align:right">11.76</td>
+<td style="text-align:right">241.87</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>AVERAGE</strong></td>
+<td style="text-align:right">18.4</td>
+<td style="text-align:right">283137.17</td>
+<td style="text-align:right">13.39</td>
+<td style="text-align:right">245.37</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Summary">Summary</h2><table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">throughput</th>
+<th style="text-align:right">bandwidth</th>
+<th style="text-align:right">traffic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>none</strong></td>
+<td style="text-align:right">149911.48</td>
+<td style="text-align:right">38.78</td>
+<td style="text-align:right">1342.9</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">71226.47</td>
+<td style="text-align:right">2.0</td>
+<td style="text-align:right">145.92</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">174395.99</td>
+<td style="text-align:right">24.86</td>
+<td style="text-align:right">738.95</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">283137.17</td>
+<td style="text-align:right">13.39</td>
+<td style="text-align:right">245.37</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Throughput_Overview">Throughput Overview</h3><p><img src="/images/kafka010/producer_throughput.png" alt="Alt text"></p>
+<h3 id="Bandwidth_Overview">Bandwidth Overview</h3><p><img src="/images/kafka010/producer_bandwidth.png" alt="Alt text"></p>
+<h3 id="Traffic_Overview">Traffic Overview</h3><p><img src="/images/kafka010/producer_traffic.png" alt="Alt text"></p>
+<h3 id="Percentage_Overview">Percentage Overview</h3><table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">throughput%</th>
+<th style="text-align:right">bandwidth%</th>
+<th style="text-align:right">traffic%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">47.51</td>
+<td style="text-align:right">5.16</td>
+<td style="text-align:right">10.87</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">116.33</td>
+<td style="text-align:right">64.11</td>
+<td style="text-align:right">55.03</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">188.87</td>
+<td style="text-align:right">34.53</td>
+<td style="text-align:right">18.27</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/images/kafka010/producer_overview.png" alt="Alt text"></p>
+<h1 id="Consumer_Benchmark">Consumer Benchmark</h1><p>Tests for <code>Consumer</code> is much more easier than the one for <code>Producer</code>. Before tests, I will send the same <code>nginx.log</code> to Kafka with different compression codec - <code>none</code>, <code>gzip</code>, <code>snappy</code> and <code>lz4</code>. And use <code>kafka-console-consumer.sh</code> to consume a fixed number of messages and in this tests the number is 500k(5,000,000). What I need to look for is the time the procedure costs, and furthermore, we can get the throughput.</p>
+<p>The bash command is:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">time bin/kafka-console-consumer.sh --bootstrap-server <span class="number">97200</span>db31e2c:<span class="number">9092</span> --topic consumer_none --max-messages <span class="number">5000000</span> --from-beginning &gt; /dev/null</span><br></pre></td></tr></table></figure>
+<h2 id="Detail_Metrics">Detail Metrics</h2><table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">time(second)</th>
+<th style="text-align:right">throughput(msg/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>none</strong></td>
+<td style="text-align:right">19.046</td>
+<td style="text-align:right">262522.31</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">39.493</td>
+<td style="text-align:right">126604.71</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">25.632</td>
+<td style="text-align:right">195068.66</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">23.846</td>
+<td style="text-align:right">209678.77</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/images/kafka010/consumer_overview.png" alt="Alt text"></p>
+<p>Percentage:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">time%</th>
+<th style="text-align:right">throughput%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">207.36</td>
+<td style="text-align:right">48.23</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">134.58</td>
+<td style="text-align:right">74.31</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">125.2</td>
+<td style="text-align:right">79.87</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/images/kafka010/consumer_overview_percentage.png" alt="Alt text"></p>
+<h1 id="Capacity_Benchmark">Capacity Benchmark</h1><p>In the previous blog, I have not make tests for this section. The pressure each codec cause to the CPU is another important factor to consider. I will make some simple benchmark in disk space and CPU in this section by <code>dstat</code>.</p>
+<h2 id="Disk_Usage">Disk Usage</h2><p>Although Kafka has its own retention policies, and it works well, but sometimes the disk space could be in engineers’ consideration, especially in large Kafka cluster. In the former section, I have sent <code>nginx.log</code> to Kafka with different codecs and I measured the the disk space each topic has used. The numbers can simply be got by <code>du -sh</code> in Kafka logs directory.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">Disk Space(MB)</th>
+<th style="text-align:right">Percentage%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>none</strong></td>
+<td style="text-align:right">1329.53</td>
+<td style="text-align:right">100</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">140.18</td>
+<td style="text-align:right">10.54</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">679.81</td>
+<td style="text-align:right">51.13</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">222.58</td>
+<td style="text-align:right">16.74</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/images/kafka010/capacity_disk_space.png" alt="Alt text"></p>
+<h2 id="CPU_Usage">CPU Usage</h2><p>Compression and de-compression will mainly use cpu and I will record the <code>usr</code>, <code>sys</code>, <code>wait</code> and the total of them to measure how much CPU each codec will use. The data is made by <code>dstat</code> as well. Pay attention that my docker only has 4 CPU and this tests are mainly used to compare with different codec, not to dig into the absoulute number because it would be different in different boxes.</p>
+<p>The test is simple, I used <code>dstat</code> to record the system metrics I want, and meanwhile, use <code>kafka-console-producer.sh</code> or <code>kafka-console-consumers.sh</code> in another container (not the Kafka container) to send or consume data from Kafka. </p>
+<p>I will record metrics of both client(run console shell) and server(run Kafka server).</p>
+<h3 id="Producer_CPU_Usage">Producer CPU Usage</h3><h4 id="Server_Side">Server Side</h4><p>Metrics</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">usr</th>
+<th style="text-align:right">sys</th>
+<th style="text-align:right">wait</th>
+<th style="text-align:right">total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>none</strong></td>
+<td style="text-align:right">41.08</td>
+<td style="text-align:right">6.56</td>
+<td style="text-align:right">7.08</td>
+<td style="text-align:right">54.72</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">31.28</td>
+<td style="text-align:right">1.70</td>
+<td style="text-align:right">0.45</td>
+<td style="text-align:right">33.43</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">36.89</td>
+<td style="text-align:right">4.12</td>
+<td style="text-align:right">4.13</td>
+<td style="text-align:right">45.14</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">33.72</td>
+<td style="text-align:right">2.77</td>
+<td style="text-align:right">1.37</td>
+<td style="text-align:right">37.86</td>
+</tr>
+</tbody>
+</table>
+<p>Chart</p>
+<p><img src="/images/kafka010/capacity_producer_server_cpu.png" alt="Alt text"></p>
+<h4 id="Client_side">Client side</h4><p>Metrics</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">usr</th>
+<th style="text-align:right">sys</th>
+<th style="text-align:right">wait</th>
+<th style="text-align:right">total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>none</strong></td>
+<td style="text-align:right">41.00</td>
+<td style="text-align:right">6.52</td>
+<td style="text-align:right">7.09</td>
+<td style="text-align:right">54.61</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">31.28</td>
+<td style="text-align:right">1.70</td>
+<td style="text-align:right">0.44</td>
+<td style="text-align:right">33.42</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">36.65</td>
+<td style="text-align:right">4.13</td>
+<td style="text-align:right">4.07</td>
+<td style="text-align:right">44.85</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">33.70</td>
+<td style="text-align:right">2.76</td>
+<td style="text-align:right">1.36</td>
+<td style="text-align:right">37.82</td>
+</tr>
+</tbody>
+</table>
+<p>Chart</p>
+<p><img src="/images/kafka010/capacity_producer_client_cpu.png" alt="Alt text"></p>
+<h3 id="Consumer_CPU_Usage">Consumer CPU Usage</h3><h4 id="Server_side">Server side</h4><p>Metrics</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">usr</th>
+<th style="text-align:right">sys</th>
+<th style="text-align:right">wait</th>
+<th style="text-align:right">total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>none</strong></td>
+<td style="text-align:right">19.41</td>
+<td style="text-align:right">5.05</td>
+<td style="text-align:right">7.74</td>
+<td style="text-align:right">32.2</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">25.63</td>
+<td style="text-align:right">1.43</td>
+<td style="text-align:right">0.47</td>
+<td style="text-align:right">27.53</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">23.92</td>
+<td style="text-align:right">4.23</td>
+<td style="text-align:right">3.90</td>
+<td style="text-align:right">32.05</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">24.13</td>
+<td style="text-align:right">2.35</td>
+<td style="text-align:right">0.90</td>
+<td style="text-align:right">27.38</td>
+</tr>
+</tbody>
+</table>
+<p>Chart</p>
+<p><img src="/images/kafka010/capacity_consumer_server_cpu.png" alt="Alt text"></p>
+<h4 id="Client_Side">Client Side</h4><p>Metrics</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">usr</th>
+<th style="text-align:right">sys</th>
+<th style="text-align:right">wait</th>
+<th style="text-align:right">total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>none</strong></td>
+<td style="text-align:right">19.47</td>
+<td style="text-align:right">5.05</td>
+<td style="text-align:right">7.77</td>
+<td style="text-align:right">32.29</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">18.84</td>
+<td style="text-align:right">1.16</td>
+<td style="text-align:right">0.41</td>
+<td style="text-align:right">20.41</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">23.82</td>
+<td style="text-align:right">4.36</td>
+<td style="text-align:right">3.86</td>
+<td style="text-align:right">32.04</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">24.13</td>
+<td style="text-align:right">2.35</td>
+<td style="text-align:right">0.91</td>
+<td style="text-align:right">27.39</td>
+</tr>
+</tbody>
+</table>
+<p>Chart</p>
+<p><img src="/images/kafka010/capacity_consumer_client_cpu.png" alt="Alt text"></p>
+<h1 id="Conclusion">Conclusion</h1><p><code>GZIP</code> has the best compression rate but lowest performance, and <code>LZ4</code> has the best performance. In the aspect of capacity, <code>GZIP</code> and <code>NONE</code> will cause wome <code>wait</code> which I don’t know the reason for that. Actually, the CPU usage for each codec is almost the same, I think capacity won’t be the main cause to choose different codecs.</p>
+<p>To summarize the benchmarks briefly, use <code>GZIP</code> if you need cost less bandwidth and disk space, use <code>LZ4</code> to maximum the performance</p>
+<p>There is also one problem this benchmark has not cover - how much CPU usage would Kafka server use when there are a huge number of clients. Will the increase of the server-side CPU usage be the linear growth with the number of client? I have not made this test because I only have two containers.</p>
 </span>
       
     </div>
@@ -475,7 +998,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Backgroud"><span class="nav-number">1.</span> <span class="nav-text">Backgroud</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Environment"><span class="nav-number">2.</span> <span class="nav-text">Environment</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hardware_Box"><span class="nav-number">2.1.</span> <span class="nav-text">Hardware Box</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Software_Box"><span class="nav-number">2.2.</span> <span class="nav-text">Software Box</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Log_Files"><span class="nav-number">2.3.</span> <span class="nav-text">Log Files</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Producer_Benchmark"><span class="nav-number">3.</span> <span class="nav-text">Producer Benchmark</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Compression_Codec:_None"><span class="nav-number">3.1.</span> <span class="nav-text">Compression Codec: None</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Backgroud"><span class="nav-number">1.</span> <span class="nav-text">Backgroud</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Environment"><span class="nav-number">2.</span> <span class="nav-text">Environment</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hardware_Box"><span class="nav-number">2.1.</span> <span class="nav-text">Hardware Box</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Software_Box"><span class="nav-number">2.2.</span> <span class="nav-text">Software Box</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Log_Files"><span class="nav-number">2.3.</span> <span class="nav-text">Log Files</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Producer_Benchmark"><span class="nav-number">3.</span> <span class="nav-text">Producer Benchmark</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Detail_Metrics_for_Every_Compression_Codecs"><span class="nav-number">3.1.</span> <span class="nav-text">Detail Metrics for Every Compression Codecs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Compression_Codec:_none"><span class="nav-number">3.1.1.</span> <span class="nav-text">Compression Codec: none</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Compression_Codec:_gzip"><span class="nav-number">3.1.2.</span> <span class="nav-text">Compression Codec: gzip</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Compression_Codec:_snappy"><span class="nav-number">3.1.3.</span> <span class="nav-text">Compression Codec: snappy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Compression_Codec:_lz4"><span class="nav-number">3.1.4.</span> <span class="nav-text">Compression Codec: lz4</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">3.2.</span> <span class="nav-text">Summary</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Throughput_Overview"><span class="nav-number">3.2.1.</span> <span class="nav-text">Throughput Overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bandwidth_Overview"><span class="nav-number">3.2.2.</span> <span class="nav-text">Bandwidth Overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Traffic_Overview"><span class="nav-number">3.2.3.</span> <span class="nav-text">Traffic Overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Percentage_Overview"><span class="nav-number">3.2.4.</span> <span class="nav-text">Percentage Overview</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Consumer_Benchmark"><span class="nav-number">4.</span> <span class="nav-text">Consumer Benchmark</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Detail_Metrics"><span class="nav-number">4.1.</span> <span class="nav-text">Detail Metrics</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Capacity_Benchmark"><span class="nav-number">5.</span> <span class="nav-text">Capacity Benchmark</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Disk_Usage"><span class="nav-number">5.1.</span> <span class="nav-text">Disk Usage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU_Usage"><span class="nav-number">5.2.</span> <span class="nav-text">CPU Usage</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Producer_CPU_Usage"><span class="nav-number">5.2.1.</span> <span class="nav-text">Producer CPU Usage</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Server_Side"><span class="nav-number">5.2.1.1.</span> <span class="nav-text">Server Side</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Client_side"><span class="nav-number">5.2.1.2.</span> <span class="nav-text">Client side</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Consumer_CPU_Usage"><span class="nav-number">5.2.2.</span> <span class="nav-text">Consumer CPU Usage</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Server_side"><span class="nav-number">5.2.2.1.</span> <span class="nav-text">Server side</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Client_Side"><span class="nav-number">5.2.2.2.</span> <span class="nav-text">Client Side</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">6.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
