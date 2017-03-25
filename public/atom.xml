@@ -1,0 +1,1641 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[Renjie Yao's Blog]]></title>
+  
+  <link href="/atom.xml" rel="self"/>
+  <link href="http://blog.yaorenjie.com/"/>
+  <updated>2017-03-25T14:28:56.000Z</updated>
+  <id>http://blog.yaorenjie.com/</id>
+  
+  <author>
+    <name><![CDATA[Renjie Yao]]></name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Join ViSenze in Singapore]]></title>
+    <link href="http://blog.yaorenjie.com/2017/03/25/Join-ViSenze-in-Singapore/"/>
+    <id>http://blog.yaorenjie.com/2017/03/25/Join-ViSenze-in-Singapore/</id>
+    <published>2017-03-25T14:20:02.000Z</published>
+    <updated>2017-03-25T14:28:56.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Yes!_ViSenze">Yes! ViSenze</h1><p>It has been a long time since last post, I’m busy in settling down in Singapore these days. Yes, I joined ViSenze, a startup who has raised round B fund. I’ll act as a Data Platform Lead, to build our data product and technical architecture. ViSenze has so many excellent talents and I feel really happy with these guys in the last month. Hope we all have a great advantages:)</p>
+<p><img src="/images/visenze_welcome.jpg" alt="Alt text"></p>
+<h1 id="About_ViSenze">About ViSenze</h1><blockquote>
+<p>ViSenze is an artificial intelligence company that develops advanced visual search and image recognition solutions to help businesses in eCommerce, mCommerce and online advertising.</p>
+<p>Using R&amp;D in machine learning and computer vision technology, ViSenze can recommend visually similar items to online shoppers, either on e-commerce platforms when they browse or search by uploading a picture or on content publishers platforms like social media and video networks.</p>
+<p>The company is a spin-off from NExT, a leading research centre jointly established between National University of Singapore and Tsinghua University of China.</p>
+</blockquote>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Yes!_ViSenze">Yes! ViSenze</h1><p>It has been a long time since last post, I’m busy in settling down in Singapore these days. Yes, I]]>
+    </summary>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Kafka 0.10 Compression Benchmark]]></title>
+    <link href="http://blog.yaorenjie.com/2017/01/03/Kafka-0-10-Compression-Benchmark/"/>
+    <id>http://blog.yaorenjie.com/2017/01/03/Kafka-0-10-Compression-Benchmark/</id>
+    <published>2017-01-03T09:09:51.000Z</published>
+    <updated>2017-01-04T03:07:42.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Backgroud">Backgroud</h1><p>In my previous <a href="http://blog.yaorenjie.com/2015/03/27/Kafka-Compression-Performance-Tests/">blog about compression benchmark for Kafka</a>, I have made some tests for Kafka 0.8.2.1. Kafka 0.10 has made a lot of progress, and this post aims to make some benchmaks on Kafka 0.10. </p>
+<p>In this post, I’m going to test 3 parts:</p>
+<ol>
+<li>Producer - time cost, throughput, bandwidth, total traffic</li>
+<li>Consumer - time cost, throughput</li>
+<li>Capacity - disk usage, server/client CPU usage</li>
+</ol>
+<h1 id="Environment">Environment</h1><h2 id="Hardware_Box">Hardware Box</h2><p>I use Docker on Mac to run two containers - zk and kafka.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">Mac CPUs</th>
+<th style="text-align:right">Mac Memory</th>
+<th style="text-align:right">Mac Disk</th>
+<th style="text-align:right">Docker CPUs</th>
+<th style="text-align:right">Docker Memory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">2.5 GHz Intel Core i7</td>
+<td style="text-align:right">16GB</td>
+<td style="text-align:right">512GB SSD</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">2G</td>
+</tr>
+</tbody>
+</table>
+<p><code>docker-compose.yml</code> is below:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">version: <span class="string">"2"</span></span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  zk:</span><br><span class="line">    image: kafka-<span class="number">0.10</span>_zk:<span class="number">1</span></span><br><span class="line">    ports:</span><br><span class="line">      - <span class="string">"2181:2181"</span></span><br><span class="line"></span><br><span class="line">  kafka:</span><br><span class="line">    depends_on:</span><br><span class="line">      - zk</span><br><span class="line">    image: kafka-<span class="number">0.10</span>_kafka:<span class="number">1</span></span><br><span class="line">    ports:</span><br><span class="line">      - <span class="string">"9092:9092"</span></span><br><span class="line">      - <span class="string">"9999:9999"</span></span><br><span class="line">    command: --override zookeeper.connect=zk:<span class="number">2181</span></span><br></pre></td></tr></table></figure>
+<h2 id="Software_Box">Software Box</h2><p><strong>All Kafka JVM parameters are default</strong> because the benchmark’s main purpose is to compare different compression algorithm to the <code>none</code> compression.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">Kafka Version</th>
+<th style="text-align:right">JDK</th>
+<th style="text-align:right">Scala</th>
+<th style="text-align:right">Broker</th>
+<th style="text-align:right">Kafka Replica</th>
+<th style="text-align:right">Kafka Partition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">0.10.1.0</td>
+<td style="text-align:right">1.7.0-b147</td>
+<td style="text-align:right">2.11</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">1</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Log_Files">Log Files</h2><p>The log file comes from nginx access logs, and it use 1.2GB disk space and it has 5,190,426 lines.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@<span class="number">780</span>e74bff80d kafka_2.<span class="number">11</span>-<span class="number">0.10</span>.<span class="number">1.0</span>]<span class="comment"># du -sh nginx.log</span></span><br><span class="line"><span class="number">1.2</span>G	nginx.log</span><br><span class="line">[root@<span class="number">780</span>e74bff80d kafka_2.<span class="number">11</span>-<span class="number">0.10</span>.<span class="number">1.0</span>]<span class="comment"># wc -l nginx.log</span></span><br><span class="line"><span class="number">5190426</span> nginx.log</span><br><span class="line">[root@<span class="number">780</span>e74bff80d kafka_2.<span class="number">11</span>-<span class="number">0.10</span>.<span class="number">1.0</span>]<span class="comment"># tail -1 nginx.log</span></span><br><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>	hello.com	<span class="number">127.0</span>.<span class="number">0.1</span>	<span class="number">127.0</span>.<span class="number">0.1</span>	- <span class="number">30</span>/Dec/<span class="number">2016</span>:<span class="number">09</span>:<span class="number">43</span>:<span class="number">28</span> +<span class="number">0800</span> POST /index.php HTTP/<span class="number">1.1</span> <span class="number">200</span> <span class="number">64</span> -Mozilla/<span class="number">4.0</span> (compatible; MSIE <span class="number">7.0</span>; Windows NT <span class="number">5.1</span>; Trident/<span class="number">4.0</span>; .NET CLR <span class="number">2.0</span>.<span class="number">50727</span>) <span class="number">127.0</span>.<span class="number">0.1</span>	<span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">80</span>	<span class="number">0.016</span>	<span class="number">0.016</span></span><br></pre></td></tr></table></figure>
+<h1 id="Producer_Benchmark">Producer Benchmark</h1><p>To test Producer performance, I will use <code>kafka-console-producer.sh</code> to send <code>nginx.log</code> to kafka, <code>dstat</code> to get network metrics and <code>time</code> in linux to get the time costs. The details are below:</p>
+<ol>
+<li>time(second) - by Linux command <code>time</code></li>
+<li>throughtput(message/second) - <code>total lines</code>/<code>time</code></li>
+<li>bandwidth(MB/s) - by <code>dstat -nT</code></li>
+<li>traffic(MB) - <code>bandwidth</code> * <code>time</code></li>
+</ol>
+<p>The command to send messsages is:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@a7dd0e808964 kafka_2.<span class="number">11</span>-<span class="number">0.10</span>.<span class="number">1.0</span>]<span class="comment"># time bin/kafka-console-producer.sh --broker-list a7dd0e808964:9092 --topic test_producer --batch-size 2000 --compression-codec none &lt; nginx.log</span></span><br></pre></td></tr></table></figure>
+<p>The command to get network metrics is:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@a7dd0e808964 kafka_2.<span class="number">11</span>-<span class="number">0.10</span>.<span class="number">1.0</span>]<span class="comment"># dstat -nT</span></span><br><span class="line">-net/total- --epoch---</span><br><span class="line"> recv  send|  epoch</span><br><span class="line">   <span class="number">0</span>     <span class="number">0</span> |<span class="number">1483439091</span></span><br><span class="line">  <span class="number">86</span>B  <span class="number">144</span>B|<span class="number">1483439092</span></span><br><span class="line">   <span class="number">0</span>     <span class="number">0</span> |<span class="number">1483439093</span></span><br></pre></td></tr></table></figure>
+<h2 id="Detail_Metrics_for_Every_Compression_Codecs">Detail Metrics for Every Compression Codecs</h2><h3 id="Compression_Codec:_none">Compression Codec: none</h3><table>
+<thead>
+<tr>
+<th style="text-align:right">batch.size</th>
+<th style="text-align:right">time(sec)</th>
+<th style="text-align:right">throughput(msg/s)</th>
+<th style="text-align:right">bandwidth (MB/s)</th>
+<th style="text-align:right">traffic (MB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>500</strong></td>
+<td style="text-align:right">35.067</td>
+<td style="text-align:right">148014.54</td>
+<td style="text-align:right">38.3</td>
+<td style="text-align:right">1343.07</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1000</strong></td>
+<td style="text-align:right">35.579</td>
+<td style="text-align:right">145884.54</td>
+<td style="text-align:right">37.2</td>
+<td style="text-align:right">1323.54</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1500</strong></td>
+<td style="text-align:right">35.656</td>
+<td style="text-align:right">145569.5</td>
+<td style="text-align:right">38.3</td>
+<td style="text-align:right">1365.62</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>5000</strong></td>
+<td style="text-align:right">31.905</td>
+<td style="text-align:right">162683.78</td>
+<td style="text-align:right">41.8</td>
+<td style="text-align:right">1333.63</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>10000</strong></td>
+<td style="text-align:right">35.212</td>
+<td style="text-align:right">147405.03</td>
+<td style="text-align:right">38.3</td>
+<td style="text-align:right">1348.62</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>AVERAGE</strong></td>
+<td style="text-align:right">34.68</td>
+<td style="text-align:right">149911.48</td>
+<td style="text-align:right">38.78</td>
+<td style="text-align:right">1342.9</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Compression_Codec:_gzip">Compression Codec: gzip</h3><table>
+<thead>
+<tr>
+<th style="text-align:right">batch.size</th>
+<th style="text-align:right">time(sec)</th>
+<th style="text-align:right">throughput(msg/s)</th>
+<th style="text-align:right">bandwidth (MB/s)</th>
+<th style="text-align:right">traffic (MB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>500</strong></td>
+<td style="text-align:right">73.302</td>
+<td style="text-align:right">70808.79</td>
+<td style="text-align:right">2.0</td>
+<td style="text-align:right">146.6</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1000</strong></td>
+<td style="text-align:right">68.695</td>
+<td style="text-align:right">75557.55</td>
+<td style="text-align:right">2.0</td>
+<td style="text-align:right">137.39</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1500</strong></td>
+<td style="text-align:right">72.471</td>
+<td style="text-align:right">71620.73</td>
+<td style="text-align:right">2.0</td>
+<td style="text-align:right">144.94</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>5000</strong></td>
+<td style="text-align:right">76.469</td>
+<td style="text-align:right">67876.21</td>
+<td style="text-align:right">2.0</td>
+<td style="text-align:right">152.94</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>10000</strong></td>
+<td style="text-align:right">73.865</td>
+<td style="text-align:right">70269.09</td>
+<td style="text-align:right">2.0</td>
+<td style="text-align:right">147.73</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>AVERAGE</strong></td>
+<td style="text-align:right">72.96</td>
+<td style="text-align:right">71226.47</td>
+<td style="text-align:right">2.0</td>
+<td style="text-align:right">145.92</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Compression_Codec:_snappy">Compression Codec: snappy</h3><table>
+<thead>
+<tr>
+<th style="text-align:right">batch.size</th>
+<th style="text-align:right">time(sec)</th>
+<th style="text-align:right">throughput(msg/s)</th>
+<th style="text-align:right">bandwidth (MB/s)</th>
+<th style="text-align:right">traffic (MB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>500</strong></td>
+<td style="text-align:right">29.163</td>
+<td style="text-align:right">177979.84</td>
+<td style="text-align:right">24.5</td>
+<td style="text-align:right">714.49</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1000</strong></td>
+<td style="text-align:right">33.959</td>
+<td style="text-align:right">152843.9</td>
+<td style="text-align:right">21.4</td>
+<td style="text-align:right">726.72</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1500</strong></td>
+<td style="text-align:right">31.152</td>
+<td style="text-align:right">166616.14</td>
+<td style="text-align:right">23.5</td>
+<td style="text-align:right">732.07</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>5000</strong></td>
+<td style="text-align:right">27.420</td>
+<td style="text-align:right">189293.440</td>
+<td style="text-align:right">28.0</td>
+<td style="text-align:right">767.76</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>10000</strong></td>
+<td style="text-align:right">28.019</td>
+<td style="text-align:right">185246.65</td>
+<td style="text-align:right">26.9</td>
+<td style="text-align:right">753.71</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>AVERAGE</strong></td>
+<td style="text-align:right">29.94</td>
+<td style="text-align:right">174395.99</td>
+<td style="text-align:right">24.86</td>
+<td style="text-align:right">738.95</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Compression_Codec:_lz4">Compression Codec: lz4</h3><table>
+<thead>
+<tr>
+<th style="text-align:right">batch.size</th>
+<th style="text-align:right">time(sec)</th>
+<th style="text-align:right">throughput(msg/s)</th>
+<th style="text-align:right">bandwidth (MB/s)</th>
+<th style="text-align:right">traffic (MB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>500</strong></td>
+<td style="text-align:right">17.937</td>
+<td style="text-align:right">289369.79</td>
+<td style="text-align:right">14.01</td>
+<td style="text-align:right">251.3</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1000</strong></td>
+<td style="text-align:right">17.837</td>
+<td style="text-align:right">290992.1</td>
+<td style="text-align:right">13.70</td>
+<td style="text-align:right">244.37</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>1500</strong></td>
+<td style="text-align:right">17.143</td>
+<td style="text-align:right">302772.33</td>
+<td style="text-align:right">14.03</td>
+<td style="text-align:right">240.52</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>5000</strong></td>
+<td style="text-align:right">18.525</td>
+<td style="text-align:right">280184.94</td>
+<td style="text-align:right">13.43</td>
+<td style="text-align:right">248.79</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>10000</strong></td>
+<td style="text-align:right">20.567</td>
+<td style="text-align:right">252366.7</td>
+<td style="text-align:right">11.76</td>
+<td style="text-align:right">241.87</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>AVERAGE</strong></td>
+<td style="text-align:right">18.4</td>
+<td style="text-align:right">283137.17</td>
+<td style="text-align:right">13.39</td>
+<td style="text-align:right">245.37</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Summary">Summary</h2><table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">throughput</th>
+<th style="text-align:right">bandwidth</th>
+<th style="text-align:right">traffic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>none</strong></td>
+<td style="text-align:right">149911.48</td>
+<td style="text-align:right">38.78</td>
+<td style="text-align:right">1342.9</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">71226.47</td>
+<td style="text-align:right">2.0</td>
+<td style="text-align:right">145.92</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">174395.99</td>
+<td style="text-align:right">24.86</td>
+<td style="text-align:right">738.95</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">283137.17</td>
+<td style="text-align:right">13.39</td>
+<td style="text-align:right">245.37</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Throughput_Overview">Throughput Overview</h3><p><img src="/images/kafka010/producer_throughput.png" alt="Alt text"></p>
+<h3 id="Bandwidth_Overview">Bandwidth Overview</h3><p><img src="/images/kafka010/producer_bandwidth.png" alt="Alt text"></p>
+<h3 id="Traffic_Overview">Traffic Overview</h3><p><img src="/images/kafka010/producer_traffic.png" alt="Alt text"></p>
+<h3 id="Percentage_Overview">Percentage Overview</h3><table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">throughput%</th>
+<th style="text-align:right">bandwidth%</th>
+<th style="text-align:right">traffic%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">47.51</td>
+<td style="text-align:right">5.16</td>
+<td style="text-align:right">10.87</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">116.33</td>
+<td style="text-align:right">64.11</td>
+<td style="text-align:right">55.03</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">188.87</td>
+<td style="text-align:right">34.53</td>
+<td style="text-align:right">18.27</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/images/kafka010/producer_overview.png" alt="Alt text"></p>
+<h1 id="Consumer_Benchmark">Consumer Benchmark</h1><p>Tests for <code>Consumer</code> is much more easier than the one for <code>Producer</code>. Before tests, I will send the same <code>nginx.log</code> to Kafka with different compression codec - <code>none</code>, <code>gzip</code>, <code>snappy</code> and <code>lz4</code>. And use <code>kafka-console-consumer.sh</code> to consume a fixed number of messages and in this tests the number is 500k(5,000,000). What I need to look for is the time the procedure costs, and furthermore, we can get the throughput.</p>
+<p>The bash command is:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">time bin/kafka-console-consumer.sh --bootstrap-server <span class="number">97200</span>db31e2c:<span class="number">9092</span> --topic consumer_none --max-messages <span class="number">5000000</span> --from-beginning &gt; /dev/null</span><br></pre></td></tr></table></figure>
+<h2 id="Detail_Metrics">Detail Metrics</h2><table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">time(second)</th>
+<th style="text-align:right">throughput(msg/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>none</strong></td>
+<td style="text-align:right">19.046</td>
+<td style="text-align:right">262522.31</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">39.493</td>
+<td style="text-align:right">126604.71</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">25.632</td>
+<td style="text-align:right">195068.66</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">23.846</td>
+<td style="text-align:right">209678.77</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/images/kafka010/consumer_overview.png" alt="Alt text"></p>
+<p>Percentage:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">time%</th>
+<th style="text-align:right">throughput%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">207.36</td>
+<td style="text-align:right">48.23</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">134.58</td>
+<td style="text-align:right">74.31</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">125.2</td>
+<td style="text-align:right">79.87</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/images/kafka010/consumer_overview_percentage.png" alt="Alt text"></p>
+<h1 id="Capacity_Benchmark">Capacity Benchmark</h1><p>In the previous blog, I have not make tests for this section. The pressure each codec cause to the CPU is another important factor to consider. I will make some simple benchmark in disk space and CPU in this section by <code>dstat</code>.</p>
+<h2 id="Disk_Usage">Disk Usage</h2><p>Although Kafka has its own retention policies, and it works well, but sometimes the disk space could be in engineers’ consideration, especially in large Kafka cluster. In the former section, I have sent <code>nginx.log</code> to Kafka with different codecs and I measured the the disk space each topic has used. The numbers can simply be got by <code>du -sh</code> in Kafka logs directory.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">Disk Space(MB)</th>
+<th style="text-align:right">Percentage%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>none</strong></td>
+<td style="text-align:right">1329.53</td>
+<td style="text-align:right">100</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">140.18</td>
+<td style="text-align:right">10.54</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">679.81</td>
+<td style="text-align:right">51.13</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">222.58</td>
+<td style="text-align:right">16.74</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/images/kafka010/capacity_disk_space.png" alt="Alt text"></p>
+<h2 id="CPU_Usage">CPU Usage</h2><p>Compression and de-compression will mainly use cpu and I will record the <code>usr</code>, <code>sys</code>, <code>wait</code> and the total of them to measure how much CPU each codec will use. The data is made by <code>dstat</code> as well. Pay attention that my docker only has 4 CPU and this tests are mainly used to compare with different codec, not to dig into the absoulute number because it would be different in different boxes.</p>
+<p>The test is simple, I used <code>dstat</code> to record the system metrics I want, and meanwhile, use <code>kafka-console-producer.sh</code> or <code>kafka-console-consumers.sh</code> in another container (not the Kafka container) to send or consume data from Kafka. </p>
+<p>I will record metrics of both client(run console shell) and server(run Kafka server).</p>
+<h3 id="Producer_CPU_Usage">Producer CPU Usage</h3><h4 id="Server_Side">Server Side</h4><p>Metrics</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">usr</th>
+<th style="text-align:right">sys</th>
+<th style="text-align:right">wait</th>
+<th style="text-align:right">total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>none</strong></td>
+<td style="text-align:right">41.08</td>
+<td style="text-align:right">6.56</td>
+<td style="text-align:right">7.08</td>
+<td style="text-align:right">54.72</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">31.28</td>
+<td style="text-align:right">1.70</td>
+<td style="text-align:right">0.45</td>
+<td style="text-align:right">33.43</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">36.89</td>
+<td style="text-align:right">4.12</td>
+<td style="text-align:right">4.13</td>
+<td style="text-align:right">45.14</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">33.72</td>
+<td style="text-align:right">2.77</td>
+<td style="text-align:right">1.37</td>
+<td style="text-align:right">37.86</td>
+</tr>
+</tbody>
+</table>
+<p>Chart</p>
+<p><img src="/images/kafka010/capacity_producer_server_cpu.png" alt="Alt text"></p>
+<h4 id="Client_side">Client side</h4><p>Metrics</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">usr</th>
+<th style="text-align:right">sys</th>
+<th style="text-align:right">wait</th>
+<th style="text-align:right">total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>none</strong></td>
+<td style="text-align:right">41.00</td>
+<td style="text-align:right">6.52</td>
+<td style="text-align:right">7.09</td>
+<td style="text-align:right">54.61</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">31.28</td>
+<td style="text-align:right">1.70</td>
+<td style="text-align:right">0.44</td>
+<td style="text-align:right">33.42</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">36.65</td>
+<td style="text-align:right">4.13</td>
+<td style="text-align:right">4.07</td>
+<td style="text-align:right">44.85</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">33.70</td>
+<td style="text-align:right">2.76</td>
+<td style="text-align:right">1.36</td>
+<td style="text-align:right">37.82</td>
+</tr>
+</tbody>
+</table>
+<p>Chart</p>
+<p><img src="/images/kafka010/capacity_producer_client_cpu.png" alt="Alt text"></p>
+<h3 id="Consumer_CPU_Usage">Consumer CPU Usage</h3><h4 id="Server_side">Server side</h4><p>Metrics</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">usr</th>
+<th style="text-align:right">sys</th>
+<th style="text-align:right">wait</th>
+<th style="text-align:right">total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>none</strong></td>
+<td style="text-align:right">19.41</td>
+<td style="text-align:right">5.05</td>
+<td style="text-align:right">7.74</td>
+<td style="text-align:right">32.2</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">25.63</td>
+<td style="text-align:right">1.43</td>
+<td style="text-align:right">0.47</td>
+<td style="text-align:right">27.53</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">23.92</td>
+<td style="text-align:right">4.23</td>
+<td style="text-align:right">3.90</td>
+<td style="text-align:right">32.05</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">24.13</td>
+<td style="text-align:right">2.35</td>
+<td style="text-align:right">0.90</td>
+<td style="text-align:right">27.38</td>
+</tr>
+</tbody>
+</table>
+<p>Chart</p>
+<p><img src="/images/kafka010/capacity_consumer_server_cpu.png" alt="Alt text"></p>
+<h4 id="Client_Side">Client Side</h4><p>Metrics</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">codec</th>
+<th style="text-align:right">usr</th>
+<th style="text-align:right">sys</th>
+<th style="text-align:right">wait</th>
+<th style="text-align:right">total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"><strong>none</strong></td>
+<td style="text-align:right">19.47</td>
+<td style="text-align:right">5.05</td>
+<td style="text-align:right">7.77</td>
+<td style="text-align:right">32.29</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>gzip</strong></td>
+<td style="text-align:right">18.84</td>
+<td style="text-align:right">1.16</td>
+<td style="text-align:right">0.41</td>
+<td style="text-align:right">20.41</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>snappy</strong></td>
+<td style="text-align:right">23.82</td>
+<td style="text-align:right">4.36</td>
+<td style="text-align:right">3.86</td>
+<td style="text-align:right">32.04</td>
+</tr>
+<tr>
+<td style="text-align:right"><strong>lz4</strong></td>
+<td style="text-align:right">24.13</td>
+<td style="text-align:right">2.35</td>
+<td style="text-align:right">0.91</td>
+<td style="text-align:right">27.39</td>
+</tr>
+</tbody>
+</table>
+<p>Chart</p>
+<p><img src="/images/kafka010/capacity_consumer_client_cpu.png" alt="Alt text"></p>
+<h1 id="Conclusion">Conclusion</h1><p><code>GZIP</code> has the best compression rate but lowest performance, and <code>LZ4</code> has the best performance. In the aspect of capacity, <code>GZIP</code> and <code>NONE</code> will cause wome <code>wait</code> which I don’t know the reason for that. Actually, the CPU usage for each codec is almost the same, I think capacity won’t be the main cause to choose different codecs.</p>
+<p>To summarize the benchmarks briefly, use <code>GZIP</code> if you need cost less bandwidth and disk space, use <code>LZ4</code> to maximum the performance</p>
+<p>There is also one problem this benchmark has not cover - how much CPU usage would Kafka server use when there are a huge number of clients. Will the increase of the server-side CPU usage be the linear growth with the number of client? I have not made this test because I only have two containers.</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Backgroud">Backgroud</h1><p>In my previous <a href="http://blog.yaorenjie.com/2015/03/27/Kafka-Compression-Performance-Tests/">blog ]]>
+    </summary>
+    
+      <category term="Kafka" scheme="http://blog.yaorenjie.com/tags/Kafka/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[The Comparsion Between Apache Flume and Heka]]></title>
+    <link href="http://blog.yaorenjie.com/2016/12/01/The-Comparsion-Between-Apache-Flume-and-Heka/"/>
+    <id>http://blog.yaorenjie.com/2016/12/01/The-Comparsion-Between-Apache-Flume-and-Heka/</id>
+    <published>2016-12-01T09:45:32.000Z</published>
+    <updated>2016-12-02T03:15:16.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Environment">Environment</h1><p>This test’s main purpose is to choose the tool used to collect log on servers. In this test, we use Apache Flume and Heka to collect raw log data and send them into Kafka. The Kafka is in all default configuration. Linux is CentOS 6.4 with 12 cores CPU, 45GB memory and JDK 1.7.</p>
+<h2 id="Benchmark_Metrics">Benchmark Metrics</h2><ol>
+<li>mps - Message Per Second: This data is fetched from JMX port of Kafka. We get the total message count from Kafka, and then get this count again. The delta value is the message count in 1 second - mps. We can get mps by command line:</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar /tmp/cmdline-jmxclient-0.10.3.jar - localhost:9999 kafk&#13;a.server:name=MessagesInPerSec,type=BrokerTopicMetrics Count</span><br></pre></td></tr></table></figure>
+<ol>
+<li>channelSize (only for Flume): This metrics is the number of messages Flume cannot handle in a while. It can be a measurement to determin if the Flume is health. A health Flume instance should keep this value in a low number. We can get this value by Flume http service:</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -s localhost:34545/metrics | python -m json.tool | grep Channe&#13;lSize</span><br></pre></td></tr></table></figure>
+<ol>
+<li>%cpu and %mem: We get these two values directly by linux <code>top</code> command:</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flume_pid=`jps -m | grep App | cut -d&#39; &#39; -f1`&#13;flume_cpu=`top -b -n1 -p $flume_pid | grep $flume_pid | awk &#39;&#123;print&#13;$9&#125;&#39;`&#13;flume_mem=`top -b -n1 -p $flume_pid | grep $flume_pid | awk &#39;&#123;print&#13;$10&#125;&#39;`</span><br></pre></td></tr></table></figure>
+<h2 id="Benchmark_Items">Benchmark Items</h2><p>We used a tool to write log lines into log files with different mps - 5K, 10K, 50K.</p>
+<h1 id="Flume_Benchmarks">Flume Benchmarks</h1><h2 id="Flume_Configuration">Flume Configuration</h2><p><strong>JVM</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPTS=&#34;-Xms256m -Xmx256m -Dflume.monitoring.type=http -Dflume.monitoring.port=34545&#34;</span><br></pre></td></tr></table></figure>
+<p><strong>Flume Configuration</strong></p>
+<pre><code>agent<span class="class">.sources</span> = fileSource
+agent<span class="class">.channels</span> = diskChannel memChannel
+agent<span class="class">.sinks</span> = kafkaSink
+
+agent<span class="class">.sources</span><span class="class">.fileSource</span><span class="class">.type</span> = exec
+agent<span class="class">.sources</span><span class="class">.fileSource</span><span class="class">.command</span> = tail -F /tmp/example<span class="class">.log</span>
+agent<span class="class">.sources</span><span class="class">.fileSource</span><span class="class">.channels</span> = memChannel
+
+agent<span class="class">.channels</span><span class="class">.memChannel</span><span class="class">.type</span> = memory
+agent<span class="class">.channels</span><span class="class">.memChannel</span><span class="class">.capacity</span> = <span class="number">1000000</span>
+agent<span class="class">.channels</span><span class="class">.memChannel</span><span class="class">.transactionCapacity</span> = <span class="number">10000</span>
+
+agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span class="class">.type</span> = org<span class="class">.apache</span><span class="class">.flume</span><span class="class">.sink</span><span class="class">.kafka</span><span class="class">.KafkaSink</span>
+agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span class="class">.topic</span> = flume_test
+agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span class="class">.brokerList</span> = kafka:<span class="number">9092</span>
+agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span class="class">.batchSize</span> = <span class="number">200</span>
+agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span class="class">.channel</span> = memChannel
+</code></pre><h2 id="Flume_Benchmark_Results">Flume Benchmark Results</h2><h3 id="5K_mps">5K mps</h3><p><img src="/images/flume_heka/flume_5k_mps.png" alt="Alt text"></p>
+<p><img src="/images/flume_heka/flume_5k_mem.png" alt="Alt text"></p>
+<h3 id="10K_mps">10K mps</h3><p><img src="/images/flume_heka/flume_10k_mps.png" alt="Alt text"></p>
+<p><img src="/images/flume_heka/flume_10k_mem.png" alt="Alt text"></p>
+<h3 id="50K_mps">50K mps</h3><p><img src="/images/flume_heka/flume_50k_mps.png" alt="Alt text"></p>
+<p><img src="/images/flume_heka/flume_50k_mem.png" alt="Alt text"></p>
+<h1 id="Heka_Benchmarks">Heka Benchmarks</h1><h2 id="Heka_Configuration">Heka Configuration</h2><pre><code><span class="title">[accesslogs]</span>
+<span class="setting">type = <span class="value"><span class="string">"LogstreamerInput"</span></span></span>
+<span class="setting">log_directory = <span class="value"><span class="string">"/tmp"</span></span></span>
+<span class="setting">file_match = <span class="value"><span class="string">'example\.log'</span></span></span>
+<span class="title">
+[PayloadEncoder]</span>
+<span class="setting">append_newlines = <span class="value"><span class="keyword">false</span></span></span>
+<span class="title">
+[KafkaOutput]</span>
+<span class="setting">type = <span class="value"><span class="string">"KafkaOutput"</span></span></span>
+<span class="setting">message_matcher = <span class="value"><span class="string">"TRUE"</span></span></span>
+<span class="setting">topic = <span class="value"><span class="string">"heka_test"</span></span></span>
+<span class="setting">addrs = <span class="value">[<span class="string">"kafka:9092"</span>]</span></span>
+<span class="setting">encoder = <span class="value"><span class="string">"PayloadEncoder"</span></span></span>
+<span class="setting">max_buffer_time = <span class="value"><span class="number">1000</span></span></span>
+<span class="setting">max_buffered_bytes = <span class="value"><span class="number">1048576</span></span></span>
+<span class="setting">required_acks = <span class="value"><span class="string">"NoResponse"</span></span></span>
+</code></pre><h2 id="Heka_Benchmark_Results">Heka Benchmark Results</h2><h3 id="5K_mps-1">5K mps</h3><p><img src="/images/flume_heka/heka_5k_mps.png" alt="Alt text"></p>
+<p><img src="/images/flume_heka/heka_5k_mem.png" alt="Alt text"></p>
+<h3 id="10K_mps-1">10K mps</h3><p><img src="/images/flume_heka/heka_10k_mps.png" alt="Alt text"></p>
+<p><img src="/images/flume_heka/heka_10k_mem.png" alt="Alt text"></p>
+<h3 id="50K_mps-1">50K mps</h3><p><img src="/images/flume_heka/heka_50k_mps.png" alt="Alt text"></p>
+<p><img src="/images/flume_heka/heka_50k_mem.png" alt="Alt text"></p>
+<h1 id="The_Comparison">The Comparison</h1><h2 id="About_Performance">About Performance</h2><p>As the charts said, both Flume and Heka can handle huge amout of log in very high speed. We usually deploy them on servers which act as business usage. That means, it would not take much pressure (if we use them behind Apache Kafka - another usage type is sending date <strong>TO</strong> Kafka, they could work well). Considering the Linux system costs, Heka takes advantages on %MEM while Flume does on %CPU. Heka is written in Golang so that the memory usage is much lower than Flume which is Java made. For %CPU, Flume uses less cpu than Heka. Chars are below:</p>
+<p><img src="/images/flume_heka/total_mem.png" alt="Alt text"></p>
+<p><img src="/images/flume_heka/total_cpu.png" alt="Alt text"></p>
+<h2 id="About_Usability">About Usability</h2><h3 id="Features">Features</h3><p>Flume’s configuration files are written in YAML while Heka’s in TOML. We can find out that writing in TOML is much more simple than YAML as well as we can understand more easily. As for the architectures, Flume is easier. It contains three main components - Source, Channel and Sink. <code>Source</code> defines the date source; <code>Sink</code> defines the destination of the date; <code>Channel</code> is the buffer date pipeline between <code>Source</code> and <code>Sink</code>. In our exmple, log files is the <code>Source</code> and Kafka is the <code>Sink</code>. <code>Source</code> puts date into <code>Channel</code> while <code>Sink</code> takes date from <code>Channel</code>. The architecture is like below:</p>
+<p><img src="/images/flume_heka/flume_arch.png" alt="Alt text"></p>
+<p>For Heka, its architecture is a little complex. Its <code>Inputs</code>, <code>Outputs</code> are like Flume’s <code>Source</code> and <code>Sink</code>. Heka adds many feature such as <code>Splitter</code>, <code>Decoder</code>, <code>Filter</code> and <code>Encoder</code> in addition. These feature enable Heka to handle date directly in Heka itself, in the same time, make Heka a more powerful tool in comparison of Flume. The architecture is like below: </p>
+<p><img src="/images/flume_heka/heka_arch" alt="Alt text"></p>
+<h3 id="Monitor">Monitor</h3><p>Both Flume and Heka enables HTTP API to get metrics. </p>
+<p>For Flume, we can add JVM parameters <code>-Dflume.monitoring.type=http -Dflume.monitoring.port=34545</code> to enable the HTTP API. And the date is like below (by <code>curl -s localhost:34545/metrics | python -m json.tool</code>):</p>
+<pre><code><span class="collection">{
+       <span class="string">"CHANNEL.memChannel"</span>: <span class="collection">{
+           <span class="string">"ChannelCapacity"</span>: <span class="string">"1000000"</span>,
+           <span class="string">"ChannelFillPercentage"</span>: <span class="string">"0.0"</span>,
+           <span class="string">"EventPutAttemptCount"</span>: <span class="string">"10"</span>,
+           <span class="string">"EventPutSuccessCount"</span>: <span class="string">"10"</span>,
+           <span class="string">"EventTakeAttemptCount"</span>: <span class="string">"16"</span>,
+           <span class="string">"EventTakeSuccessCount"</span>: <span class="string">"10"</span>,
+           <span class="string">"StartTime"</span>: <span class="string">"1458887648261"</span>,
+           <span class="string">"StopTime"</span>: <span class="string">"0"</span>,
+           <span class="string">"Type"</span>: <span class="string">"CHANNEL"</span>
+           }</span>,
+           ...
+   }</span>
+</code></pre><p>For Heka, we need to add this in to its configuration file, <code>ticker_interval</code> defines the interval Heka refresh the data:</p>
+<pre><code><span class="title">[DashboardOutput]</span>
+<span class="setting">ticker_interval = <span class="value"><span class="number">1</span></span></span>
+</code></pre><p>The result is like (by ``):</p>
+<pre><code><span class="string">"outputs"</span>: [{
+    <span class="string">"Name"</span>: <span class="string">"KafkaOutput"</span>,
+    <span class="string">"ProcessMessageCount"</span>: {
+        <span class="string">"representation"</span>: <span class="string">"count"</span>,
+        <span class="string">"value"</span>: <span class="number">756698</span>
+    },
+    <span class="string">"ProcessMessageDiscards"</span>: {
+        <span class="string">"representation"</span>: <span class="string">"count"</span>,
+        <span class="string">"value"</span>: <span class="number">0</span>
+    },
+    <span class="string">"ProcessMessageFailures"</span>: {
+        <span class="string">"representation"</span>: <span class="string">"count"</span>,
+        <span class="string">"value"</span>: <span class="number">0</span> }
+    },
+    ...
+}
+</code></pre><h3 id="Problems">Problems</h3><ol>
+<li><p>Flume cannot read log file continously after restart. Flume uses <code>tail</code> to get log lines from log files so Flume does not know which line it has read or which line it need to start to read after Flume restarts. Heka will keep offset in a meta file and can read the date continously after restarting. In this point, Heka is better.</p>
+</li>
+<li><p>Flume cannot update log files according to the configurations. For example, we defined we need to get log files named ‘access_*.log’, Flume will not get the files working only when we modify the configuration files. For Heka, Heka will monitor the directory and update the log files in some interval time which is set in configuration files. The parameter is <code>rescan_interval</code>:</p>
+</li>
+</ol>
+<blockquote>
+<p>During logfile rotation, or if the logfile is not originally present on the system, this interval is how often the existence of the logfile will be checked for. The default of 5 seconds is usually fine. This interval is in milliseconds.</p>
+</blockquote>
+<h1 id="Conclusions">Conclusions</h1><p>Both Flume and Heka are good choice for our solutions. Heka is written Golang and we can start/stop it in seconds. For Flume, it always takes minutes to initialize or stop. And Heka can handle the circumstance of continoulsy reading while Flume can not. I think Heka would be a better choice.</p>
+<p>But the bad news is that Heka is deprecated by mozilla in May of 2016. We can get the detail inforation <a href="https://mail.mozilla.org/pipermail/heka/2016-May/001059.html" target="_blank" rel="external">here</a>. I thinks there are too many features in Heka and that makes Heka a heavy tool. I like it very much and my plan is to remove the additional components of Heka and make it a simple but powerful tool.</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Environment">Environment</h1><p>This test’s main purpose is to choose the tool used to collect log on servers. In this test, we use ]]>
+    </summary>
+    
+      <category term="Apache" scheme="http://blog.yaorenjie.com/tags/Apache/"/>
+    
+      <category term="Flume" scheme="http://blog.yaorenjie.com/tags/Flume/"/>
+    
+      <category term="Heka" scheme="http://blog.yaorenjie.com/tags/Heka/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Simple Method to Compare to JSON in Python]]></title>
+    <link href="http://blog.yaorenjie.com/2016/08/25/Simple-Method-to-Compare-to-JSON-in-Python/"/>
+    <id>http://blog.yaorenjie.com/2016/08/25/Simple-Method-to-Compare-to-JSON-in-Python/</id>
+    <published>2016-08-25T09:20:58.000Z</published>
+    <updated>2016-08-25T09:36:00.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Problem">Problem</h1><p>Recently I met a problem about how to compare to JSON. As we know, JSON is dict-like data structure, the order of its content is not import in the comparison. For example, <code>{&#39;name&#39;: &#39;frank&#39;, &#39;age&#39;: &#39;12&#39;}</code> equals <code>{&#39;age&#39;: &#39;12&#39;, &#39;name&#39;: &#39;frank&#39;}</code>. In the real world, perhaps there are some more complex data structures like list, tuple or nested-dict. </p>
+<h1 id="Solutions">Solutions</h1><p>In python(both python2 and python3), we can use <code>pprint</code> to get pretty print for JSON and other data structures. It will sort and format data first. And there is another method in <code>pprint</code> module called <code>pformat</code> which is used to get the output to a string. Let’s see the example.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pprint</span><br><span class="line"></span><br><span class="line">d1 = &#123;<span class="string">'name'</span>: <span class="string">'frank'</span>, <span class="string">'age'</span>: <span class="string">'12'</span>&#125;</span><br><span class="line">pformat_d1 = pprint.pformat(d1) <span class="comment"># pformat_d1: &#123;'age': '12', 'name': 'frank'&#125;</span></span><br><span class="line">d2 = &#123;<span class="string">'age'</span>: <span class="string">'12'</span>, <span class="string">'name'</span>: <span class="string">'frank'</span>&#125;</span><br><span class="line">pformat_d2 = pprint.pformat(d2) <span class="comment"># pformat_d2: &#123;'age': '12', 'name': 'frank'&#125;</span></span><br></pre></td></tr></table></figure>]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Problem">Problem</h1><p>Recently I met a problem about how to compare to JSON. As we know, JSON is dict-like data structure, the ord]]>
+    </summary>
+    
+      <category term="json" scheme="http://blog.yaorenjie.com/tags/json/"/>
+    
+      <category term="python" scheme="http://blog.yaorenjie.com/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Run pyspark in Python3]]></title>
+    <link href="http://blog.yaorenjie.com/2016/08/05/Run-pyspark-in-Python3/"/>
+    <id>http://blog.yaorenjie.com/2016/08/05/Run-pyspark-in-Python3/</id>
+    <published>2016-08-05T09:47:53.000Z</published>
+    <updated>2016-08-05T10:04:18.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Backgroud">Backgroud</h1><p>We were using spark in Scala environment for a long time and it did its job well. Now we need to query spark in python3 scripts and this post is a simple how-to guide for pyspark.</p>
+<h1 id="Prerequisites">Prerequisites</h1><ol>
+<li>jdk</li>
+<li>spark</li>
+<li>python3</li>
+<li>set <code>JAVA_HOME</code> and <code>SPARK_HOME</code> in env</li>
+</ol>
+<p><code>pyspark</code> is in your <code>SPARK_HOME/python</code>, you need to put it into you python path. You can <code>cp</code> or <code>ln</code> the directory to you python3 path, another method is use <code>sys.path.append</code> in your scripts.</p>
+<h1 id="Example">Example</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark <span class="keyword">import</span> SparkContext, SparkConf</span><br><span class="line"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> HiveContext</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    conf = SparkConf()</span><br><span class="line">    conf.set(<span class="string">'spark.executor.memory'</span>, <span class="string">'16g'</span>)</span><br><span class="line">    sc = SparkContext(<span class="string">'spark://10.3.99.42:7077'</span>, appName=<span class="string">'test'</span>, conf=conf)</span><br><span class="line">    sc.setLogLevel(<span class="string">'ERROR'</span>)</span><br><span class="line">    hiveContext = HiveContext(sc)</span><br><span class="line">    hiveContext.setConf(<span class="string">'hive.metastore.uris'</span>, <span class="string">'thrift://127.0.0.1:9083'</span>)</span><br><span class="line">    hiveContext.setConf(<span class="string">'io.compression.codecs'</span>, <span class="string">'org.apache.hadoop.io.compress.SnappyCodec'</span>)</span><br><span class="line">    hiveContext.sql(<span class="string">'use default'</span>)</span><br><span class="line">    hiveContext.sql(<span class="string">"select * from table"</span>).show()</span><br></pre></td></tr></table></figure>]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Backgroud">Backgroud</h1><p>We were using spark in Scala environment for a long time and it did its job well. Now we need to query s]]>
+    </summary>
+    
+      <category term="hive" scheme="http://blog.yaorenjie.com/tags/hive/"/>
+    
+      <category term="python3" scheme="http://blog.yaorenjie.com/tags/python3/"/>
+    
+      <category term="spark" scheme="http://blog.yaorenjie.com/tags/spark/"/>
+    
+      <category term="sparksql" scheme="http://blog.yaorenjie.com/tags/sparksql/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Enable lzo in Spark and IntelliJ IDEA]]></title>
+    <link href="http://blog.yaorenjie.com/2016/07/08/Enable-lzo-in-Spark-and-IntelliJ-IDEA/"/>
+    <id>http://blog.yaorenjie.com/2016/07/08/Enable-lzo-in-Spark-and-IntelliJ-IDEA/</id>
+    <published>2016-07-08T01:32:13.000Z</published>
+    <updated>2016-07-08T03:00:03.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Intro">Intro</h1><p>LZO is a compression codec for Hadoop-environment component like hadoop, hbase, spark and so on. The problem I met is that I want to read and calculate data from Hive table in lzo by SparkSQL. In this post, I will show you how to enable lzo in a Spark box without extra hadoop lib and run SparkSQL in Intellij IDEA in Mac.</p>
+<h1 id="Box">Box</h1><ul>
+<li>spark-1.6.2-bin-hadoop2.6</li>
+<li>jdk-1.7</li>
+<li>hadoop-lzo-0.4.20</li>
+<li>maven3</li>
+</ul>
+<p>Spark node run on CentOS 7, and Intellij IDEA is on OS X EI Capitan.</p>
+<h1 id="Enable_lzo_in_spark_node">Enable lzo in spark node</h1><p>You can run spark in standalone without any other component, so it is easy to test wheather we have enable lzo. </p>
+<h4 id="Install_linux_lzo_dependencies_by_yum">Install linux lzo dependencies by yum</h4><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum <span class="keyword">install</span> -y lzo-devel lzop</span><br></pre></td></tr></table></figure>
+<h4 id="clone_hadoop-lzo_repo_from_github">clone hadoop-lzo repo from github</h4><p>Clone it at <a href="https://github.com/twitter/hadoop-lzo" target="_blank" rel="external">https://github.com/twitter/hadoop-lzo</a>. Then use maven.</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone <span class="string">https:</span><span class="comment">//github.com/twitter/hadoop-lzo</span></span><br><span class="line">cd hadoop-lzo</span><br><span class="line">mvn <span class="keyword">package</span></span><br></pre></td></tr></table></figure>
+<p>After package it, you will get a jar named <code>hadoop-lzo-0.4.20-SNAPSHOT.jar</code> in <code>target</code> directory.</p>
+<h4 id="Add_jar_to_spark_env_by_set_env_in_${SPARK_HOME}/conf/spark-conf-sh-">Add jar to spark env by set env in <code>${SPARK_HOME}/conf/spark-conf.sh</code>.</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> SPARK_CLASSPATH=$&#123;HADOOP-LZO_HOME&#125;/target/hadoop-lzo-<span class="number">0.4</span><span class="number">.20</span>-SNAPSHOT.jar</span><br></pre></td></tr></table></figure>
+<p><code>${SPARK_HOME}</code> and <code>${HADOOP-LZO_HOME}</code> is the directory you put spark and hadoop-lzo repo.</p>
+<h4 id="Run_spark_in_standalone_mode-">Run spark in standalone mode.</h4><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cd</span> <span class="label">$&#123;SPARK_HOME&#125;</span></span><br><span class="line">./sbin/start-master.<span class="keyword">sh</span></span><br><span class="line">./sbin/start-slave.<span class="keyword">sh</span> spark:<span class="comment">//$&#123;SPARK_IP&#125;:$&#123;SPARK_PORT&#125;</span></span><br></pre></td></tr></table></figure>
+<h4 id="Test_if_lzo_is_availabe_in_spark_by_spark-shell-">Test if lzo is availabe in spark by <code>spark-shell</code>.</h4><figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">cd $&#123;SPARK_HOME&#125;</span><br><span class="line">./bin/spark-shell</span><br><span class="line">scala&gt; sqlContext.setConf(<span class="string">"hive.metastore.uris"</span>, <span class="string">"thrift://cloudera-server:9083"</span>)</span><br><span class="line"></span><br><span class="line">scala&gt; sqlContext.setConf(<span class="string">"io.compression.codecs"</span>, <span class="string">"com.hadoop.compression.lzo.LzoCodec,com.hadoop.compression.lzo.LzopCodec"</span>)</span><br><span class="line"></span><br><span class="line">scala&gt; sqlContext.sql(<span class="string">"use default"</span>)</span><br><span class="line">res2: org.apache.spark.sql.DataFrame = [result: string]</span><br><span class="line"></span><br><span class="line">scala&gt; sqlContext.sql(<span class="string">"select cdn_ip, timestamp from total_cdn_log where date='2016-07-05' and hour='01' limit 10"</span>).show()</span><br><span class="line">+-----------+----------+</span><br><span class="line">|<span class="string">     cdn_ip</span>|<span class="string"> timestamp</span>|</span><br><span class="line">+-----------+----------+</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">|<span class="string">cdn_ip_none</span>|<span class="string">1467651600</span>|</span><br><span class="line">+-----------+----------+</span><br></pre></td></tr></table></figure>
+<p>We must set <code>io.compression.codecs</code> to <code>com.hadoop.compression.lzo.LzoCodec,com.hadoop.compression.lzo.LzopCodec</code> because spark use snappy codec in default.</p>
+<h1 id="Enable_lzo_in_IntelliJ_IDEA">Enable lzo in IntelliJ IDEA</h1><p>I think you have make your SparkSQL job running - that is to say, scala box is okay in your IntelliJ IDEA. Mac OS is a little different with RedHat because it is based on FreeBSD and NetBSD’s implementions.</p>
+<h4 id="Install_lzo_dependencies_by_brew">Install lzo dependencies by <code>brew</code></h4><p><code>brew</code> is an excellent package management tool in Mac which its full name is <code>Homebrew</code>. If you have not installed <code>brew</code>, you can go to its website <a href="http://brew.sh/" target="_blank" rel="external">http://brew.sh/</a>. Its install is easy with only one line command.</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">/usr/</span>bin<span class="regexp">/ruby -e "$(curl -fsSL https:/</span><span class="regexp">/raw.githubusercontent.com/</span>Homebrew<span class="regexp">/install/m</span>aster<span class="regexp">/install)"</span></span><br></pre></td></tr></table></figure>
+<p>Okay, let’s install <code>lzo</code> dependencies.</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">brew </span>install lzo lzop</span><br></pre></td></tr></table></figure>
+<h4 id="Package_hadoop-lzo">Package <code>hadoop-lzo</code></h4><p><strong>REMARK:</strong> Please <strong>DO NOT</strong> copy the <code>hadoop-lzo</code> from other system - such as CentOS that we run spark on. Because the maven procedure in <code>hadoop-lzo</code> contains some <code>gcc</code> process which is strongly connected with the system.</p>
+<p>To build <code>hadoop-lzo</code>, we need to specify the location we install <code>lzo</code>. </p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>brew list lzo</span><br><span class="line">/usr/local/<span class="constant">Cellar</span>/lzo/<span class="number">2.09</span>/<span class="keyword">include</span>/lzo/ (<span class="number">13</span> files)</span><br><span class="line">/usr/local/<span class="constant">Cellar</span>/lzo/<span class="number">2.09</span>/<span class="class"><span class="keyword">lib</span>/<span class="title">liblzo2</span>.2.<span class="title">dylib</span></span></span><br><span class="line">/usr/local/<span class="constant">Cellar</span>/lzo/<span class="number">2.09</span>/<span class="class"><span class="keyword">lib</span>/ (2 <span class="title">other</span> <span class="title">files</span>)</span></span><br><span class="line">/usr/local/<span class="constant">Cellar</span>/lzo/<span class="number">2.09</span>/share/doc/ (<span class="number">7</span> files)</span><br></pre></td></tr></table></figure>
+<p>Then we can get <code>hadoop-lzo</code> and package jar.</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git clone <span class="string">https:</span><span class="comment">//github.com/twitter/hadoop-lzo</span></span><br><span class="line">$ cd hadoop-lzo</span><br><span class="line">$ C_INCLUDE_PATH=<span class="regexp">/usr/</span>local<span class="regexp">/Cellar/</span>lzo<span class="regexp">/2.09/</span>include<span class="regexp">/ LIBRARY_PATH=/</span>usr<span class="regexp">/local/</span>Cellar<span class="regexp">/lzo/</span><span class="number">2.09</span><span class="regexp">/lib/</span>   mvn clean <span class="keyword">package</span></span><br></pre></td></tr></table></figure>
+<p><strong>REMARK:</strong> The guide <a href="https://gist.github.com/zedar/c43cbc7ff7f98abee885" target="_blank" rel="external">https://gist.github.com/zedar/c43cbc7ff7f98abee885</a> - Add LZO compresssion codecs to the Apache Hadoop and Spark is little wrong for set <code>C_INCLUDE_PATH</code>. In the guide, he said<br><code>C_INCLUDE_PATH=/usr/local/Cellar/lzo/2.06/include/lzo/</code>, it should be <code>C_INCLUDE_PATH=/usr/local/Cellar/lzo/2.09/include/</code>. We do not need add lzo suffix.</p>
+<h4 id="Config_the_IntelliJ_IDEA_box">Config the IntelliJ IDEA box</h4><p>The first step is add <code>hadoop-lzo-0.4.20-SNAPSHOT.jar</code> to your scala project.</p>
+<p><img src="/images/idea_lzo_add_jar.png" alt="Alt text"></p>
+<p>The next step is add <code>java.library.path</code> to your jvm options in your menu <code>Run-Edit configurations...</code>. The option you need to add is like <code>-Djava.library.path=/Users/yaorenjie/Documents/git/hadoop-lzo/target</code></p>
+<p><img src="/images/idea_lzo_add_jvm.png" alt="Alt text"></p>
+<p><strong>REMARK:</strong> You must specify the build directory you run maven. If you want to use other directory, you <strong>MUST</strong> move all files in <code>target</code>. The <code>hadoop-lzo</code> need native <code>gpl</code> library in <code>target</code> directory.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ll native/Mac_OS_X-x86_64-<span class="number">64</span>/lib</span><br><span class="line">total <span class="number">208</span></span><br><span class="line">-rwxr-xr-x  <span class="number">1</span> yaorenjie  staff  <span class="number">21780</span> Jul  <span class="number">7</span> <span class="number">17</span>:<span class="number">36</span> libgplcompression<span class="number">.0</span>.dylib</span><br><span class="line">-rw-r--r--  <span class="number">1</span> yaorenjie  staff   <span class="number">1164</span> Jul  <span class="number">7</span> <span class="number">17</span>:<span class="number">36</span> libgplcompression.la</span><br><span class="line">lrwxr-xr-x  <span class="number">1</span> yaorenjie  staff     <span class="number">25</span> Jul  <span class="number">7</span> <span class="number">17</span>:<span class="number">36</span> libgplcompression.dylib -&gt; libgplcompression<span class="number">.0</span>.dylib</span><br><span class="line">-rw-r--r--  <span class="number">1</span> yaorenjie  staff  <span class="number">69744</span> Jul  <span class="number">7</span> <span class="number">17</span>:<span class="number">36</span> libgplcompression.a</span><br></pre></td></tr></table></figure>
+<p>If you want to dig it out, you can get this process in <code>GPLNativeCodeLoader</code></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Intro">Intro</h1><p>LZO is a compression codec for Hadoop-environment component like hadoop, hbase, spark and so on. The problem I m]]>
+    </summary>
+    
+      <category term="Intellij" scheme="http://blog.yaorenjie.com/tags/Intellij/"/>
+    
+      <category term="hadoop" scheme="http://blog.yaorenjie.com/tags/hadoop/"/>
+    
+      <category term="lzo" scheme="http://blog.yaorenjie.com/tags/lzo/"/>
+    
+      <category term="spark" scheme="http://blog.yaorenjie.com/tags/spark/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Connect MySQL with ssh tunnel in Python]]></title>
+    <link href="http://blog.yaorenjie.com/2016/07/04/Connect-MySQL-with-ssh-tunnel-in-Python/"/>
+    <id>http://blog.yaorenjie.com/2016/07/04/Connect-MySQL-with-ssh-tunnel-in-Python/</id>
+    <published>2016-07-04T06:45:41.000Z</published>
+    <updated>2016-07-04T07:01:30.000Z</updated>
+    <content type="html"><![CDATA[<p>Sometimes you can only connect to MySQL via a certain server for security reasons. But apparently, coding in IDE(e.g PyCharm) is easier. For this circumstance, we can use <a href="https://pypi.python.org/pypi/sshtunnel" target="_blank" rel="external">sshtunnel</a>.</p>
+<p>So we have a MySQL server on <code>127.0.0.3:3306</code>, its mysql login name and password is <code>MYSQL_USER</code> and <code>MYSQL_PASSWORD</code>. And we can only connect to this mysql via server <code>127.0.0.2:22</code>, and its login name and password is <code>root</code> and <code>SERVER_PASSWORD</code>. Let’s figure out how <code>sshtunnel</code> is working.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> SSHTunnelForwarder((<span class="string">'127.0.0.2'</span>, <span class="number">22</span>), ssh_password=<span class="string">'SERVER_PASSWORD'</span>, ssh_username=<span class="string">'root'</span>, remote_bind_address=(<span class="string">'127.0.0.3'</span>, <span class="number">3306</span>)) <span class="keyword">as</span> server:</span><br><span class="line">       conn = MySQLdb.connect(host=<span class="string">'127.0.0.1'</span>, port=server.local_bind_port, user=<span class="string">'MYSQL_USER'</span>, passwd=<span class="string">'MYSQL_PASSWORD'</span>)</span><br><span class="line">       cursor = conn.cursor()</span><br></pre></td></tr></table></figure>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>Sometimes you can only connect to MySQL via a certain server for security reasons. But apparently, coding in IDE(e.g PyCharm) is easier. ]]>
+    </summary>
+    
+      <category term="MySQL" scheme="http://blog.yaorenjie.com/tags/MySQL/"/>
+    
+      <category term="Python" scheme="http://blog.yaorenjie.com/tags/Python/"/>
+    
+      <category term="SSHTunnel" scheme="http://blog.yaorenjie.com/tags/SSHTunnel/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Using pip and easy_install with Chinese repo]]></title>
+    <link href="http://blog.yaorenjie.com/2016/06/20/Using-pip-and-easy-install-with-Chinese-repo/"/>
+    <id>http://blog.yaorenjie.com/2016/06/20/Using-pip-and-easy-install-with-Chinese-repo/</id>
+    <published>2016-06-20T07:47:16.000Z</published>
+    <updated>2016-06-20T07:52:54.000Z</updated>
+    <content type="html"><![CDATA[<p>For some reasons, <code>pypi.python.org</code> is not available or has a slow download rate. We can simply using <a href="http://pypi.douban.com/simple" target="_blank" rel="external">douban pypi</a> or <a href="http://pypi.v2ex.com/simple" target="_blank" rel="external">v2ex pypi</a> by two ways.</p>
+<h2 id="edit_env">edit env</h2><p>Edit env will enable <code>pip</code> using own pypi in default. In Linux and Mac, the file is in <code>%HOME/.pip/pip.conf</code>. And the content is:</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line"><span class="keyword">find</span>-links=http:<span class="comment">//pypi.douban.com/simple</span></span><br><span class="line">[install]</span><br><span class="line"><span class="keyword">find</span>-links=</span><br><span class="line">    http:<span class="comment">//pypi.douban.com/simple</span></span><br><span class="line">    http:<span class="comment">//pypi.v2ex.com/simple</span></span><br></pre></td></tr></table></figure>]]></content>
+    <summary type="html">
+    <![CDATA[<p>For some reasons, <code>pypi.python.org</code> is not available or has a slow download rate. We can simply using <a href="http://pypi.dou]]>
+    </summary>
+    
+      <category term="easy_install" scheme="http://blog.yaorenjie.com/tags/easy-install/"/>
+    
+      <category term="pip" scheme="http://blog.yaorenjie.com/tags/pip/"/>
+    
+      <category term="pypi" scheme="http://blog.yaorenjie.com/tags/pypi/"/>
+    
+      <category term="python" scheme="http://blog.yaorenjie.com/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Build Jasig CAS from Zero (1)  - Build CAS Server]]></title>
+    <link href="http://blog.yaorenjie.com/2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/"/>
+    <id>http://blog.yaorenjie.com/2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/</id>
+    <published>2016-06-09T02:54:17.000Z</published>
+    <updated>2016-06-20T07:51:05.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Download_source_tarball_from_github">Download source tarball from github</h1><p>You can get CAS from git easily:)</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https:<span class="comment">//github.com/apereo/cas.git</span></span><br><span class="line">git fetch</span><br><span class="line">git checkout <span class="number">4.2</span>.x</span><br></pre></td></tr></table></figure>
+<p>The master branch is not a can-be-compiled version. I got failure information when I run compile commands in <code>master</code> branch:</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$./dev-build-<span class="keyword">no</span>-tests.<span class="keyword">sh</span></span><br><span class="line"></span><br><span class="line">FAILURE: Build failed with <span class="keyword">an</span> exception.</span><br><span class="line"></span><br><span class="line"><span class="comment">* Where:</span></span><br><span class="line">Build <span class="keyword">file</span> '/private/tmp/cas/cas-management-webapp/build.gradle' <span class="keyword">line</span>: 28</span><br><span class="line"></span><br><span class="line"><span class="comment">* What went wrong:</span></span><br><span class="line">A problem occurred evaluating project ':cas-management-webapp'.</span><br><span class="line">&gt; <span class="keyword">No</span> such property: java <span class="keyword">for</span> <span class="keyword">class</span>: org.gradle.api.java.archives.internal.DefaultManifest</span><br><span class="line"></span><br><span class="line"><span class="comment">* Try:</span></span><br><span class="line"><span class="keyword">Run</span> with --stacktrace option to get the <span class="keyword">stack</span> trace. <span class="keyword">Run</span> with --info or --debug option to get <span class="keyword">more</span> <span class="keyword">log</span> output.</span><br><span class="line"></span><br><span class="line">BUILD FAILED</span><br><span class="line"></span><br><span class="line"><span class="keyword">Total</span> time: 11.67 secs</span><br></pre></td></tr></table></figure>
+<p>The stable version version in <a href="https://github.com/apereo/cas/releases" target="_blank" rel="external">cas release page</a> is 4.2.2. So just checkout out the stable version.</p>
+<h1 id="compile">compile</h1><h2 id="get_gradle">get gradle</h2><p>CAS can be compiled by <code>gradle</code>, when you first run <code>gradlew</code>(gradle wrapper), the project will download gradle-XXX-bin.zip. If you already have it or you have some problems downloading it(such as GFW), you can simply edit `{CAS_PWD}/gradle/wrapper/gradle-wrapper.properties” like below:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="setting">distributionBase=<span class="value">GRADLE_USER_HOME</span></span></span><br><span class="line"><span class="setting">distributionPath=<span class="value">wrapper/dists</span></span></span><br><span class="line"><span class="setting">zipStoreBase=<span class="value">GRADLE_USER_HOME</span></span></span><br><span class="line"><span class="setting">zipStorePath=<span class="value">wrapper/dists</span></span></span><br><span class="line"><span class="setting">distributionUrl=<span class="value">https\://services.gradle.org/distributions/gradle-<span class="number">2.13</span>-all.zip</span></span></span><br></pre></td></tr></table></figure>
+<p>Replace <code>distributionUrl</code> with your own url.</p>
+<p>If you have local gradle zip file, use the zip file name directly and put zip file into <code>{CAS_PWD}/gradle/wrapper</code>. For example if my gradle zip file is <code>gradle-2.10-bin.zip</code>, you need parameter <code>distributionUrl</code> like this:</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">...</span><br><span class="line"></span>distributionUtl=gradle-2.10-bin.zip</span><br></pre></td></tr></table></figure>
+<h2 id="compile_cas_project">compile cas project</h2><p>There is two bootstrap shell in cas directory, <code>dev-build.sh</code> and <code>dev-build-no-tests.sh</code>. The difference between them is obviously shown in their names - <code>dev-build-no-tests.sh</code> will set this flag <code>-DskipAspectJ=true</code></p>
+<p>When you run <code>dev-build.sh</code> or <code>dev-build-no-tests.sh</code> for a couple of minutes, you will probably get this conflicts failure.</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">:cas-server-support-pac4j</span><span class="symbol">:compileAspect</span></span><br><span class="line"><span class="constant">Download </span>...</span><br><span class="line">&gt; <span class="symbol">:cas-server-support-pac4j</span><span class="symbol">:compileAspecFAILED</span></span><br><span class="line"></span><br><span class="line"><span class="constant">FAILURE:</span> <span class="constant">Build </span>failed with an exception.</span><br><span class="line"></span><br><span class="line">* <span class="constant">What </span>went <span class="symbol">wrong:</span></span><br><span class="line"><span class="constant">Execution </span>failed <span class="keyword">for</span> task <span class="string">':cas-server-support-pac4j:compileAspect'</span>.</span><br><span class="line">&gt; <span class="constant">Could </span><span class="keyword">not</span> resolve all dependencies <span class="keyword">for</span> configuration <span class="string">':cas-server-support-pac4j:compile'</span>.</span><br><span class="line">   &gt; <span class="constant">A </span>conflict was found between the following <span class="symbol">modules:</span></span><br><span class="line">      - commons-<span class="symbol">io:</span>commons-<span class="symbol">io:</span><span class="number">2.4</span></span><br><span class="line">      - commons-<span class="symbol">io:</span>commons-<span class="symbol">io:</span><span class="number">2.5</span></span><br><span class="line"></span><br><span class="line">* <span class="constant">Try:</span></span><br><span class="line"><span class="constant">Run </span>with --stacktrace option to get the stack trace. <span class="constant">Run </span>with --info <span class="keyword">or</span> --debug option to get more log output.</span><br><span class="line"></span><br><span class="line"><span class="constant">BUILD FAILED</span></span><br><span class="line"></span><br><span class="line"><span class="constant">Total </span><span class="symbol">time:</span> <span class="number">10</span> mins <span class="number">48.643</span> secs</span><br></pre></td></tr></table></figure>
+<p>It is casuse by the conflict between <code>commons-io:2.4</code> and <code>commons-io:2.5</code> in <code>cas-server-support-pac4j</code>, we need to add <code>-DskipVersionConflict=true</code> in bootstrap scripts.</p>
+<p>If you build it in IntelliJ IDEA, set this parameter in <code>Preferences-Build,Execution,Deployment-Build Tools-Gradle-Gradle VM options</code>.</p>
+<p>Plus, if you want to use http proxy in gradle, you need to set these parameters:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-DproxySet=<span class="literal">true</span> -DproxyHost=<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> -DproxyPort=<span class="number">8123</span></span><br></pre></td></tr></table></figure>
+<h2 id="For_IDE">For IDE</h2><p>We need to execute extra command for IDE</p>
+<h3 id="IDEA">IDEA</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew idea</span><br></pre></td></tr></table></figure>
+<h3 id="Eclipse">Eclipse</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew eclipse</span><br></pre></td></tr></table></figure>
+<h1 id="To_Be_Contined…w">To Be Contined…w</h1>]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Download_source_tarball_from_github">Download source tarball from github</h1><p>You can get CAS from git easily:)</p>
+<figure class=]]>
+    </summary>
+    
+      <category term="cas" scheme="http://blog.yaorenjie.com/tags/cas/"/>
+    
+      <category term="gradle" scheme="http://blog.yaorenjie.com/tags/gradle/"/>
+    
+      <category term="jasig" scheme="http://blog.yaorenjie.com/tags/jasig/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Awesome dataviz]]></title>
+    <link href="http://blog.yaorenjie.com/2016/05/19/Awesome-dataviz/"/>
+    <id>http://blog.yaorenjie.com/2016/05/19/Awesome-dataviz/</id>
+    <published>2016-05-19T02:42:15.000Z</published>
+    <updated>2016-07-04T06:51:47.000Z</updated>
+    <content type="html"><![CDATA[<p>From <a href="https://github.com/fasouto/awesome-dataviz" target="_blank" rel="external">fasouto github</a></p>
+<h1 id="Awesome_dataviz">Awesome dataviz <a href="https://github.com/sindresorhus/awesome" target="_blank" rel="external"><img src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg" alt="Awesome"></a></h1><p>A curated list of awesome data visualizations frameworks, libraries and software. Inspired by <a href="https://github.com/vinta/awesome-python" target="_blank" rel="external">awesome-python</a>.</p>
+<h2 id="Table_of_contents">Table of contents</h2><ul>
+<li><a href="#awesome-dataviz">Awesome dataviz</a><ul>
+<li><a href="#javascript-tools">JavaScript tools</a><ul>
+<li><a href="#charting-libraries">Charting libraries</a></li>
+<li><a href="#charting-libraries-for-graphs">Charting libraries for graphs</a></li>
+<li><a href="#maps">Maps</a></li>
+<li><a href="#d3">d3</a></li>
+<li><a href="#dcjs">dc.js</a></li>
+<li><a href="#misc">Misc</a></li>
+</ul>
+</li>
+<li><a href="#android-tools">Android tools</a></li>
+<li><a href="#c-tools">C++ tools</a></li>
+<li><a href="#golang-tools">Golang tools</a></li>
+<li><a href="#ios-tools">iOS tools</a></li>
+<li><a href="#python-tools">Python tools</a></li>
+<li><a href="#r-tools">R tools</a></li>
+<li><a href="#ruby-tools">Ruby tools</a></li>
+<li><a href="#other-tools">Other tools</a></li>
+</ul>
+</li>
+<li><a href="#resources">Resources</a><ul>
+<li><a href="#books">Books</a></li>
+<li><a href="#twitter-accounts">Twitter accounts</a></li>
+<li><a href="#websites">Websites</a></li>
+</ul>
+</li>
+<li><a href="#contributing">Contributing</a></li>
+<li><a href="#license">License</a></li>
+</ul>
+<h2 id="JavaScript_tools">JavaScript tools</h2><h3 id="Charting_libraries">Charting libraries</h3><ul>
+<li><a href="http://c3js.org/" target="_blank" rel="external">C3</a> - a D3-based reusable chart library.</li>
+<li><a href="http://www.chartjs.org/" target="_blank" rel="external">Chart.js</a> - Charts with the canvas tag.</li>
+<li><a href="http://gionkunz.github.io/chartist-js/" target="_blank" rel="external">Chartist.js</a> - Responsive charts with great browser compatibility.</li>
+<li><a href="http://dimplejs.org/" target="_blank" rel="external">Dimple</a> - An object-oriented API for business analytics.</li>
+<li><a href="http://dygraphs.com/" target="_blank" rel="external">Dygraphs</a> - Interactive line charts library that works with huge datasets.</li>
+<li><a href="https://github.com/ecomfe/echarts" target="_blank" rel="external">Echarts</a> - Highly customizable and interactive charts ready for big datasets.</li>
+<li><a href="https://github.com/epochjs/epoch" target="_blank" rel="external">Epoch</a> - Perfect to create real-time charts.</li>
+<li><a href="https://github.com/highcharts/highcharts" target="_blank" rel="external">Highcharts</a> - A charting library based on SVG and VML rendering. Free (<a href="http://creativecommons.org/licenses/by-nc/3.0/" target="_blank" rel="external">CC BY-NC</a> for non-profit projects.</li>
+<li><a href="http://metricsgraphicsjs.org/" target="_blank" rel="external">MetricsGraphics.js</a> - Optimized for time-series data.</li>
+<li><a href="http://morrisjs.github.io/morris.js/" target="_blank" rel="external">Morris.js</a> - Pretty time-series line graphs.</li>
+<li><a href="https://github.com/novus/nvd3" target="_blank" rel="external">NVD3</a> - A reusable charting library written in d3.js.</li>
+<li><a href="https://github.com/benpickles/peity" target="_blank" rel="external">Peity</a> - Create small inline svg charts.</li>
+<li><a href="https://github.com/plotly/plotly.js/" target="_blank" rel="external">Plotly.js</a> - Powerful declarative library with support for 20 chart types.</li>
+<li><a href="http://techanjs.org/" target="_blank" rel="external">TechanJS</a> - Stock and financial charts.</li>
+</ul>
+<h3 id="Charting_libraries_for_graphs">Charting libraries for graphs</h3><ul>
+<li><a href="http://marvl.infotech.monash.edu/webcola/" target="_blank" rel="external">Cola.js</a> - A tool to create diagrams using constraint-based optimization techniques. Works with d3 and svg.js.</li>
+<li><a href="http://js.cytoscape.org/" target="_blank" rel="external">Cytoscape.js</a> - JavaScript library for graph drawing maintained by <a href="http://www.cytoscape.org" target="_blank" rel="external">Cytoscape</a> core developers.</li>
+<li><a href="https://github.com/Linkurious/linkurious.js/" target="_blank" rel="external">Linkurious</a> - A toolkit to speed up the development of graph visualization and interaction applications. Based on Sigma.js.</li>
+<li><a href="http://sigmajs.org/" target="_blank" rel="external">Sigma.js</a> - JavaScript library dedicated to graph drawing.</li>
+<li><a href="https://github.com/anvaka/VivaGraphJS" target="_blank" rel="external">VivaGraph</a> - Graph drawing library for JavaScript.</li>
+</ul>
+<h3 id="Maps">Maps</h3><ul>
+<li><a href="https://github.com/CartoDB/cartodb" target="_blank" rel="external">CartoDB</a> - CartoDB is an open source tool that allows for the storage and visualization of geospatial data on the web.</li>
+<li><a href="https://github.com/AnalyticalGraphicsInc/cesium" target="_blank" rel="external">Cesium</a> - WebGL virtual globe and map engine.</li>
+<li><a href="http://leafletjs.com" target="_blank" rel="external">Leaflet</a> - JavaScript library for mobile-friendly interactive maps.</li>
+<li><a href="https://github.com/humangeo/leaflet-dvf" target="_blank" rel="external">Leaflet Data Visualization Framework</a>  - A framework designed to simplify data visualization and thematic mapping using Leaflet.</li>
+<li><a href="https://github.com/neveldo/jQuery-Mapael" target="_blank" rel="external">Mapael</a> - jQuery plugin based on the.js to display vector maps.</li>
+<li><a href="http://mapsense.github.io/mapsense.js/" target="_blank" rel="external">Mapsense.js</a> - Combines d3.js with tile maps.</li>
+<li><a href="http://modestmaps.com/" target="_blank" rel="external">Modest Maps</a> - BSD-licensed display and interaction library for tile-based maps in Javascript.</li>
+</ul>
+<h3 id="d3">d3</h3><ul>
+<li>See <a href="https://github.com/wbkd/awesome-d3" target="_blank" rel="external">Awesome D3</a>.</li>
+</ul>
+<h3 id="dc-js">dc.js</h3><p><a href="https://github.com/dc-js/dc.js" target="_blank" rel="external">dc.js</a> is an multi-Dimensional charting built to work natively with crossfilter.</p>
+<ul>
+<li><a href="https://github.com/TomNeyland/angular-dc" target="_blank" rel="external">angular-dc</a> - AngularJS directives for dc.js.</li>
+<li><a href="https://github.com/yurukov/dc.leaflet.js" target="_blank" rel="external">dc.leaflet.js</a> - dc.js charts using Leaflet maps.</li>
+<li><a href="https://github.com/andrewreedy/ember-dc" target="_blank" rel="external">ember-dc</a> - Ember Component Wrappers for dc.js.</li>
+</ul>
+<h3 id="Misc">Misc</h3><ul>
+<li><a href="http://gka.github.io/chroma.js/" target="_blank" rel="external">Chroma.js</a> - A small library for color manipulation.</li>
+<li><a href="https://github.com/lipka/piecon" target="_blank" rel="external">Piecon</a> - Pie charts in your favicon.</li>
+<li><a href="http://okfnlabs.org/recline/" target="_blank" rel="external">Recline.js</a> - Simple but powerful library for building data applications in pure JavaScript and HTML.</li>
+<li><a href="http://riccardoscalco.github.io/textures/" target="_blank" rel="external">Textures.js</a> - A library to create SVG patterns.</li>
+<li><a href="http://timeline.knightlab.com/" target="_blank" rel="external">Timeline.js</a> -  Create interactive timelines.</li>
+<li><a href="http://vega.github.io/vega/" target="_blank" rel="external">Vega</a> - Vega is a visualization grammar, a declarative format for creating, saving, and sharing interactive visualization designs.</li>
+<li><a href="http://visjs.org/" target="_blank" rel="external">Vis.js</a> - A dynamic visualization library including timeline, networks and graphs (2D and 3D).</li>
+</ul>
+<h2 id="Android_tools">Android tools</h2><ul>
+<li><a href="https://github.com/lecho/hellocharts-android" target="_blank" rel="external">HelloCharts</a> - Charting library for Android compatible with API 8+.</li>
+<li><a href="https://github.com/PhilJay/MPAndroidChart" target="_blank" rel="external">MPAndroidChart</a> - A powerful &amp; easy to use chart library.</li>
+</ul>
+<h2 id="C++_tools">C++ tools</h2><ul>
+<li><a href="https://gitlab.kitware.com/vtk/vtk/blob/master/README.md" target="_blank" rel="external">Visualization Toolkit (VTK)</a> - open-source library for 3d Graphics, image processing and visualization.</li>
+</ul>
+<h2 id="Golang_tools">Golang tools</h2><ul>
+<li><a href="https://github.com/vdobler/chart" target="_blank" rel="external">Charts for Go</a> - Basic charts in Go. Can render to ASCII, SVG and images.</li>
+<li><a href="https://github.com/ajstarks/svgo" target="_blank" rel="external">svgo</a> - Go Language Library for SVG generation.</li>
+</ul>
+<h2 id="iOS_tools">iOS tools</h2><ul>
+<li><a href="https://github.com/Jawbone/JBChartView" target="_blank" rel="external">JBChartView</a> - Charting library for both line and bar graphs.</li>
+<li><a href="https://github.com/kevinzhow/PNChart" target="_blank" rel="external">PNChart</a> - A simple and beautiful chart lib used in Piner and CoinsMan.</li>
+<li><a href="https://github.com/danielgindi/ios-charts" target="_blank" rel="external">ios-charts</a> -  iOS port of MPAndroidChart. You can create charts for both platforms with very similar code.</li>
+</ul>
+<h2 id="Python_tools">Python tools</h2><ul>
+<li><a href="http://bokeh.pydata.org/en/latest/" target="_blank" rel="external">bokeh</a> - Interactive Web Plotting for Python.</li>
+<li><a href="https://github.com/yhat/ggplot" target="_blank" rel="external">ggplot</a> - Same API as ggplot2 for R.</li>
+<li><a href="https://github.com/glumpy/glumpy" target="_blank" rel="external">glumpy</a> - OpenGL scientific visualizations library.</li>
+<li><a href="http://matplotlib.org/" target="_blank" rel="external">matplotlib</a> - 2D plotting library.</li>
+<li><a href="http://www.pygal.org/en/latest/" target="_blank" rel="external">pygal</a> - A dynamic SVG charting library.</li>
+<li><a href="http://www.pyqtgraph.org/" target="_blank" rel="external">PyQtGraph</a> - Interactive and realtime 2D/3D/Image plotting and science/engineering widgets.</li>
+<li><a href="http://stanford.edu/~mwaskom/software/seaborn/" target="_blank" rel="external">seaborn</a> - A library for making attractive and informative statistical graphics.</li>
+<li><a href="http://toyplot.readthedocs.org/en/stable/" target="_blank" rel="external">toyplot</a> - The kid-sized plotting toolkit for Python with grownup-sized goals.</li>
+<li><a href="https://github.com/wrobstory/vincent" target="_blank" rel="external">Vincent</a> - A Python to Vega translator.</li>
+<li><a href="http://vispy.org/" target="_blank" rel="external">VisPy</a> - High-performance scientific visualization based on OpenGL.</li>
+<li><a href="https://github.com/mpld3/mpld3" target="_blank" rel="external">mpld3</a> - D3 Renderings of Matplotlib Graphics</li>
+</ul>
+<h2 id="R_tools">R tools</h2><ul>
+<li><a href="http://ggplot2.org/" target="_blank" rel="external">ggplot2</a> - A plotting system based on the grammar of graphics.</li>
+<li><a href="http://lattice.r-forge.r-project.org" target="_blank" rel="external">lattice</a> - trellis graphics for R</li>
+<li><a href="https://github.com/ropensci/plotly" target="_blank" rel="external">plotly</a> - Interactive charts (including adding interactivity to ggplot2 output), cartograms and simple network diagrams</li>
+<li><a href="http://hafen.github.io/rbokeh/" target="_blank" rel="external">rbokeh</a> - R Interface to Bokeh.</li>
+<li><a href="https://cran.r-project.org/web/packages/rgl/index.html" target="_blank" rel="external">rgl</a> - 3D Visualization Using OpenGL</li>
+<li><a href="http://shiny.rstudio.com" target="_blank" rel="external">shiny</a> - Framework for creating interactive applications/visualisations</li>
+<li><a href="http://dataknowledge.github.io/visNetwork/" target="_blank" rel="external">visNetwork</a> - Interactive network visualisations</li>
+</ul>
+<h2 id="Ruby_tools">Ruby tools</h2><ul>
+<li><a href="https://github.com/ankane/chartkick" target="_blank" rel="external">Chartkick</a> - Create charts with one line of Ruby.</li>
+</ul>
+<h2 id="Other_tools">Other tools</h2><p>Tools that are not tied to a particular platform or language.</p>
+<ul>
+<li><a href="https://github.com/mikesall/charted" target="_blank" rel="external">Charted</a> - A charting tool that produces automatic, shareable charts from any data file.</li>
+<li><a href="https://github.com/gephi/gephi" target="_blank" rel="external">Gephi</a> - An open-source platform for visualizing and manipulating large graphs</li>
+<li><a href="http://lightning-viz.org/" target="_blank" rel="external">Lightning</a> - A data-visualization server providing API-based access to reproducible, web-based, interactive visualizations.</li>
+<li><a href="http://raw.densitydesign.org/" target="_blank" rel="external">RAW</a> - Create web visualizations from CSV or Excel files.</li>
+<li><a href="https://github.com/holman/spark" target="_blank" rel="external">Spark</a> - Sparklines for the shell. It have several <a href="https://github.com/holman/spark/wiki/Alternative-Implementations" target="_blank" rel="external">implementations in different languages</a>.</li>
+<li><a href="https://www.periscopedata.com/" target="_blank" rel="external">Periscope</a> - Create charts directly from SQL queries.</li>
+</ul>
+<h1 id="Resources">Resources</h1><h2 id="Books">Books</h2><ul>
+<li><a href="http://www.amazon.com/Design-Information-Introduction-Histories-Visualizations/dp/1592538061" target="_blank" rel="external">Design for Information</a> by Isabel Meirelles.</li>
+<li><a href="http://www.amazon.com/The-Best-American-Infographics-2014/dp/0547974515" target="_blank" rel="external">The Best American Infographics 2014</a> by Gareth Cook.</li>
+<li><a href="http://www.amazon.com/The-Visual-Display-Quantitative-Information/dp/0961392142" target="_blank" rel="external">The Visual Display of Quantitative Information</a> by Edward Tufte.</li>
+<li><a href="http://www.amazon.com/Street-Journal-Guide-Information-Graphics/dp/0393347281" target="_blank" rel="external">The Wall Street Journal Guide to Information Graphics</a> by Dona M. Wong</li>
+<li><a href="http://www.amazon.com/Visualization-Analysis-Design-Peters-Series/dp/1466508914" target="_blank" rel="external">Visualization Analysis and Design</a> by Tamara Munzner.</li>
+</ul>
+<h2 id="Twitter_accounts">Twitter accounts</h2><ul>
+<li><a href="https://twitter.com/albertocairo" target="_blank" rel="external">Alberto Cairo</a></li>
+<li><a href="https://twitter.com/datavis" target="_blank" rel="external">Benjamin Wiederkehr</a></li>
+<li><a href="https://twitter.com/mbostock" target="_blank" rel="external">Mike Bostock</a></li>
+<li><a href="https://twitter.com/NadiehBremer" target="_blank" rel="external">Nadieh Bremer</a></li>
+<li><a href="https://twitter.com/nytgraphics" target="_blank" rel="external">NYT Graphics</a></li>
+<li><a href="https://twitter.com/VisualizingOrg" target="_blank" rel="external">Visualizing</a></li>
+</ul>
+<h2 id="Websites">Websites</h2><ul>
+<li><a href="http://flowingdata.com/" target="_blank" rel="external">FlowingData</a></li>
+<li><a href="http://www.informationisbeautiful.net/" target="_blank" rel="external">Information is Beautiful</a></li>
+<li><a href="http://www.datavizcatalogue.com/" target="_blank" rel="external">The Data Visualization Catalogue</a> - A collection of data visualization methods, with pros and cons.</li>
+<li><a href="http://www.visualcomplexity.com/vc/" target="_blank" rel="external">Visual Complexity</a> - A site about the visualization of complex networks.</li>
+</ul>
+<h1 id="Contributing">Contributing</h1><ul>
+<li>Please check for duplicates first.</li>
+<li>Keep descriptions short, simple and unbiased.</li>
+<li>Please make an individual commit for each suggestion</li>
+<li>Add a new category if needed.</li>
+</ul>
+<p>Thanks for your suggestions!</p>
+<h1 id="License">License</h1><p><a href="http://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="external"><img src="https://licensebuttons.net/p/zero/1.0/88x31.png" alt="CC0"></a></p>
+<p>To the extent possible under law, <a href="http://fabiosouto.me/" target="_blank" rel="external">Fabio Souto</a> has waived all copyright and related or neighboring rights to this work.</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>From <a href="https://github.com/fasouto/awesome-dataviz" target="_blank" rel="external">fasouto github</a></p>
+<h1 id="Awesome_dataviz">]]>
+    </summary>
+    
+      <category term="Data" scheme="http://blog.yaorenjie.com/tags/Data/"/>
+    
+      <category term="Visualization" scheme="http://blog.yaorenjie.com/tags/Visualization/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Tricks on Crontab]]></title>
+    <link href="http://blog.yaorenjie.com/2015/12/09/Tricks-on-Crontab/"/>
+    <id>http://blog.yaorenjie.com/2015/12/09/Tricks-on-Crontab/</id>
+    <published>2015-12-09T10:01:40.000Z</published>
+    <updated>2015-12-09T10:06:03.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="‘@’_in_Crontab">‘@’ in Crontab</h1><p>‘@’ sysmbol is available in crontab and it very useful especially for <code>@reboot</code>. <code>@reboot</code> makes it possible to run a script while machine starts.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@reboot     -   This runs the Cron job when the machine is started up or <span class="keyword">if</span> the Cron daemon is restarted</span><br><span class="line"></span><br><span class="line">@midnight   -   This runs the Cron job once a day at midnight, it<span class="string">'s the equivalent of 0 0 * * *</span><br><span class="line"></span><br><span class="line">@daily      -   Does exactly the same as @midnight</span><br><span class="line"></span><br><span class="line">@weekly     -   This runs a Cron job once a week on a Sunday the equivalent of 0 0 * * 0</span><br><span class="line"></span><br><span class="line">@monthly    -   This runs a Cron job once a month on the first day of every month at midnight and is the same as 0 0 1 * *</span><br><span class="line"></span><br><span class="line">@annually   -   Runs a Cron job once a year at midnight on the first day of the first month and is the equivalent of 0 0  1 1 *</span><br><span class="line"></span><br><span class="line">@yearly     -   The same as annually</span></span><br></pre></td></tr></table></figure>
+<p>An example for run a command when the machine starts:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@reboot date &gt;&gt; /tmp/date.log</span><br></pre></td></tr></table></figure>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="‘@’_in_Crontab">‘@’ in Crontab</h1><p>‘@’ sysmbol is available in crontab and it very useful especially for <code>@reboot</code>. <c]]>
+    </summary>
+    
+      <category term="Crontab" scheme="http://blog.yaorenjie.com/tags/Crontab/"/>
+    
+      <category term="Linux" scheme="http://blog.yaorenjie.com/tags/Linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Python smtplib to sendmail with STARTTL and UTF8]]></title>
+    <link href="http://blog.yaorenjie.com/2015/12/08/Python-smtplib-to-sendmail-with-STARTTLS-and-UTF8/"/>
+    <id>http://blog.yaorenjie.com/2015/12/08/Python-smtplib-to-sendmail-with-STARTTLS-and-UTF8/</id>
+    <published>2015-12-08T01:39:21.000Z</published>
+    <updated>2015-12-08T01:59:56.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Intro">Intro</h1><p><code>Python</code> is a very powerful and useful tool in our daily work especially for DevOps. Sending mail is also a very simple need. I’ve wrote serveral scripts for sending mail because I could not find the scripts I made before. This time I wanna get the things done - made is open on Github with GPLv3.</p>
+<h1 id="Code">Code</h1><p>Project address is here: <a href="https://github.com/baniuyao/python-sendmail%20A" target="_blank" rel="external">python-sendmail on Github</a>.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># This program is free software; you can redistribute it and/or modify</span></span><br><span class="line"><span class="comment"># it under the terms of the GNU General Public License as published by</span></span><br><span class="line"><span class="comment"># the Free Software Foundation; either version 3 of the License, or</span></span><br><span class="line"><span class="comment"># (at your option) any later version.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">import</span> smtplib, sys</span><br><span class="line"><span class="keyword">from</span> email.MIMEText <span class="keyword">import</span> MIMEText</span><br><span class="line"></span><br><span class="line"><span class="comment"># you can change this constant to parameters of sendmail</span></span><br><span class="line">USR_FROM = <span class="string">'me@yaorenjie.com'</span></span><br><span class="line">USR = <span class="string">'me'</span></span><br><span class="line">PASSWD = <span class="string">'HELLO_WORLD'</span></span><br><span class="line"></span><br><span class="line">SMTP_SERVER = <span class="string">'email.yaorenjie.com'</span></span><br><span class="line">SMTP_PORT = <span class="number">587</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sendmail</span><span class="params">(usr_to, subject, msg, subtype=<span class="string">'html'</span>)</span>:</span></span><br><span class="line">    usr_from = USR_FROM</span><br><span class="line">    msg = MIMEText(msg, subtype, _charset=<span class="string">'utf-8'</span>)</span><br><span class="line">    msg[<span class="string">'Subject'</span>] = subject</span><br><span class="line">    msg[<span class="string">'To'</span>] = <span class="string">';'</span>.join(usr_to)</span><br><span class="line">    msg[<span class="string">'From'</span>] = usr_from</span><br><span class="line">    server = smtplib.SMTP()</span><br><span class="line">    server.connect(SMTP_SERVER, SMTP_PORT)</span><br><span class="line">    <span class="comment"># ONLY for debug</span></span><br><span class="line">    <span class="comment"># server.set_debuglevel(1)</span></span><br><span class="line">    <span class="comment"># if exchange use STARTTLS auth, you need to uncomment next line</span></span><br><span class="line">    <span class="comment"># server.starttls()</span></span><br><span class="line">    server.login(USR, PASSWD)</span><br><span class="line">    server.sendmail(usr_from, usr_to, msg.as_string())</span><br><span class="line">    server.quit()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="string">"""</span><br><span class="line">    Example:</span><br><span class="line">    python sendmail.py --usr_to mike@mail.com peter@mail.com --subject 'TEST_SUBJECT' --msg 'TEST_MSG'</span><br><span class="line"></span><br><span class="line">    Remark:</span><br><span class="line">    1. msg supports HTML and Chinese</span><br><span class="line">    """</span></span><br><span class="line">    parser = argparse.ArgumentParser(description=<span class="string">'parser for senemail'</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'--usr_to'</span>, dest=<span class="string">'usr_to'</span>, nargs=<span class="string">'+'</span>, required=<span class="keyword">True</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'--subject'</span>, dest=<span class="string">'subject'</span>, required=<span class="keyword">True</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'--msg'</span>, dest=<span class="string">'msg'</span>, required=<span class="keyword">True</span>)</span><br><span class="line">    args = parser.parse_args()</span><br><span class="line">    sendmail(usr_to=args.usr_to, subject=args.subject, msg=args.msg)</span><br></pre></td></tr></table></figure></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Intro">Intro</h1><p><code>Python</code> is a very powerful and useful tool in our daily work especially for DevOps. Sending mail is ]]>
+    </summary>
+    
+      <category term="python" scheme="http://blog.yaorenjie.com/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Convert SOCKS5 Proxy to HTTP Proxy on Mac]]></title>
+    <link href="http://blog.yaorenjie.com/2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/"/>
+    <id>http://blog.yaorenjie.com/2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/</id>
+    <published>2015-10-20T09:30:12.000Z</published>
+    <updated>2015-10-20T10:41:36.000Z</updated>
+    <content type="html"><![CDATA[<p>We usually use ShadowsocksX on Mac to build a SOCKS5 tunnel. But as a developer, I need HTTP Proxy in many places such as npm or some IDE tools. I need a tool to build a HTTP Proxy and pack data stream to SOCKS5 tunnel.</p>
+<p>I found a solution of using a tool called <code>polipo</code>. We can simply install this tool by <code>homebrew</code>.</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew instasll polipo</span><br></pre></td></tr></table></figure>
+<p>After installed <code>polipo</code>, let’s make it work by a simple command.</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">polipo socksParentProxy=localhost:1080</span><br></pre></td></tr></table></figure>
+<p><code>localhost:1080</code> is your local SOCKS5 address. In default, HTTP proxy created by <code>polipo</code> is running on <code>localhost:8123</code>.</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>We usually use ShadowsocksX on Mac to build a SOCKS5 tunnel. But as a developer, I need HTTP Proxy in many places such as npm or some IDE]]>
+    </summary>
+    
+      <category term="Linux" scheme="http://blog.yaorenjie.com/tags/Linux/"/>
+    
+      <category term="Mac" scheme="http://blog.yaorenjie.com/tags/Mac/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Advanced Python Data Structure]]></title>
+    <link href="http://blog.yaorenjie.com/2015/08/27/Advanced-Python-Data-Structure/"/>
+    <id>http://blog.yaorenjie.com/2015/08/27/Advanced-Python-Data-Structure/</id>
+    <published>2015-08-27T07:13:37.000Z</published>
+    <updated>2015-09-07T09:12:04.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Colletions">Colletions</h1><p><code>Collections</code> is a very useful data structure colletion in Python. In this post, I will introduct</p>
+<h2 id="collections-Couter()">collections.Couter()</h2><p><code>Counter</code> is used to count something of iterable data structure such as list and tuple. Let’s see example below:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line">name_list = [<span class="string">'frank'</span>, <span class="string">'frank'</span>, <span class="string">'tony'</span>, <span class="string">'jack'</span>, <span class="string">'judy'</span>, <span class="string">'jack'</span>, <span class="string">'jack'</span>]</span><br><span class="line">name_counter = Counter(name_list) </span><br><span class="line"><span class="keyword">print</span> counter <span class="comment"># print couter of name_list</span></span><br><span class="line"><span class="comment"># Counter(&#123;'jack': 3, 'frank': 2, 'tony': 1, 'judy': 1&#125;)</span></span><br><span class="line"><span class="keyword">print</span> counter.most_common(<span class="number">1</span>) <span class="comment"># print top 1 count</span></span><br><span class="line"><span class="comment"># [('jack', 3)]</span></span><br><span class="line"><span class="keyword">print</span> counter.most_common(<span class="number">2</span>) <span class="comment"># print top 2 count</span></span><br><span class="line"><span class="comment"># [('jack', 3), ('frank', 2)]</span></span><br></pre></td></tr></table></figure></p>
+<p>Now I am going to update a Counter:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line">name_list_one = [<span class="string">'frank'</span>, <span class="string">'frank'</span>, <span class="string">'tony'</span>]</span><br><span class="line">name_counter = Counter(name_list_one)</span><br><span class="line"><span class="comment"># name_counter: Counter(&#123;'frank': 2, 'tony': 1&#125;)</span></span><br><span class="line">name_list_two = [<span class="string">'tony'</span>, <span class="string">'jack'</span>]</span><br><span class="line">name_counter.update(name_list_two)</span><br><span class="line"><span class="comment"># name_counter: Counter(&#123;'tony': 2, 'frank': 2, 'jack': 1&#125;)</span></span><br><span class="line">name_counter.subtract([<span class="string">'frank'</span>]) <span class="comment"># subtract is the reverse operation of update</span></span><br><span class="line"><span class="comment"># name_counter: Counter(&#123;'tony': 2, 'frank': 1, 'jack': 1&#125;)</span></span><br><span class="line">name_counter.subtract([<span class="string">'jack'</span>, <span class="string">'jack'</span>]) <span class="comment"># value can be zero and negative counts</span></span><br><span class="line"><span class="comment"># name_counter: Counter(&#123;'tony': 2, 'frank': 1, 'jack': -1&#125;)</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="collections-defaultdict()">collections.defaultdict()</h2><p><code>defaultdict</code> is almost the same as <code>dict</code> which can be assigned by this statement:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d = &#123;<span class="string">'name'</span>: <span class="string">'frank'</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>defaultdict</code> provides a function which will be invoked when we use a non-exists key to access the value in the <code>defaultdict</code>. When we want to get the value by a key which does not exist in the dict, <code>dict</code> will raise a <code>KeyError</code> Exception. We can use <code>d.get(KEY, DEFAULT_VALUE)</code> to define the value we will get if the key does not exist. It is okay but not an easy work-around. For example, I have a dict named <code>writer_book_dict</code> and its key is writers’ name and value is books’ name. When I get the value by a non-exist writer, it should return ‘NO BOOKS’. Let’s see how we can deal it with <code>dict</code> and <code>defaultdict</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">writer_book_dict = &#123;<span class="string">'frank'</span>: <span class="string">'book_1'</span>, <span class="string">'tony'</span>: <span class="string">'book_2'</span>&#125;</span><br><span class="line">book_by_jack = writer_book_dict.get(<span class="string">'jack'</span>, <span class="string">'NO BOOKS'</span>)</span><br><span class="line">book_by_jack = writer_book_dict.get(<span class="string">'judy'</span>, <span class="string">'NO BOOKS'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line">writer_book_defaultdict = default(lamda: <span class="string">'NO BOOKS'</span>)</span><br><span class="line">writer_book_defaultdict.get(<span class="string">'jack'</span>) <span class="comment"># return 'NO BOOKS'</span></span><br></pre></td></tr></table></figure>
+<p>We can use a complex function in initialize the defaultdict. Furthermore, we can also define the data structure of the value in the <code>defaultdict</code>. Let’s see an example, we need to make a classification of a short paragraph by the first letter of each world. It is to say, ‘I am a student and I like sports’ -&gt; <code>{&#39;a&#39;: [&#39;am&#39;, &#39;a&#39;, &#39;and&#39;], &#39;i&#39;: [&#39;it&#39;, &#39;is&#39;, &#39;i&#39;], &#39;l&#39;: [&#39;like&#39;], &#39;s&#39;: [&#39;student&#39;, &#39;sports&#39;]}</code>. If we use <code>default</code> we must judge if the key exists and if it does not exist, we need to initialize with an empty list like below:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">paragraph = <span class="string">'I am a student and I like sports'</span></span><br><span class="line">word_dict = &#123;&#125;</span><br><span class="line"><span class="keyword">for</span> word <span class="keyword">in</span> paragraph:</span><br><span class="line">    first_letter = word[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">if</span> word <span class="keyword">not</span> <span class="keyword">in</span> word_dict:</span><br><span class="line">        word_dict[first_letter] = [word]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        word_dict[first_letter].append(word)</span><br></pre></td></tr></table></figure></p>
+<p>Let’s see how <code>defaultdict</code> works:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line">paragraph = <span class="string">'I am a student and I like sports'</span></span><br><span class="line">word_defaultdict = defaultdict(list)</span><br><span class="line"><span class="keyword">for</span> word <span class="keyword">in</span> paragraph:</span><br><span class="line">    word_defaultdict[word[<span class="number">0</span>]].append(word)</span><br></pre></td></tr></table></figure></p>
+<p>If we want to <code>uniq</code> the element of <code>word_defaultdict</code>, we can simply initialize <code>word_defaultdict</code> by <code>defaultdict(set)</code>.</p>
+<h2 id="bisect">bisect</h2><p><code>bisect</code> is used to insert element into an sorted list and keep the list sorted. <code>bisect</code> module have six methods:</p>
+<ol>
+<li>bisect</li>
+<li>bisect_left</li>
+<li>bisect_right</li>
+<li>insort</li>
+<li>insort_left</li>
+<li>insort_right</li>
+</ol>
+<p>Methods start with <code>bisect</code> will return the index of the element you need to insert. Those start with <code>insort</code> will make change into list directly and return nothing. The difference between <code>left</code> and <code>right</code> will affect the result of operation only when the element you want to insert does exist in the list and <code>left</code> will return the index left of this existed-element and <code>right</code> return the right position. Please remark that <code>bisect</code> is the same as <code>bisect_right</code> and <code>insort</code> is the same as <code>insort_right</code>. Let’s see some examples.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sorted_list = [<span class="number">1</span>, <span class="number">10</span>, <span class="number">100</span>, <span class="number">1000</span>]</span><br><span class="line">bisect(sorted_list, <span class="number">20</span>) <span class="comment"># return 2</span></span><br><span class="line">bisect(sorted_list, <span class="number">10</span>) <span class="comment"># return 2</span></span><br><span class="line">bisect_left(sorted_list, <span class="number">10</span>) <span class="comment"># return 1</span></span><br><span class="line">bisect_right(sorted_list, <span class="number">10</span>) <span class="comment"># return 1</span></span><br></pre></td></tr></table></figure></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Colletions">Colletions</h1><p><code>Collections</code> is a very useful data structure colletion in Python. In this post, I will int]]>
+    </summary>
+    
+      <category term="python" scheme="http://blog.yaorenjie.com/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Enable CORS in bottle.py]]></title>
+    <link href="http://blog.yaorenjie.com/2015/06/03/Enable-CORS-in-bottle-py/"/>
+    <id>http://blog.yaorenjie.com/2015/06/03/Enable-CORS-in-bottle-py/</id>
+    <published>2015-06-03T02:22:27.000Z</published>
+    <updated>2015-09-07T09:10:36.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Solution">Solution</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> Bottle, request, response, run</span><br><span class="line">app = Bottle()</span><br><span class="line"> </span><br><span class="line"><span class="decorator">@app.hook('after_request')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">enable_cors</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span><br><span class="line">    You need to add some headers to each request.</span><br><span class="line">    Don't use the wildcard '*' for Access-Control-Allow-Origin in production.</span><br><span class="line">    """</span></span><br><span class="line">    response.headers[<span class="string">'Access-Control-Allow-Origin'</span>] = <span class="string">'*'</span></span><br><span class="line">    response.headers[<span class="string">'Access-Control-Allow-Methods'</span>] = <span class="string">'PUT, GET, POST, DELETE, OPTIONS'</span></span><br><span class="line">    response.headers[<span class="string">'Access-Control-Allow-Headers'</span>] = <span class="string">'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'</span></span><br></pre></td></tr></table></figure>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Solution">Solution</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span clas]]>
+    </summary>
+    
+      <category term="bottle" scheme="http://blog.yaorenjie.com/tags/bottle/"/>
+    
+      <category term="python" scheme="http://blog.yaorenjie.com/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Kafka Compression Performance Tests]]></title>
+    <link href="http://blog.yaorenjie.com/2015/03/27/Kafka-Compression-Performance-Tests/"/>
+    <id>http://blog.yaorenjie.com/2015/03/27/Kafka-Compression-Performance-Tests/</id>
+    <published>2015-03-27T06:01:05.000Z</published>
+    <updated>2015-10-30T07:04:07.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Kafka_Compression_Performance_Tests">Kafka Compression Performance Tests</h1><h2 id="Backgroud">Backgroud</h2><p><code>Kafka</code> use <code>End-to-End</code> compression model which means that <code>Producer</code> and <code>Consumer</code> are doing the compression and de-compression jobs. This feature enables the reduction of on-the-fly network costs and the <code>Broker</code> will increase its cpu load.</p>
+<h2 id="Environment">Environment</h2><h3 id="Hardware_Box">Hardware Box</h3><table>
+<thead>
+<tr>
+<th style="text-align:right">CPU</th>
+<th style="text-align:right">Memory</th>
+<th style="text-align:right">Disk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">2.5 GHz Intel Core i7</td>
+<td style="text-align:right">16GB</td>
+<td style="text-align:right">512GB SSD</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Software_Box">Software Box</h3><table>
+<thead>
+<tr>
+<th style="text-align:right">Kafka</th>
+<th style="text-align:right">JDK</th>
+<th style="text-align:right">Scala</th>
+<th style="text-align:right">Broker</th>
+<th style="text-align:right">Producer</th>
+<th style="text-align:right">JVM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">0.8.2.1</td>
+<td style="text-align:right">1.7.0u75</td>
+<td style="text-align:right">2.11</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">-Xms4G -Xmx4G -Xmn2G</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Kafka_Configuration">Kafka Configuration</h3><table>
+<thead>
+<tr>
+<th style="text-align:right">Replica</th>
+<th style="text-align:right">Partition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">1</td>
+<td style="text-align:right">1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Messages_Content">Messages Content</h3><p>The content I used to send to <code>Kafka</code> is a nginx log which contains 607,781 lines and 200MB. Each line is like below:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> - - [<span class="number">24</span>/Mar/<span class="number">2015</span>:<span class="number">15</span>:<span class="number">57</span>:<span class="number">09</span> +<span class="number">0800</span>] <span class="string">"GET /login?gotype=2 HTTP/1.1"</span> <span class="string">"0.002"</span> <span class="number">200</span> <span class="number">3177</span> <span class="string">"http://abc.com/URLhtml"</span> <span class="string">"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET4.0C; .NET4.0E)"</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> foo.com foo-hostname</span><br></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$wc</span> -l passport<span class="class">.access</span><span class="class">.log</span></span><br><span class="line">  <span class="number">607781</span> passport<span class="class">.access</span><span class="class">.log</span></span><br><span class="line">~/Downloads</span><br><span class="line"><span class="variable">$du</span> -sh passport<span class="class">.access</span><span class="class">.log</span></span><br><span class="line"><span class="number">200</span>M	passport<span class="class">.access</span><span class="class">.log</span></span><br></pre></td></tr></table></figure>
+<h2 id="Baseline_Test">Baseline Test</h2><h3 id="Kafka_Producer_Configuration">Kafka Producer Configuration</h3><table>
+<thead>
+<tr>
+<th style="text-align:right">compression.type</th>
+<th style="text-align:right">buffered.memory</th>
+<th style="text-align:right">acks</th>
+<th style="text-align:right">linger.ms</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">None</td>
+<td style="text-align:right">32MB</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Test_Result">Test Result</h3><p>The first test is going to figure out the fact that the value we defined in <code>batch.size</code> is not the exactly batch size <code>Producer</code> will use. I got the real batch size of <code>Producer</code> by using its metrics API. Tests have been done with <code>batch.size</code> of 200, 500, 1000, 1200, 1500, 2000. Chart below is the result: </p>
+<p><img src="/images/batch_size.png" alt="Alt text"></p>
+<p>We can see clearly that <code>batch.size</code> is a smaller than <code>batch-size-avg</code>(it is the excatly batch size <code>Producer</code> used). And while the <code>batch.size</code> is 200 and 500, the <code>batch-size-avg</code> is almost the same - aroud 370. That is to say, <code>batch-size-avg</code> is not only settled by the parameter <code>batch.size</code>, furthermore, it is also related to other factor.</p>
+<p>All tests have been done in different <code>batch.size</code> of 500, 1000, 1200, 1500 and 2000. Why I didn’t use <code>batch.size</code> of 200 because the phenomenon in the above paragraph.</p>
+<p>Let’s take a look on the <code>Producer</code> baseline：</p>
+<p><img src="/images/producer_baseline.png" alt="Alt text"></p>
+<p>The throughput rised along with the increasing of <code>batch.size</code>. And the latency rised as well. Let me make a simple math calculation. I use the <code>batch.size</code> of 500 for the base number and get the percentage of throughput and latency increasement.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">-</th>
+<th style="text-align:right">500</th>
+<th style="text-align:right">1000</th>
+<th style="text-align:right">1200</th>
+<th style="text-align:right">1500</th>
+<th style="text-align:right">2000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">throughtput</td>
+<td style="text-align:right">100%</td>
+<td style="text-align:right">183.25%</td>
+<td style="text-align:right">230.74%</td>
+<td style="text-align:right">289.59%</td>
+<td style="text-align:right">387.81%</td>
+</tr>
+<tr>
+<td style="text-align:right">latency</td>
+<td style="text-align:right">100%</td>
+<td style="text-align:right">117.47%</td>
+<td style="text-align:right">121.40%</td>
+<td style="text-align:right">123.76%</td>
+<td style="text-align:right">128.31%</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/images/producer_baseline_ratio.png" alt="Alt text"></p>
+<h3 id="Conclusion">Conclusion</h3><p>The throughtput of <code>Producer</code> can get much higher with the increasing of <code>batch.size</code>. And at the meantime, latency will increas in a very tiny level.</p>
+<h2 id="Producer_Performance_with_Compression">Producer Performance with Compression</h2><p><code>Kafka</code> support three different compression type：</p>
+<ul>
+<li>gzip</li>
+<li>snappy</li>
+<li>lz4</li>
+</ul>
+<p>Because of the box I use to test, when I use <code>lz4</code> in testing, I got OOM exception. I think the casuse of this exception is the Java code will get all lines of the <code>passport.access.log</code> and send to <code>Kafka</code> in a very short time. So I used <code>batch.size</code> of 2000, 2500, 3000, 3500, 4000, 4500 and 5000. Using big <code>batch.size</code> will increass the latency and this will give JVM some time to do the GC jobs.</p>
+<p>Below is the result</p>
+<h3 id="Compression_Rate">Compression Rate</h3><p>The value is better when it is smaller</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">-</th>
+<th style="text-align:right">none</th>
+<th style="text-align:right">gzip</th>
+<th style="text-align:right">snappy</th>
+<th style="text-align:right">lz4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">Average Compression Rate</td>
+<td style="text-align:right">100%</td>
+<td style="text-align:right">19.21%</td>
+<td style="text-align:right">78.19%</td>
+<td style="text-align:right">31.37%</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/images/compression_rate.png" alt="Alt text"></p>
+<h3 id="Throughput">Throughput</h3><p>When I enabled the compression, the througput decreased. Let’s see the result.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">-</th>
+<th style="text-align:right">none</th>
+<th style="text-align:right">gzip</th>
+<th style="text-align:right">snappy</th>
+<th style="text-align:right">lz4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">Average Throughtput</td>
+<td style="text-align:right">151901.1038</td>
+<td style="text-align:right">39346.00017</td>
+<td style="text-align:right">119707.5266</td>
+<td style="text-align:right">191469.8994</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/images/compression_throughput.png" alt="Alt text"></p>
+<h3 id="Latency">Latency</h3><p>Result:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">-</th>
+<th style="text-align:right">none</th>
+<th style="text-align:right">gzip</th>
+<th style="text-align:right">snappy</th>
+<th style="text-align:right">lz4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">Average Latency ms</td>
+<td style="text-align:right">0.25</td>
+<td style="text-align:right">4.97</td>
+<td style="text-align:right">0.41</td>
+<td style="text-align:right">0.66</td>
+</tr>
+<tr>
+<td style="text-align:right">Ratio</td>
+<td style="text-align:right">100.00%</td>
+<td style="text-align:right">1937.61%</td>
+<td style="text-align:right">159.99%</td>
+<td style="text-align:right">258.62%</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/images/compression_latency.png" alt="Alt text"></p>
+<h1 id="Consumer_Performance_with_Compression">Consumer Performance with Compression</h1><p>Because <code>Kafka</code> 0.8.2.1 has not enabled the new <code>Consumer</code>, so I cannot get the detailed metrics like I have got in <code>Producer</code>. So in this test, I use the total time <code>Consumer</code> used to consumes a fixed number of messages to do the benchmark.</p>
+<p>The messages are <code>test.access.log</code> in twice size. Below is the result</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">-</th>
+<th style="text-align:left">none</th>
+<th style="text-align:right">gzip</th>
+<th style="text-align:center">snappy</th>
+<th style="text-align:right">lz4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">Time Cost ms</td>
+<td style="text-align:left">3218</td>
+<td style="text-align:right">5374</td>
+<td style="text-align:center">5216</td>
+<td style="text-align:right">4507</td>
+</tr>
+<tr>
+<td style="text-align:right">Time Cost Increase Rate</td>
+<td style="text-align:left">100%</td>
+<td style="text-align:right">167%</td>
+<td style="text-align:center">162.09%</td>
+<td style="text-align:right">140.06%</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/images/cosumer_time_cost.png" alt="Alt text"></p>
+<p>We can see <code>lz4</code> is the fastest.</p>
+<h1 id="Conclusion-1">Conclusion</h1><p><code>lz4</code> is the best choice in compression rate and both performance of <code>Producer</code> and <code>Consumer</code>. Below is the comparison of <code>lz4</code> performance and base line performance. For simplified the chart, this only shows the result with <code>batch.size</code> of 5000.</p>
+<p><img src="/images/overview.png" alt="Alt text"></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Kafka_Compression_Performance_Tests">Kafka Compression Performance Tests</h1><h2 id="Backgroud">Backgroud</h2><p><code>Kafka</code> ]]>
+    </summary>
+    
+      <category term="kafka" scheme="http://blog.yaorenjie.com/tags/kafka/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[The Analysis of Zabbix history and trends Storing]]></title>
+    <link href="http://blog.yaorenjie.com/2015/03/04/The-Analysis-of-Zabbix-history-and-trends-Storing/"/>
+    <id>http://blog.yaorenjie.com/2015/03/04/The-Analysis-of-Zabbix-history-and-trends-Storing/</id>
+    <published>2015-03-04T01:41:25.000Z</published>
+    <updated>2016-06-20T11:47:15.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Intro">Intro</h1><p><code>history</code> and <code>trends</code> are two main tables in Zabbix database for storing data. There are also tables inherits <code>history</code> which are used to store different types of data. For example, table <code>history_uint</code> is to store uint data. Others are <code>history_str</code>, <code>history_log</code> and <code>history_text</code>. Please pay attention that there is only one table inherits table <code>trends</code> and its name is <code>table_uint</code>.</p>
+<h1 id="Entrance">Entrance</h1><p>The start of the whole process is in function <code>DCsync_all()</code>, <code>src/libs/zbxdbcache/dbcache.c</code>. <code>dbcache</code> is a feature which enables Zabbix to keep data in memory first and flush to database in batch.</p>
+<p>To make it more clearly, I wrote comments inline.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span>	<span class="title">DCsync_all</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	zabbix_log(LOG_LEVEL_DEBUG, <span class="string">"In DCsync_all()"</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// call `DCsync_history` to sync history data from cache to database</span></span><br><span class="line">	DCsync_history(ZBX_SYNC_FULL);</span><br><span class="line">	<span class="comment">// assert code is running in Zabbix Server. Zabbix Server WILL NOT run codes below</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="number">0</span> != (daemon_type &amp; ZBX_DAEMON_TYPE_SERVER))</span><br><span class="line">		<span class="comment">// sync trends data. </span></span><br><span class="line">		DCsync_trends();</span><br><span class="line">	zabbix_log(LOG_LEVEL_DEBUG, <span class="string">"End of DCsync_all()"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="DCsync_history()">DCsync_history()</h1><p>Since we are talking about Zabbix Server, so we will only take a look at <code>DCsync_history()</code>. In this paragraph, I have simplified the code in <code>DCsync_history()</code> to help readers understand the core process of flushing data to database.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">DBbegin();</span><br><span class="line">	</span><br><span class="line"><span class="comment">// while in Zabbix Server mode</span></span><br><span class="line"><span class="keyword">if</span> (<span class="number">0</span> != (daemon_type &amp; ZBX_DAEMON_TYPE_SERVER))</span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="comment">// add data to history</span></span><br><span class="line">	DCmass_add_history(history, history_num);</span><br><span class="line">	<span class="comment">// update trends</span></span><br><span class="line">	DCmass_update_trends(history, history_num);</span><br><span class="line">	...		</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">	DCmass_proxy_add_history(history, history_num);</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line">DBcommit();</span><br></pre></td></tr></table></figure>
+<h1 id="DCmass_add_history()">DCmass_add_history()</h1><p>Let’s take a look into <code>DCmass_add_history()</code>.</p>
+<p>It will calculate the numbers for each type of items.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span> (history[i].value_type)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">case</span> ITEM_VALUE_TYPE_FLOAT:</span><br><span class="line">			h_num++;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> ITEM_VALUE_TYPE_UINT64:</span><br><span class="line">			huint_num++;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> ITEM_VALUE_TYPE_STR:</span><br><span class="line">			hstr_num++;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> ITEM_VALUE_TYPE_TEXT:</span><br><span class="line">			htext_num++;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> ITEM_VALUE_TYPE_LOG:</span><br><span class="line">			hlog_num++;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>And then, call function to write data to database.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* history */</span></span><br><span class="line"><span class="keyword">if</span> (<span class="number">0</span> != h_num)</span><br><span class="line">	dc_add_history_dbl(history, history_num);</span><br><span class="line"><span class="comment">/* history_uint */</span></span><br><span class="line"><span class="keyword">if</span> (<span class="number">0</span> != huint_num)</span><br><span class="line">	dc_add_history_uint(history, history_num);</span><br></pre></td></tr></table></figure>
+<p>Finally, we can touch the sql in <code>dc_add_history_dbl()</code>.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span>	<span class="title">dc_add_history_dbl</span><span class="params">(ZBX_DC_HISTORY *history, <span class="keyword">int</span> history_num)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; history_num; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		...</span><br><span class="line">		zbx_db_insert_add_values(&amp;db_insert, history[i].itemid, history[i].ts.sec, history[i].ts.ns,</span><br><span class="line">				history[i].value.dbl);</span><br><span class="line">	&#125;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="DCmass_update_trends">DCmass_update_trends</h1><p>Let’s see the code first.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span>	<span class="title">DCmass_update_trends</span><span class="params">(ZBX_DC_HISTORY *history, <span class="keyword">int</span> history_num)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; history_num; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		...</span><br><span class="line">		DCadd_trend(&amp;history[i], &amp;trends, &amp;trends_alloc, &amp;trends_num);</span><br><span class="line">	&#125;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">while</span> (<span class="number">0</span> &lt; trends_num)</span><br><span class="line">		<span class="comment">// flush trends while we actually HAVE trends data to flush</span></span><br><span class="line">		DCflush_trends(trends, &amp;trends_num, <span class="number">1</span>);</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>We get that the main process is in the function <code>DCadd_trend()</code>. Let’s move on to it.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span>	<span class="title">DCadd_trend</span><span class="params">(ZBX_DC_HISTORY *history, ZBX_DC_TREND **trends, <span class="keyword">int</span> *trends_alloc, <span class="keyword">int</span> *trends_num)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="comment">// get trend data from database by itemid</span></span><br><span class="line">	trend = DCget_trend(history-&gt;itemid);</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">switch</span> (trend-&gt;value_type)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">case</span> ITEM_VALUE_TYPE_FLOAT:</span><br><span class="line">			...</span><br><span class="line">			<span class="comment">// calculate the new data</span></span><br><span class="line">			trend-&gt;value_avg.dbl = (trend-&gt;num * trend-&gt;value_avg.dbl</span><br><span class="line">				+ history-&gt;value.dbl) / (trend-&gt;num + <span class="number">1</span>);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Above all, I think we are clear on the fact how Zabbix update history and trends.</p>
+<p>Below is the process:<br><img src="/images/zabbix_history_trends.jpg" alt="Alt text"></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Intro">Intro</h1><p><code>history</code> and <code>trends</code> are two main tables in Zabbix database for storing data. There are ]]>
+    </summary>
+    
+      <category term="C" scheme="http://blog.yaorenjie.com/tags/C/"/>
+    
+      <category term="Zabbix" scheme="http://blog.yaorenjie.com/tags/Zabbix/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Zabbix install issues with aclocal 1.14 is missing]]></title>
+    <link href="http://blog.yaorenjie.com/2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/"/>
+    <id>http://blog.yaorenjie.com/2015/02/27/Zabbix-install-issue-with-aclocal-1-14-is-missing/</id>
+    <published>2015-02-26T23:14:35.000Z</published>
+    <updated>2015-12-08T01:36:18.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Backgroud">Backgroud</h1><p><code>configure</code> is okay, the next step is <code>make install</code>. But <code>make install</code> exist with error which said it cannot find <code>aclocal-1.14</code> like below:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[baniuyao@YaoRenjies-CentOS zabbix-<span class="number">2.4</span>.<span class="number">4</span>]$ sudo make install</span><br><span class="line">CDPATH=<span class="string">"<span class="variable">$&#123;ZSH_VERSION+.&#125;</span>:"</span> &amp;&amp; <span class="built_in">cd</span> . &amp;&amp; /bin/sh /home/baniuyao/apps/zabbix-<span class="number">2.4</span>.<span class="number">4</span>/missing aclocal-<span class="number">1.14</span> -I m4</span><br><span class="line">/home/baniuyao/apps/zabbix-<span class="number">2.4</span>.<span class="number">4</span>/missing: line <span class="number">81</span>: aclocal-<span class="number">1.14</span>: <span class="built_in">command</span> not found</span><br><span class="line">WARNING: <span class="string">'aclocal-1.14'</span> is missing on your system.</span><br><span class="line">         You should only need it <span class="keyword">if</span> you modified <span class="string">'acinclude.m4'</span> or</span><br><span class="line">         <span class="string">'configure.ac'</span> or m4 files included by <span class="string">'configure.ac'</span>.</span><br><span class="line">         The <span class="string">'aclocal'</span> program is part of the GNU Automake package:</span><br><span class="line">         &lt;http://www.gnu.org/software/automake&gt;</span><br><span class="line">         It also requires GNU Autoconf, GNU m4 and Perl <span class="keyword">in</span> order to run:</span><br><span class="line">         &lt;http://www.gnu.org/software/autoconf&gt;</span><br><span class="line">         &lt;http://www.gnu.org/software/m4/&gt;</span><br><span class="line">         &lt;http://www.perl.org/&gt;</span><br><span class="line">make: *** [aclocal.m4] Error <span class="number">127</span></span><br></pre></td></tr></table></figure>
+<p>But the system has <code>aclocal-1.14</code> already:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[baniuyao@YaoRenjies-CentOS ~]$ <span class="built_in">which</span> aclocal-<span class="number">1.14</span></span><br><span class="line">/usr/<span class="built_in">local</span>/bin/aclocal-<span class="number">1.14</span></span><br></pre></td></tr></table></figure>
+<h1 id="Solution">Solution</h1><p>This is because we don’t have some <code>autoconf</code>(<em>.ac) and <code>automake</code>(</em>.am) files. We can <code>touch</code> these.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch configure.ac aclocal.m4 configure Makefile.am Makefile.in</span><br></pre></td></tr></table></figure>
+<p>Or we can use <code>autoreconf</code> to generate.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo autoreconf -ivf</span><br></pre></td></tr></table></figure>
+<p>Let’s figure out what <code>-ivf</code> means.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-v, --verbose            verbosely report processing</span><br><span class="line"><span class="operator">-f</span>, --force              consider all files obsolete</span><br><span class="line">-i, --install            copy missing auxiliary files</span><br></pre></td></tr></table></figure>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Backgroud">Backgroud</h1><p><code>configure</code> is okay, the next step is <code>make install</code>. But <code>make install</code]]>
+    </summary>
+    
+      <category term="C" scheme="http://blog.yaorenjie.com/tags/C/"/>
+    
+      <category term="Zabbix" scheme="http://blog.yaorenjie.com/tags/Zabbix/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Install Thrift with glibc on CentOS]]></title>
+    <link href="http://blog.yaorenjie.com/2015/01/13/Install-Thrift-with-glibc-on-CentOS/"/>
+    <id>http://blog.yaorenjie.com/2015/01/13/Install-Thrift-with-glibc-on-CentOS/</id>
+    <published>2015-01-13T08:08:12.000Z</published>
+    <updated>2015-12-08T01:36:45.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Install_glib">Install glib</h1><h2 id="Install_Development_Tools">Install Development Tools</h2><p><code>Development Tools</code> is a group of pacakges in yum such as <code>automake</code>, <code>autoconf</code> and so on.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo yum -y update</span><br><span class="line">sudo yum -y groupinstall <span class="string">"Development Tools"</span></span><br><span class="line">sudo yum install -y wget</span><br></pre></td></tr></table></figure>
+<h2 id="Upgrade_some_tools">Upgrade some tools</h2><p>Although some tools are included in the <code>Development Tools</code>, <code>glibc</code> and <code>thrift</code> need new version of those tools. We need to upgrade them.</p>
+<h3 id="autoconf">autoconf</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://ftp.gnu.org/gnu/autoconf/autoconf-<span class="number">2.69</span>.tar.gz</span><br><span class="line">tar xvf autoconf-<span class="number">2.69</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> autoconf-<span class="number">2.69</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<h3 id="automake">automake</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://ftp.gnu.org/gnu/automake/automake-<span class="number">1.14</span>.tar.gz</span><br><span class="line">tar xvf automake-<span class="number">1.14</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> automake-<span class="number">1.14</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<h3 id="bison">bison</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://ftp.gnu.org/gnu/bison/bison-<span class="number">2.5</span>.<span class="number">1</span>.tar.gz</span><br><span class="line">tar xvf bison-<span class="number">2.5</span>.<span class="number">1</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> bison-<span class="number">2.5</span>.<span class="number">1</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<h2 id="Install_glib_(finally)">Install glib (finally)</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://ftp.gnome.org/pub/gnome/sources/glib/<span class="number">2.42</span>/glib-<span class="number">2.42</span>.<span class="number">0</span>.tar.xz</span><br><span class="line">tar xvf glib-<span class="number">2.42</span>.<span class="number">0</span>.tar.xz</span><br><span class="line"><span class="built_in">cd</span> glib-<span class="number">2.42</span>.<span class="number">0</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<h2 id="Check">Check</h2><p><code>pkgconfig</code> is in <code>/usr/local/lib/pkgconfig</code> or <code>/usr/lib64/pkgconfig</code>. Please find it by yourself by <code>locate pkgconfig</code>. Further, you must add <code>PKG_CONFIG_PATH</code> in your environment variables.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls -lrt /usr/<span class="built_in">local</span>/lib/pkgconfig</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig"</span> &gt;&gt; /etc/profile</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br></pre></td></tr></table></figure>
+<h1 id="Install_Thrift_(finally_*_2)">Install Thrift (finally * 2)</h1><p>If you get <code>thrift</code> from <code>git</code>, you must run <code>bootstrap.sh</code> first.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> thrift-<span class="number">0.9</span>.<span class="number">2</span></span><br><span class="line">./configure --with-lua=no</span><br><span class="line">result:</span><br><span class="line">Building C++ Library ......... : no</span><br><span class="line">Building C (GLib) Library .... : yes</span><br><span class="line">Building Java Library ........ : no</span><br><span class="line">Building C<span class="comment"># Library .......... : no</span></span><br><span class="line">Building Python Library ...... : yes</span><br><span class="line">Building Ruby Library ........ : no</span><br><span class="line">Building Haskell Library ..... : no</span><br><span class="line">Building Perl Library ........ : no</span><br><span class="line">Building PHP Library ......... : no</span><br><span class="line">Building Erlang Library ...... : no</span><br><span class="line">Building Go Library .......... : no</span><br><span class="line">Building D Library ........... : no</span><br><span class="line">Building NodeJS Library ...... : no</span><br><span class="line">Building Lua Library ......... : yes</span><br><span class="line">make </span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Install_glib">Install glib</h1><h2 id="Install_Development_Tools">Install Development Tools</h2><p><code>Development Tools</code> is]]>
+    </summary>
+    
+      <category term="c" scheme="http://blog.yaorenjie.com/tags/c/"/>
+    
+      <category term="linux" scheme="http://blog.yaorenjie.com/tags/linux/"/>
+    
+      <category term="thrift" scheme="http://blog.yaorenjie.com/tags/thrift/"/>
+    
+  </entry>
+  
+</feed>
