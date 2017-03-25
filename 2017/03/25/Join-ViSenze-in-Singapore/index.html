@@ -2,6 +2,8 @@
 <html class="theme-next use-motion ">
 <head>
   
+    
+
 
 <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -30,7 +32,7 @@
 
 
 
-  <meta name="keywords" content="json,python," />
+  <meta name="keywords" content="Hexo,next" />
 
 
 
@@ -41,16 +43,16 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="ProblemRecently I met a problem about how to compare to JSON. As we know, JSON is dict-like data structure, the order of its content is not import in the comparison. For example, {&amp;#39;name&amp;#39;: &amp;#39">
+<meta name="description" content="Yes! ViSenzeIt has been a long time since last post, I’m busy in settling down in Singapore these days. Yes, I joined ViSenze, a startup who has raised round B fund. I’ll act as a Data Platform Lead,">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Simple Method to Compare to JSON in Python">
-<meta property="og:url" content="http://blog.yaorenjie.com/2016/08/25/Simple-Method-to-Compare-to-JSON-in-Python/index.html">
+<meta property="og:title" content="Join ViSenze in Singapore">
+<meta property="og:url" content="http://blog.yaorenjie.com/2017/03/25/Join-ViSenze-in-Singapore/index.html">
 <meta property="og:site_name" content="Renjie Yao's Blog">
-<meta property="og:description" content="ProblemRecently I met a problem about how to compare to JSON. As we know, JSON is dict-like data structure, the order of its content is not import in the comparison. For example, {&amp;#39;name&amp;#39;: &amp;#39">
-<meta property="og:updated_time" content="2016-08-25T09:36:00.000Z">
+<meta property="og:description" content="Yes! ViSenzeIt has been a long time since last post, I’m busy in settling down in Singapore these days. Yes, I joined ViSenze, a startup who has raised round B fund. I’ll act as a Data Platform Lead,">
+<meta property="og:updated_time" content="2017-03-25T14:25:40.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Simple Method to Compare to JSON in Python">
-<meta name="twitter:description" content="ProblemRecently I met a problem about how to compare to JSON. As we know, JSON is dict-like data structure, the order of its content is not import in the comparison. For example, {&amp;#39;name&amp;#39;: &amp;#39">
+<meta name="twitter:title" content="Join ViSenze in Singapore">
+<meta name="twitter:description" content="Yes! ViSenzeIt has been a long time since last post, I’m busy in settling down in Singapore these days. Yes, I joined ViSenze, a startup who has raised round B fund. I’ll act as a Data Platform Lead,">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -60,7 +62,7 @@
   };
 </script>
 
-  <title> Simple Method to Compare to JSON in Python | Renjie Yao's Blog </title>
+  <title> Join ViSenze in Singapore | Renjie Yao's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -169,7 +171,7 @@
           
           
             
-              Simple Method to Compare to JSON in Python
+              Join ViSenze in Singapore
             
           
         </h1>
@@ -178,8 +180,8 @@
       <div class="post-meta">
         <span class="post-time">
           Posted on
-          <time itemprop="dateCreated" datetime="2016-08-25T17:20:58+08:00" content="2016-08-25">
-            2016-08-25
+          <time itemprop="dateCreated" datetime="2017-03-25T22:20:02+08:00" content="2017-03-25">
+            2017-03-25
           </time>
         </span>
 
@@ -189,8 +191,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2016/08/25/Simple-Method-to-Compare-to-JSON-in-Python/#comments" itemprop="discussionUrl">
-              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/08/25/Simple-Method-to-Compare-to-JSON-in-Python/" itemprop="commentsCount"></span>
+            <a href="/2017/03/25/Join-ViSenze-in-Singapore/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/25/Join-ViSenze-in-Singapore/" itemprop="commentsCount"></span>
             </a>
           </span>
           
@@ -204,34 +206,28 @@
       
 
       
-        <span itemprop="articleBody"><h1 id="Problem">Problem</h1><p>Recently I met a problem about how to compare to JSON. As we know, JSON is dict-like data structure, the order of its content is not import in the comparison. For example, <code>{&#39;name&#39;: &#39;frank&#39;, &#39;age&#39;: &#39;12&#39;}</code> equals <code>{&#39;age&#39;: &#39;12&#39;, &#39;name&#39;: &#39;frank&#39;}</code>. In the real world, perhaps there are some more complex data structures like list, tuple or nested-dict. </p>
-<h1 id="Solutions">Solutions</h1><p>In python(both python2 and python3), we can use <code>pprint</code> to get pretty print for JSON and other data structures. It will sort and format data first. And there is another method in <code>pprint</code> module called <code>pformat</code> which is used to get the output to a string. Let’s see the example.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pprint</span><br><span class="line"></span><br><span class="line">d1 = &#123;<span class="string">'name'</span>: <span class="string">'frank'</span>, <span class="string">'age'</span>: <span class="string">'12'</span>&#125;</span><br><span class="line">pformat_d1 = pprint.pformat(d1) <span class="comment"># pformat_d1: &#123;'age': '12', 'name': 'frank'&#125;</span></span><br><span class="line">d2 = &#123;<span class="string">'age'</span>: <span class="string">'12'</span>, <span class="string">'name'</span>: <span class="string">'frank'</span>&#125;</span><br><span class="line">pformat_d2 = pprint.pformat(d2) <span class="comment"># pformat_d2: &#123;'age': '12', 'name': 'frank'&#125;</span></span><br></pre></td></tr></table></figure></span>
+        <span itemprop="articleBody"><h1 id="Yes!_ViSenze">Yes! ViSenze</h1><p>It has been a long time since last post, I’m busy in settling down in Singapore these days. Yes, I joined ViSenze, a startup who has raised round B fund. I’ll act as a Data Platform Lead, to build our data product and technical architecture. ViSenze has so many excellent talents and I feel really happy with these guys in the last month. Hope we all have a great advantages:)</p>
+<h1 id="About_ViSenze">About ViSenze</h1><blockquote>
+<p>ViSenze is an artificial intelligence company that develops advanced visual search and image recognition solutions to help businesses in eCommerce, mCommerce and online advertising.</p>
+<p>Using R&amp;D in machine learning and computer vision technology, ViSenze can recommend visually similar items to online shoppers, either on e-commerce platforms when they browse or search by uploading a picture or on content publishers platforms like social media and video networks.</p>
+<p>The company is a spin-off from NExT, a leading research centre jointly established between National University of Singapore and Tsinghua University of China.</p>
+</blockquote>
+</span>
       
     </div>
 
     <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/json/" rel="tag">#json</a>
-          
-            <a href="/tags/python/" rel="tag">#python</a>
-          
-        </div>
       
 
       
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/12/01/The-Comparsion-Between-Apache-Flume-and-Heka/" rel="prev">The Comparsion Between Apache Flume and Heka</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/08/05/Run-pyspark-in-Python3/" rel="next">Run pyspark in Python3</a>
+              <a href="/2017/01/03/Kafka-0-10-Compression-Benchmark/" rel="next">Kafka 0.10 Compression Benchmark</a>
             
           </div>
         </div>
@@ -356,7 +352,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Problem"><span class="nav-number">1.</span> <span class="nav-text">Problem</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Solutions"><span class="nav-number">2.</span> <span class="nav-text">Solutions</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Yes!_ViSenze"><span class="nav-number">1.</span> <span class="nav-text">Yes! ViSenze</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#About_ViSenze"><span class="nav-number">2.</span> <span class="nav-text">About ViSenze</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
@@ -410,9 +406,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'renjieyaoblog';
-      var disqus_identifier = '2016/08/25/Simple-Method-to-Compare-to-JSON-in-Python/';
-      var disqus_title = 'Simple Method to Compare to JSON in Python';
-      var disqus_url = 'http://blog.yaorenjie.com/2016/08/25/Simple-Method-to-Compare-to-JSON-in-Python/';
+      var disqus_identifier = '2017/03/25/Join-ViSenze-in-Singapore/';
+      var disqus_title = 'Join ViSenze in Singapore';
+      var disqus_url = 'http://blog.yaorenjie.com/2017/03/25/Join-ViSenze-in-Singapore/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');

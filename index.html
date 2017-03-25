@@ -170,6 +170,80 @@
           
           
             
+              <a class="post-title-link" href="/2017/03/25/Join-ViSenze-in-Singapore/" itemprop="url">
+                Join ViSenze in Singapore
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          Posted on
+          <time itemprop="dateCreated" datetime="2017-03-25T22:20:02+08:00" content="2017-03-25">
+            2017-03-25
+          </time>
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2017/03/25/Join-ViSenze-in-Singapore/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/25/Join-ViSenze-in-Singapore/" itemprop="commentsCount"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h1 id="Yes!_ViSenze">Yes! ViSenze</h1><p>It has been a long time since last post, I’m busy in settling down in Singapore these days. Yes, I joined ViSenze, a startup who has raised round B fund. I’ll act as a Data Platform Lead, to build our data product and technical architecture. ViSenze has so many excellent talents and I feel really happy with these guys in the last month. Hope we all have a great advantages:)</p>
+<h1 id="About_ViSenze">About ViSenze</h1><blockquote>
+<p>ViSenze is an artificial intelligence company that develops advanced visual search and image recognition solutions to help businesses in eCommerce, mCommerce and online advertising.</p>
+<p>Using R&amp;D in machine learning and computer vision technology, ViSenze can recommend visually similar items to online shoppers, either on e-commerce platforms when they browse or search by uploading a picture or on content publishers platforms like social media and video networks.</p>
+<p>The company is a spin-off from NExT, a leading research centre jointly established between National University of Singapore and Tsinghua University of China.</p>
+</blockquote>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2017/01/03/Kafka-0-10-Compression-Benchmark/" itemprop="url">
                 Kafka 0.10 Compression Benchmark
               </a>
@@ -1756,78 +1830,6 @@ agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span
 
 
     
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/12/09/Tricks-on-Crontab/" itemprop="url">
-                Tricks on Crontab
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          Posted on
-          <time itemprop="dateCreated" datetime="2015-12-09T18:01:40+08:00" content="2015-12-09">
-            2015-12-09
-          </time>
-        </span>
-
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/12/09/Tricks-on-Crontab/#comments" itemprop="discussionUrl">
-              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/09/Tricks-on-Crontab/" itemprop="commentsCount"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h1 id="‘@’_in_Crontab">‘@’ in Crontab</h1><p>‘@’ sysmbol is available in crontab and it very useful especially for <code>@reboot</code>. <code>@reboot</code> makes it possible to run a script while machine starts.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@reboot     -   This runs the Cron job when the machine is started up or <span class="keyword">if</span> the Cron daemon is restarted</span><br><span class="line"></span><br><span class="line">@midnight   -   This runs the Cron job once a day at midnight, it<span class="string">'s the equivalent of 0 0 * * *</span><br><span class="line"></span><br><span class="line">@daily      -   Does exactly the same as @midnight</span><br><span class="line"></span><br><span class="line">@weekly     -   This runs a Cron job once a week on a Sunday the equivalent of 0 0 * * 0</span><br><span class="line"></span><br><span class="line">@monthly    -   This runs a Cron job once a month on the first day of every month at midnight and is the same as 0 0 1 * *</span><br><span class="line"></span><br><span class="line">@annually   -   Runs a Cron job once a year at midnight on the first day of the first month and is the equivalent of 0 0  1 1 *</span><br><span class="line"></span><br><span class="line">@yearly     -   The same as annually</span></span><br></pre></td></tr></table></figure>
-<p>An example for run a command when the machine starts:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@reboot date &gt;&gt; /tmp/date.log</span><br></pre></td></tr></table></figure>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1866,7 +1868,7 @@ agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-count">19</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>

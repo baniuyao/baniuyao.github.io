@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.yaorenjie.com/"/>
-  <updated>2017-01-04T03:07:42.000Z</updated>
+  <updated>2017-03-25T14:25:40.000Z</updated>
   <id>http://blog.yaorenjie.com/</id>
   
   <author>
@@ -13,6 +13,25 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Join ViSenze in Singapore]]></title>
+    <link href="http://blog.yaorenjie.com/2017/03/25/Join-ViSenze-in-Singapore/"/>
+    <id>http://blog.yaorenjie.com/2017/03/25/Join-ViSenze-in-Singapore/</id>
+    <published>2017-03-25T14:20:02.000Z</published>
+    <updated>2017-03-25T14:25:40.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Yes!_ViSenze">Yes! ViSenze</h1><p>It has been a long time since last post, I’m busy in settling down in Singapore these days. Yes, I joined ViSenze, a startup who has raised round B fund. I’ll act as a Data Platform Lead, to build our data product and technical architecture. ViSenze has so many excellent talents and I feel really happy with these guys in the last month. Hope we all have a great advantages:)</p>
+<h1 id="About_ViSenze">About ViSenze</h1><blockquote>
+<p>ViSenze is an artificial intelligence company that develops advanced visual search and image recognition solutions to help businesses in eCommerce, mCommerce and online advertising.</p>
+<p>Using R&amp;D in machine learning and computer vision technology, ViSenze can recommend visually similar items to online shoppers, either on e-commerce platforms when they browse or search by uploading a picture or on content publishers platforms like social media and video networks.</p>
+<p>The company is a spin-off from NExT, a leading research centre jointly established between National University of Singapore and Tsinghua University of China.</p>
+</blockquote>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Yes!_ViSenze">Yes! ViSenze</h1><p>It has been a long time since last post, I’m busy in settling down in Singapore these days. Yes, I]]>
+    </summary>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Kafka 0.10 Compression Benchmark]]></title>
