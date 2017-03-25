@@ -8,6 +8,8 @@ tags:
 
 It has been a long time since last post, I'm busy in settling down in Singapore these days. Yes, I joined ViSenze, a startup who has raised round B fund. I'll act as a Data Platform Lead, to build our data product and technical architecture. ViSenze has so many excellent talents and I feel really happy with these guys in the last month. Hope we all have a great advantages:)
 
+![Alt text](/images/visenze_welcome.jpg)
+
 # About ViSenze
 
 > ViSenze is an artificial intelligence company that develops advanced visual search and image recognition solutions to help businesses in eCommerce, mCommerce and online advertising.
