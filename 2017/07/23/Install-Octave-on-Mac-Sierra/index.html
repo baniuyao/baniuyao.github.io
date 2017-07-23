@@ -50,7 +50,7 @@
 <meta property="og:site_name" content="Renjie Yao's Blog">
 <meta property="og:description" content="Learning Machine LearningI’ve joined ViSenze for almost half a year, and our CTO said we (me and Terry) should learn some machine learning knowledge, since there are a lot of Phd here in our company:)">
 <meta property="og:image" content="http://blog.yaorenjie.com/images/octave.png">
-<meta property="og:updated_time" content="2017-07-23T11:35:50.000Z">
+<meta property="og:updated_time" content="2017-07-23T11:36:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Install Octave on Mac Sierra">
 <meta name="twitter:description" content="Learning Machine LearningI’ve joined ViSenze for almost half a year, and our CTO said we (me and Terry) should learn some machine learning knowledge, since there are a lot of Phd here in our company:)">
@@ -218,7 +218,7 @@
 <p>And actually I’ve already installed <code>suite-sparse</code>, version 4.5.5. You need to create a soft link:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/opt/suite-sparse/lib/</span><br><span class="line">ln <span class="operator">-s</span> libsuitesparseconfig.<span class="number">4.5</span>.<span class="number">5</span>.dylib libsuitesparseconfig.<span class="number">4.5</span>.<span class="number">4</span>.dylib</span><br></pre></td></tr></table></figure>
 <h1 id="Create_your_application">Create your application</h1><p>It is easier if we can launch octave in our Application, not in terminal. We can use <code>Script Editor</code> in macOS:</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tell application &#34;Terminal&#34;&#13;&#9;do script &#34;`which octave`; exit&#34;&#13;end tell</span><br></pre></td></tr></table></figure>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">tell</span> <span class="type">application</span> <span class="string">"Terminal"</span>	do <span class="keyword">script</span> <span class="string">"`which octave`; exit"</span><span class="keyword">end</span> <span class="keyword">tell</span></span><br></pre></td></tr></table></figure>
 <h1 id="Screenshot">Screenshot</h1><p><img src="/images/octave.png" alt="Alt text"></p>
 </span>
       
