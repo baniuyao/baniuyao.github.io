@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.yaorenjie.com/"/>
-  <updated>2017-03-25T14:40:22.000Z</updated>
+  <updated>2017-07-23T10:49:54.000Z</updated>
   <id>http://blog.yaorenjie.com/</id>
   
   <author>
@@ -13,6 +13,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Install Octave on Mac Sierra]]></title>
+    <link href="http://blog.yaorenjie.com/2017/07/23/Install-Octave-on-Mac-Sierra/"/>
+    <id>http://blog.yaorenjie.com/2017/07/23/Install-Octave-on-Mac-Sierra/</id>
+    <published>2017-07-23T10:36:42.000Z</published>
+    <updated>2017-07-23T10:49:54.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="Learning_Machine_Learning">Learning Machine Learning</h1><p>I’ve joined ViSenze for almost half a year, and our CTO said we (me and Terry) should learn some machine learning knowledge, since there are a lot of Phd here in our company:). He recommended a course on Coursera - <a href="https://www.coursera.org/learn/neural-networks" target="_blank" rel="external">Neural Networks for Machine Learning</a>.</p>
+<p>I am facing the Quiz of Week 3, while it needs some coding works in Octave. </p>
+<h1 id="Problems">Problems</h1><p>The Macbook, which lays in my home, hasn’t been used for quite a time. When I use <code>brew</code> to install Octave, some weird issue happened:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Error: uninitialized constant Formulary::FormulaNamespacefe4ce29a01455f41d6d0b08c39f76615::Octave::DevelopmentTools</span><br><span class="line">Please report this bug:</span><br><span class="line">    https://git.io/brew-troubleshooting</span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Taps/homebrew/homebrew-science/octave.rb:<span class="number">31</span>:<span class="keyword">in</span> `&lt;class:Octave&gt;<span class="string">'</span><br><span class="line">/usr/local/Library/Taps/homebrew/homebrew-science/octave.rb:1:in `load_formula'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">21</span>:<span class="keyword">in</span> `module_<span class="built_in">eval</span><span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:21:in `load_formula'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">38</span>:<span class="keyword">in</span> `load_formula_from_path<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:87:in `load_file'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">78</span>:<span class="keyword">in</span> `klass<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:74:in `get_formula'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">171</span>:<span class="keyword">in</span> `get_formula<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:211:in `factory'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/extend/ARGV.rb:<span class="number">18</span>:<span class="keyword">in</span> `block <span class="keyword">in</span> formulae<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/extend/ARGV.rb:16:in `map'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/extend/ARGV.rb:<span class="number">16</span>:<span class="keyword">in</span> `formulae<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/cmd/install.rb:95:in `install'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/brew.rb:<span class="number">87</span>:<span class="keyword">in</span> `&lt;main&gt;<span class="string">'</span></span><br></pre></td></tr></table></figure>
+<h1 id="Solution">Solution</h1><p>I found there is guide on Octave <a href="http://wiki.octave.org/Octave_for_MacOS_X#Simple_Installation_Instructions_2" target="_blank" rel="external">Wiki</a>. Let me summarize it:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R $(whoami) /usr/<span class="built_in">local</span></span><br><span class="line">brew update &amp;&amp; brew upgrade <span class="comment"># it will take some time</span></span><br><span class="line">brew cask install xquartz</span><br><span class="line">brew install octave <span class="comment"># it will take a lot of time...</span></span><br></pre></td></tr></table></figure>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="Learning_Machine_Learning">Learning Machine Learning</h1><p>I’ve joined ViSenze for almost half a year, and our CTO said we (me and ]]>
+    </summary>
+    
+      <category term="Homebrew" scheme="http://blog.yaorenjie.com/tags/Homebrew/"/>
+    
+      <category term="Mac" scheme="http://blog.yaorenjie.com/tags/Mac/"/>
+    
+      <category term="Machine Learning" scheme="http://blog.yaorenjie.com/tags/Machine-Learning/"/>
+    
+      <category term="Octave" scheme="http://blog.yaorenjie.com/tags/Octave/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Join ViSenze in Singapore]]></title>
