@@ -2,6 +2,8 @@
 <html class="theme-next use-motion ">
 <head>
   
+    
+
 
 <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -30,7 +32,7 @@
 
 
 
-  <meta name="keywords" content="python," />
+  <meta name="keywords" content="Homebrew,Mac,Machine Learning,Octave," />
 
 
 
@@ -41,16 +43,16 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="IntroPython is a very powerful and useful tool in our daily work especially for DevOps. Sending mail is also a very simple need. I’ve wrote serveral scripts for sending mail because I could not find t">
+<meta name="description" content="Learning Machine LearningI’ve joined ViSenze for almost half a year, and our CTO said we (me and Terry) should learn some machine learning knowledge, since there are a lot of Phd here in our company:)">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Python smtplib to sendmail with STARTTL and UTF8">
-<meta property="og:url" content="http://blog.yaorenjie.com/2015/12/08/Python-smtplib-to-sendmail-with-STARTTLS-and-UTF8/index.html">
+<meta property="og:title" content="Install Octave on Mac Sierra">
+<meta property="og:url" content="http://blog.yaorenjie.com/2017/07/23/Install-Octave-on-Mac-Sierra/index.html">
 <meta property="og:site_name" content="Renjie Yao's Blog">
-<meta property="og:description" content="IntroPython is a very powerful and useful tool in our daily work especially for DevOps. Sending mail is also a very simple need. I’ve wrote serveral scripts for sending mail because I could not find t">
-<meta property="og:updated_time" content="2015-12-08T01:59:56.000Z">
+<meta property="og:description" content="Learning Machine LearningI’ve joined ViSenze for almost half a year, and our CTO said we (me and Terry) should learn some machine learning knowledge, since there are a lot of Phd here in our company:)">
+<meta property="og:updated_time" content="2017-07-23T10:49:54.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Python smtplib to sendmail with STARTTL and UTF8">
-<meta name="twitter:description" content="IntroPython is a very powerful and useful tool in our daily work especially for DevOps. Sending mail is also a very simple need. I’ve wrote serveral scripts for sending mail because I could not find t">
+<meta name="twitter:title" content="Install Octave on Mac Sierra">
+<meta name="twitter:description" content="Learning Machine LearningI’ve joined ViSenze for almost half a year, and our CTO said we (me and Terry) should learn some machine learning knowledge, since there are a lot of Phd here in our company:)">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -60,7 +62,7 @@
   };
 </script>
 
-  <title> Python smtplib to sendmail with STARTTL and UTF8 | Renjie Yao's Blog </title>
+  <title> Install Octave on Mac Sierra | Renjie Yao's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -169,7 +171,7 @@
           
           
             
-              Python smtplib to sendmail with STARTTL and UTF8
+              Install Octave on Mac Sierra
             
           
         </h1>
@@ -178,8 +180,8 @@
       <div class="post-meta">
         <span class="post-time">
           Posted on
-          <time itemprop="dateCreated" datetime="2015-12-08T09:39:21+08:00" content="2015-12-08">
-            2015-12-08
+          <time itemprop="dateCreated" datetime="2017-07-23T18:36:42+08:00" content="2017-07-23">
+            2017-07-23
           </time>
         </span>
 
@@ -189,8 +191,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/12/08/Python-smtplib-to-sendmail-with-STARTTLS-and-UTF8/#comments" itemprop="discussionUrl">
-              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/08/Python-smtplib-to-sendmail-with-STARTTLS-and-UTF8/" itemprop="commentsCount"></span>
+            <a href="/2017/07/23/Install-Octave-on-Mac-Sierra/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/07/23/Install-Octave-on-Mac-Sierra/" itemprop="commentsCount"></span>
             </a>
           </span>
           
@@ -204,8 +206,12 @@
       
 
       
-        <span itemprop="articleBody"><h1 id="Intro">Intro</h1><p><code>Python</code> is a very powerful and useful tool in our daily work especially for DevOps. Sending mail is also a very simple need. I’ve wrote serveral scripts for sending mail because I could not find the scripts I made before. This time I wanna get the things done - made is open on Github with GPLv3.</p>
-<h1 id="Code">Code</h1><p>Project address is here: <a href="https://github.com/baniuyao/python-sendmail%20A" target="_blank" rel="external">python-sendmail on Github</a>.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># This program is free software; you can redistribute it and/or modify</span></span><br><span class="line"><span class="comment"># it under the terms of the GNU General Public License as published by</span></span><br><span class="line"><span class="comment"># the Free Software Foundation; either version 3 of the License, or</span></span><br><span class="line"><span class="comment"># (at your option) any later version.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">import</span> smtplib, sys</span><br><span class="line"><span class="keyword">from</span> email.MIMEText <span class="keyword">import</span> MIMEText</span><br><span class="line"></span><br><span class="line"><span class="comment"># you can change this constant to parameters of sendmail</span></span><br><span class="line">USR_FROM = <span class="string">'me@yaorenjie.com'</span></span><br><span class="line">USR = <span class="string">'me'</span></span><br><span class="line">PASSWD = <span class="string">'HELLO_WORLD'</span></span><br><span class="line"></span><br><span class="line">SMTP_SERVER = <span class="string">'email.yaorenjie.com'</span></span><br><span class="line">SMTP_PORT = <span class="number">587</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sendmail</span><span class="params">(usr_to, subject, msg, subtype=<span class="string">'html'</span>)</span>:</span></span><br><span class="line">    usr_from = USR_FROM</span><br><span class="line">    msg = MIMEText(msg, subtype, _charset=<span class="string">'utf-8'</span>)</span><br><span class="line">    msg[<span class="string">'Subject'</span>] = subject</span><br><span class="line">    msg[<span class="string">'To'</span>] = <span class="string">';'</span>.join(usr_to)</span><br><span class="line">    msg[<span class="string">'From'</span>] = usr_from</span><br><span class="line">    server = smtplib.SMTP()</span><br><span class="line">    server.connect(SMTP_SERVER, SMTP_PORT)</span><br><span class="line">    <span class="comment"># ONLY for debug</span></span><br><span class="line">    <span class="comment"># server.set_debuglevel(1)</span></span><br><span class="line">    <span class="comment"># if exchange use STARTTLS auth, you need to uncomment next line</span></span><br><span class="line">    <span class="comment"># server.starttls()</span></span><br><span class="line">    server.login(USR, PASSWD)</span><br><span class="line">    server.sendmail(usr_from, usr_to, msg.as_string())</span><br><span class="line">    server.quit()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="string">"""</span><br><span class="line">    Example:</span><br><span class="line">    python sendmail.py --usr_to mike@mail.com peter@mail.com --subject 'TEST_SUBJECT' --msg 'TEST_MSG'</span><br><span class="line"></span><br><span class="line">    Remark:</span><br><span class="line">    1. msg supports HTML and Chinese</span><br><span class="line">    """</span></span><br><span class="line">    parser = argparse.ArgumentParser(description=<span class="string">'parser for senemail'</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'--usr_to'</span>, dest=<span class="string">'usr_to'</span>, nargs=<span class="string">'+'</span>, required=<span class="keyword">True</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'--subject'</span>, dest=<span class="string">'subject'</span>, required=<span class="keyword">True</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'--msg'</span>, dest=<span class="string">'msg'</span>, required=<span class="keyword">True</span>)</span><br><span class="line">    args = parser.parse_args()</span><br><span class="line">    sendmail(usr_to=args.usr_to, subject=args.subject, msg=args.msg)</span><br></pre></td></tr></table></figure></p>
+        <span itemprop="articleBody"><h1 id="Learning_Machine_Learning">Learning Machine Learning</h1><p>I’ve joined ViSenze for almost half a year, and our CTO said we (me and Terry) should learn some machine learning knowledge, since there are a lot of Phd here in our company:). He recommended a course on Coursera - <a href="https://www.coursera.org/learn/neural-networks" target="_blank" rel="external">Neural Networks for Machine Learning</a>.</p>
+<p>I am facing the Quiz of Week 3, while it needs some coding works in Octave. </p>
+<h1 id="Problems">Problems</h1><p>The Macbook, which lays in my home, hasn’t been used for quite a time. When I use <code>brew</code> to install Octave, some weird issue happened:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Error: uninitialized constant Formulary::FormulaNamespacefe4ce29a01455f41d6d0b08c39f76615::Octave::DevelopmentTools</span><br><span class="line">Please report this bug:</span><br><span class="line">    https://git.io/brew-troubleshooting</span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Taps/homebrew/homebrew-science/octave.rb:<span class="number">31</span>:<span class="keyword">in</span> `&lt;class:Octave&gt;<span class="string">'</span><br><span class="line">/usr/local/Library/Taps/homebrew/homebrew-science/octave.rb:1:in `load_formula'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">21</span>:<span class="keyword">in</span> `module_<span class="built_in">eval</span><span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:21:in `load_formula'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">38</span>:<span class="keyword">in</span> `load_formula_from_path<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:87:in `load_file'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">78</span>:<span class="keyword">in</span> `klass<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:74:in `get_formula'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">171</span>:<span class="keyword">in</span> `get_formula<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:211:in `factory'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/extend/ARGV.rb:<span class="number">18</span>:<span class="keyword">in</span> `block <span class="keyword">in</span> formulae<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/extend/ARGV.rb:16:in `map'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/extend/ARGV.rb:<span class="number">16</span>:<span class="keyword">in</span> `formulae<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/cmd/install.rb:95:in `install'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/brew.rb:<span class="number">87</span>:<span class="keyword">in</span> `&lt;main&gt;<span class="string">'</span></span><br></pre></td></tr></table></figure>
+<h1 id="Solution">Solution</h1><p>I found there is guide on Octave <a href="http://wiki.octave.org/Octave_for_MacOS_X#Simple_Installation_Instructions_2" target="_blank" rel="external">Wiki</a>. Let me summarize it:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R $(whoami) /usr/<span class="built_in">local</span></span><br><span class="line">brew update &amp;&amp; brew upgrade <span class="comment"># it will take some time</span></span><br><span class="line">brew cask install xquartz</span><br><span class="line">brew install octave <span class="comment"># it will take a lot of time...</span></span><br></pre></td></tr></table></figure>
 </span>
       
     </div>
@@ -214,7 +220,13 @@
       
         <div class="post-tags">
           
-            <a href="/tags/python/" rel="tag">#python</a>
+            <a href="/tags/Homebrew/" rel="tag">#Homebrew</a>
+          
+            <a href="/tags/Mac/" rel="tag">#Mac</a>
+          
+            <a href="/tags/Machine-Learning/" rel="tag">#Machine Learning</a>
+          
+            <a href="/tags/Octave/" rel="tag">#Octave</a>
           
         </div>
       
@@ -223,13 +235,11 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/12/09/Tricks-on-Crontab/" rel="prev">Tricks on Crontab</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/10/20/Covert-SOCKS5-Proxy-to-HTTP-Proxy-on-Mac/" rel="next">Convert SOCKS5 Proxy to HTTP Proxy on Mac</a>
+              <a href="/2017/03/25/Join-ViSenze-in-Singapore/" rel="next">Join ViSenze in Singapore</a>
             
           </div>
         </div>
@@ -354,7 +364,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Intro"><span class="nav-number">1.</span> <span class="nav-text">Intro</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Code"><span class="nav-number">2.</span> <span class="nav-text">Code</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Learning_Machine_Learning"><span class="nav-number">1.</span> <span class="nav-text">Learning Machine Learning</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Problems"><span class="nav-number">2.</span> <span class="nav-text">Problems</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Solution"><span class="nav-number">3.</span> <span class="nav-text">Solution</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
@@ -408,9 +418,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'renjieyaoblog';
-      var disqus_identifier = '2015/12/08/Python-smtplib-to-sendmail-with-STARTTLS-and-UTF8/';
-      var disqus_title = 'Python smtplib to sendmail with STARTTL and UTF8';
-      var disqus_url = 'http://blog.yaorenjie.com/2015/12/08/Python-smtplib-to-sendmail-with-STARTTLS-and-UTF8/';
+      var disqus_identifier = '2017/07/23/Install-Octave-on-Mac-Sierra/';
+      var disqus_title = 'Install Octave on Mac Sierra';
+      var disqus_url = 'http://blog.yaorenjie.com/2017/07/23/Install-Octave-on-Mac-Sierra/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
