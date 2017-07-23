@@ -72,7 +72,7 @@ ln -s libsuitesparseconfig.4.5.5.dylib libsuitesparseconfig.4.5.4.dylib
 
 It is easier if we can launch octave in our Application, not in terminal. We can use `Script Editor` in macOS:
 
-``` appscript
+``` applescript
 tell application "Terminal"	do script "`which octave`; exit"end tell
 ```
 
