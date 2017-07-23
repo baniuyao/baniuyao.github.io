@@ -214,6 +214,89 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Error: uninitialized constant Formulary::FormulaNamespacefe4ce29a01455f41d6d0b08c39f76615::Octave::DevelopmentTools</span><br><span class="line">Please report this bug:</span><br><span class="line">    https://git.io/brew-troubleshooting</span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Taps/homebrew/homebrew-science/octave.rb:<span class="number">31</span>:<span class="keyword">in</span> `&lt;class:Octave&gt;<span class="string">'</span><br><span class="line">/usr/local/Library/Taps/homebrew/homebrew-science/octave.rb:1:in `load_formula'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">21</span>:<span class="keyword">in</span> `module_<span class="built_in">eval</span><span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:21:in `load_formula'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">38</span>:<span class="keyword">in</span> `load_formula_from_path<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:87:in `load_file'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">78</span>:<span class="keyword">in</span> `klass<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:74:in `get_formula'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">171</span>:<span class="keyword">in</span> `get_formula<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:211:in `factory'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/extend/ARGV.rb:<span class="number">18</span>:<span class="keyword">in</span> `block <span class="keyword">in</span> formulae<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/extend/ARGV.rb:16:in `map'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/extend/ARGV.rb:<span class="number">16</span>:<span class="keyword">in</span> `formulae<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/cmd/install.rb:95:in `install'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/brew.rb:<span class="number">87</span>:<span class="keyword">in</span> `&lt;main&gt;<span class="string">'</span></span><br></pre></td></tr></table></figure>
 <h1 id="Solution">Solution</h1><p>I found there is guide on Octave <a href="http://wiki.octave.org/Octave_for_MacOS_X#Simple_Installation_Instructions_2" target="_blank" rel="external">Wiki</a>. Let me summarize it:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R $(whoami) /usr/<span class="built_in">local</span></span><br><span class="line">brew update &amp;&amp; brew upgrade <span class="comment"># it will take some time</span></span><br><span class="line">brew cask install xquartz</span><br><span class="line">brew install octave <span class="comment"># it will take a lot of time...</span></span><br></pre></td></tr></table></figure>
+<h1 id="After_brew_install_octave">After brew install octave</h1><p>When I typed ‘octave’ in my terminal, there is an issue like:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$octave</span></span><br><span class="line">dyld: Library not loaded: /usr/<span class="built_in">local</span>/opt/suite-sparse/lib/libsuitesparseconfig.<span class="number">4.5</span>.<span class="number">4</span>.dylib</span><br><span class="line">  Referenced from: /usr/<span class="built_in">local</span>/bin/octave</span><br><span class="line">  Reason: image not found</span><br><span class="line">Abort <span class="built_in">trap</span>: <span class="number">6</span></span><br></pre></td></tr></table></figure>
+<p>And actually I’ve already installed <code>suite-sparse</code>, version 4.5.5. You need to create a soft link:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/opt/suite-sparse/lib/</span><br><span class="line">ln <span class="operator">-s</span> libsuitesparseconfig.<span class="number">4.5</span>.<span class="number">5</span>.dylib libsuitesparseconfig.<span class="number">4.5</span>.<span class="number">4</span>.dylib</span><br></pre></td></tr></table></figure>
+<h1 id="Create_your_application">Create your application</h1><p>It is easier if we can launch octave in our Application, not in terminal. We can use <code>Script Editor</code> in macOS:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tell application &#34;Terminal&#34;&#13;&#9;do script &#34;`which octave`; exit&#34;&#13;end tell</span><br></pre></td></tr></table></figure>
+<h1 id="Screenshot">Screenshot</h1><p><img src="/images/octave.jpg" alt="Alt text"></p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2017/06/23/Maven-AWS-AccessDenied-Issue/" itemprop="url">
+                Maven AWS AccessDenied Issue
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          Posted on
+          <time itemprop="dateCreated" datetime="2017-06-23T11:53:35+08:00" content="2017-06-23">
+            2017-06-23
+          </time>
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2017/06/23/Maven-AWS-AccessDenied-Issue/#comments" itemprop="discussionUrl">
+              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/06/23/Maven-AWS-AccessDenied-Issue/" itemprop="commentsCount"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>When I used mvn to package some java codes as usually, there happened a very weird exception:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INFO] ------------------------------------------------------------------------&#10;[INFO] BUILD FAILURE&#10;[INFO] ------------------------------------------------------------------------&#10;[INFO] Total time: 28.410 s&#10;[INFO] Finished at: 2017-06-23T08:29:33+00:00&#10;[INFO] Final Memory: 50M/612M&#10;[INFO] ------------------------------------------------------------------------&#10;[ERROR] Failed to execute goal net.alchim31.maven:scala-maven-plugin:3.2.0:compile (scala-compile-first) on project analysis-spark: Execution scala-compile-first of goal net.alchim31.maven:scala-maven-plugin:3.2.0:compile failed: Status Code: 403, AWS Service: Amazon S3, AWS Request ID: 7967A1610B14A2BD, AWS Error Code: AccessDenied, AWS Error Message: Access Denied -&#62; [Help 1]&#10;[ERROR]&#10;[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.&#10;[ERROR] Re-run Maven using the -X switch to enable full debug logging.&#10;[ERROR]&#10;[ERROR] For more information about the errors and possible solutions, please read the following articles:&#10;[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/PluginExecutionException&#10;[ERROR]&#10;[ERROR] After correcting the problems, you can resume the build with the command&#10;[ERROR]   mvn &#60;goals&#62; -rf :analysis-spark</span><br></pre></td></tr></table></figure>
+<p>The exception said that AWS access denied, as we use AWS in our maven settings like belowed:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">settings</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="title">servers</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">server</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="title">id</span>&gt;</span>maven-s3-release-repo<span class="tag">&lt;/<span class="title">id</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="title">username</span>&gt;</span>USERNAME<span class="tag">&lt;/<span class="title">username</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="title">password</span>&gt;</span>PASSWORD<span class="tag">&lt;/<span class="title">password</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;/<span class="title">server</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">settings</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>And I have double checked the authentication information is correct while other developers can package successfully in their own computers.</p>
+<p>Finally I found that the problem is because I set a environment variable in Mac:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$env | grep AWS&#10;AWS_SECRET_ACCESS_KEY=XXXXX&#10;AWS_ACCESS_KEY_ID=XXXX</span><br></pre></td></tr></table></figure>
+<p>After unset them, the package procedure became okay. I think that is because the ENV has higher priority than the configuration in <code>~/.m2/settings.xml</code>.</p>
 </span>
         
       
@@ -1587,99 +1670,11 @@ agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span
 
 
     
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/" itemprop="url">
-                Build Jasig CAS from Zero (1)  - Build CAS Server
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          Posted on
-          <time itemprop="dateCreated" datetime="2016-06-09T10:54:17+08:00" content="2016-06-09">
-            2016-06-09
-          </time>
-        </span>
-
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/#comments" itemprop="discussionUrl">
-              <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/09/Build-Jasig-CAS-from-Zero-1-Build-CAS-Server/" itemprop="commentsCount"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h1 id="Download_source_tarball_from_github">Download source tarball from github</h1><p>You can get CAS from git easily:)</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https:<span class="comment">//github.com/apereo/cas.git</span></span><br><span class="line">git fetch</span><br><span class="line">git checkout <span class="number">4.2</span>.x</span><br></pre></td></tr></table></figure>
-<p>The master branch is not a can-be-compiled version. I got failure information when I run compile commands in <code>master</code> branch:</p>
-<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$./dev-build-<span class="keyword">no</span>-tests.<span class="keyword">sh</span></span><br><span class="line"></span><br><span class="line">FAILURE: Build failed with <span class="keyword">an</span> exception.</span><br><span class="line"></span><br><span class="line"><span class="comment">* Where:</span></span><br><span class="line">Build <span class="keyword">file</span> '/private/tmp/cas/cas-management-webapp/build.gradle' <span class="keyword">line</span>: 28</span><br><span class="line"></span><br><span class="line"><span class="comment">* What went wrong:</span></span><br><span class="line">A problem occurred evaluating project ':cas-management-webapp'.</span><br><span class="line">&gt; <span class="keyword">No</span> such property: java <span class="keyword">for</span> <span class="keyword">class</span>: org.gradle.api.java.archives.internal.DefaultManifest</span><br><span class="line"></span><br><span class="line"><span class="comment">* Try:</span></span><br><span class="line"><span class="keyword">Run</span> with --stacktrace option to get the <span class="keyword">stack</span> trace. <span class="keyword">Run</span> with --info or --debug option to get <span class="keyword">more</span> <span class="keyword">log</span> output.</span><br><span class="line"></span><br><span class="line">BUILD FAILED</span><br><span class="line"></span><br><span class="line"><span class="keyword">Total</span> time: 11.67 secs</span><br></pre></td></tr></table></figure>
-<p>The stable version version in <a href="https://github.com/apereo/cas/releases" target="_blank" rel="external">cas release page</a> is 4.2.2. So just checkout out the stable version.</p>
-<h1 id="compile">compile</h1><h2 id="get_gradle">get gradle</h2><p>CAS can be compiled by <code>gradle</code>, when you first run <code>gradlew</code>(gradle wrapper), the project will download gradle-XXX-bin.zip. If you already have it or you have some problems downloading it(such as GFW), you can simply edit `{CAS_PWD}/gradle/wrapper/gradle-wrapper.properties” like below:</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="setting">distributionBase=<span class="value">GRADLE_USER_HOME</span></span></span><br><span class="line"><span class="setting">distributionPath=<span class="value">wrapper/dists</span></span></span><br><span class="line"><span class="setting">zipStoreBase=<span class="value">GRADLE_USER_HOME</span></span></span><br><span class="line"><span class="setting">zipStorePath=<span class="value">wrapper/dists</span></span></span><br><span class="line"><span class="setting">distributionUrl=<span class="value">https\://services.gradle.org/distributions/gradle-<span class="number">2.13</span>-all.zip</span></span></span><br></pre></td></tr></table></figure>
-<p>Replace <code>distributionUrl</code> with your own url.</p>
-<p>If you have local gradle zip file, use the zip file name directly and put zip file into <code>{CAS_PWD}/gradle/wrapper</code>. For example if my gradle zip file is <code>gradle-2.10-bin.zip</code>, you need parameter <code>distributionUrl</code> like this:</p>
-<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">...</span><br><span class="line"></span>distributionUtl=gradle-2.10-bin.zip</span><br></pre></td></tr></table></figure>
-<h2 id="compile_cas_project">compile cas project</h2><p>There is two bootstrap shell in cas directory, <code>dev-build.sh</code> and <code>dev-build-no-tests.sh</code>. The difference between them is obviously shown in their names - <code>dev-build-no-tests.sh</code> will set this flag <code>-DskipAspectJ=true</code></p>
-<p>When you run <code>dev-build.sh</code> or <code>dev-build-no-tests.sh</code> for a couple of minutes, you will probably get this conflicts failure.</p>
-<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">:cas-server-support-pac4j</span><span class="symbol">:compileAspect</span></span><br><span class="line"><span class="constant">Download </span>...</span><br><span class="line">&gt; <span class="symbol">:cas-server-support-pac4j</span><span class="symbol">:compileAspecFAILED</span></span><br><span class="line"></span><br><span class="line"><span class="constant">FAILURE:</span> <span class="constant">Build </span>failed with an exception.</span><br><span class="line"></span><br><span class="line">* <span class="constant">What </span>went <span class="symbol">wrong:</span></span><br><span class="line"><span class="constant">Execution </span>failed <span class="keyword">for</span> task <span class="string">':cas-server-support-pac4j:compileAspect'</span>.</span><br><span class="line">&gt; <span class="constant">Could </span><span class="keyword">not</span> resolve all dependencies <span class="keyword">for</span> configuration <span class="string">':cas-server-support-pac4j:compile'</span>.</span><br><span class="line">   &gt; <span class="constant">A </span>conflict was found between the following <span class="symbol">modules:</span></span><br><span class="line">      - commons-<span class="symbol">io:</span>commons-<span class="symbol">io:</span><span class="number">2.4</span></span><br><span class="line">      - commons-<span class="symbol">io:</span>commons-<span class="symbol">io:</span><span class="number">2.5</span></span><br><span class="line"></span><br><span class="line">* <span class="constant">Try:</span></span><br><span class="line"><span class="constant">Run </span>with --stacktrace option to get the stack trace. <span class="constant">Run </span>with --info <span class="keyword">or</span> --debug option to get more log output.</span><br><span class="line"></span><br><span class="line"><span class="constant">BUILD FAILED</span></span><br><span class="line"></span><br><span class="line"><span class="constant">Total </span><span class="symbol">time:</span> <span class="number">10</span> mins <span class="number">48.643</span> secs</span><br></pre></td></tr></table></figure>
-<p>It is casuse by the conflict between <code>commons-io:2.4</code> and <code>commons-io:2.5</code> in <code>cas-server-support-pac4j</code>, we need to add <code>-DskipVersionConflict=true</code> in bootstrap scripts.</p>
-<p>If you build it in IntelliJ IDEA, set this parameter in <code>Preferences-Build,Execution,Deployment-Build Tools-Gradle-Gradle VM options</code>.</p>
-<p>Plus, if you want to use http proxy in gradle, you need to set these parameters:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-DproxySet=<span class="literal">true</span> -DproxyHost=<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> -DproxyPort=<span class="number">8123</span></span><br></pre></td></tr></table></figure>
-<h2 id="For_IDE">For IDE</h2><p>We need to execute extra command for IDE</p>
-<h3 id="IDEA">IDEA</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew idea</span><br></pre></td></tr></table></figure>
-<h3 id="Eclipse">Eclipse</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./gradlew eclipse</span><br></pre></td></tr></table></figure>
-<h1 id="To_Be_Contined…w">To Be Contined…w</h1></span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">&raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">&raquo;</a>
   </nav>
 
  </div>
@@ -1713,7 +1708,7 @@ agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-count">21</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -1727,7 +1722,7 @@ agent<span class="class">.sinks</span><span class="class">.kafkaSink</span><span
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">37</span>
+              <span class="site-state-item-count">39</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
