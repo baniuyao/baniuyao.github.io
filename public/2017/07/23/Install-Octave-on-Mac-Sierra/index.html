@@ -49,7 +49,8 @@
 <meta property="og:url" content="http://blog.yaorenjie.com/2017/07/23/Install-Octave-on-Mac-Sierra/index.html">
 <meta property="og:site_name" content="Renjie Yao's Blog">
 <meta property="og:description" content="Learning Machine LearningI’ve joined ViSenze for almost half a year, and our CTO said we (me and Terry) should learn some machine learning knowledge, since there are a lot of Phd here in our company:)">
-<meta property="og:updated_time" content="2017-07-23T10:49:54.000Z">
+<meta property="og:image" content="http://blog.yaorenjie.com/images/octave.png">
+<meta property="og:updated_time" content="2017-07-23T11:35:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Install Octave on Mac Sierra">
 <meta name="twitter:description" content="Learning Machine LearningI’ve joined ViSenze for almost half a year, and our CTO said we (me and Terry) should learn some machine learning knowledge, since there are a lot of Phd here in our company:)">
@@ -212,6 +213,13 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Error: uninitialized constant Formulary::FormulaNamespacefe4ce29a01455f41d6d0b08c39f76615::Octave::DevelopmentTools</span><br><span class="line">Please report this bug:</span><br><span class="line">    https://git.io/brew-troubleshooting</span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Taps/homebrew/homebrew-science/octave.rb:<span class="number">31</span>:<span class="keyword">in</span> `&lt;class:Octave&gt;<span class="string">'</span><br><span class="line">/usr/local/Library/Taps/homebrew/homebrew-science/octave.rb:1:in `load_formula'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">21</span>:<span class="keyword">in</span> `module_<span class="built_in">eval</span><span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:21:in `load_formula'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">38</span>:<span class="keyword">in</span> `load_formula_from_path<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:87:in `load_file'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">78</span>:<span class="keyword">in</span> `klass<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:74:in `get_formula'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/formulary.rb:<span class="number">171</span>:<span class="keyword">in</span> `get_formula<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/formulary.rb:211:in `factory'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/extend/ARGV.rb:<span class="number">18</span>:<span class="keyword">in</span> `block <span class="keyword">in</span> formulae<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/extend/ARGV.rb:16:in `map'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/Homebrew/extend/ARGV.rb:<span class="number">16</span>:<span class="keyword">in</span> `formulae<span class="string">'</span><br><span class="line">/usr/local/Library/Homebrew/cmd/install.rb:95:in `install'</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Library/brew.rb:<span class="number">87</span>:<span class="keyword">in</span> `&lt;main&gt;<span class="string">'</span></span><br></pre></td></tr></table></figure>
 <h1 id="Solution">Solution</h1><p>I found there is guide on Octave <a href="http://wiki.octave.org/Octave_for_MacOS_X#Simple_Installation_Instructions_2" target="_blank" rel="external">Wiki</a>. Let me summarize it:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R $(whoami) /usr/<span class="built_in">local</span></span><br><span class="line">brew update &amp;&amp; brew upgrade <span class="comment"># it will take some time</span></span><br><span class="line">brew cask install xquartz</span><br><span class="line">brew install octave <span class="comment"># it will take a lot of time...</span></span><br></pre></td></tr></table></figure>
+<h1 id="After_brew_install_octave">After brew install octave</h1><p>When I typed ‘octave’ in my terminal, there is an issue like:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$octave</span></span><br><span class="line">dyld: Library not loaded: /usr/<span class="built_in">local</span>/opt/suite-sparse/lib/libsuitesparseconfig.<span class="number">4.5</span>.<span class="number">4</span>.dylib</span><br><span class="line">  Referenced from: /usr/<span class="built_in">local</span>/bin/octave</span><br><span class="line">  Reason: image not found</span><br><span class="line">Abort <span class="built_in">trap</span>: <span class="number">6</span></span><br></pre></td></tr></table></figure>
+<p>And actually I’ve already installed <code>suite-sparse</code>, version 4.5.5. You need to create a soft link:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/opt/suite-sparse/lib/</span><br><span class="line">ln <span class="operator">-s</span> libsuitesparseconfig.<span class="number">4.5</span>.<span class="number">5</span>.dylib libsuitesparseconfig.<span class="number">4.5</span>.<span class="number">4</span>.dylib</span><br></pre></td></tr></table></figure>
+<h1 id="Create_your_application">Create your application</h1><p>It is easier if we can launch octave in our Application, not in terminal. We can use <code>Script Editor</code> in macOS:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tell application &#34;Terminal&#34;&#13;&#9;do script &#34;`which octave`; exit&#34;&#13;end tell</span><br></pre></td></tr></table></figure>
+<h1 id="Screenshot">Screenshot</h1><p><img src="/images/octave.png" alt="Alt text"></p>
 </span>
       
     </div>
@@ -239,7 +247,7 @@
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/03/25/Join-ViSenze-in-Singapore/" rel="next">Join ViSenze in Singapore</a>
+              <a href="/2017/06/23/Maven-AWS-AccessDenied-Issue/" rel="next">Maven AWS AccessDenied Issue</a>
             
           </div>
         </div>
@@ -305,7 +313,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-count">21</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -319,7 +327,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">37</span>
+              <span class="site-state-item-count">39</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
@@ -364,7 +372,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Learning_Machine_Learning"><span class="nav-number">1.</span> <span class="nav-text">Learning Machine Learning</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Problems"><span class="nav-number">2.</span> <span class="nav-text">Problems</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Solution"><span class="nav-number">3.</span> <span class="nav-text">Solution</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Learning_Machine_Learning"><span class="nav-number">1.</span> <span class="nav-text">Learning Machine Learning</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Problems"><span class="nav-number">2.</span> <span class="nav-text">Problems</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Solution"><span class="nav-number">3.</span> <span class="nav-text">Solution</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#After_brew_install_octave"><span class="nav-number">4.</span> <span class="nav-text">After brew install octave</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Create_your_application"><span class="nav-number">5.</span> <span class="nav-text">Create your application</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Screenshot"><span class="nav-number">6.</span> <span class="nav-text">Screenshot</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>

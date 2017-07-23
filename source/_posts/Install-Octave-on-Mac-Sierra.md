@@ -49,4 +49,33 @@ brew update && brew upgrade # it will take some time
 brew cask install xquartz
 brew install octave # it will take a lot of time...
 ```
+# After brew install octave
 
+When I typed 'octave' in my terminal, there is an issue like:
+
+``` bash
+$octave
+dyld: Library not loaded: /usr/local/opt/suite-sparse/lib/libsuitesparseconfig.4.5.4.dylib
+  Referenced from: /usr/local/bin/octave
+  Reason: image not found
+Abort trap: 6
+```
+
+And actually I've already installed `suite-sparse`, version 4.5.5. You need to create a soft link:
+
+``` bash
+cd /usr/local/opt/suite-sparse/lib/
+ln -s libsuitesparseconfig.4.5.5.dylib libsuitesparseconfig.4.5.4.dylib
+```
+
+# Create your application
+
+It is easier if we can launch octave in our Application, not in terminal. We can use `Script Editor` in macOS:
+
+``` appscript
+tell application "Terminal"	do script "`which octave`; exit"end tell
+```
+
+# Screenshot
+
+![Alt text](/images/octave.png)
